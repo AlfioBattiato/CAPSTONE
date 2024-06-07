@@ -18,11 +18,13 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->text('message')->nullable();
             $table->timestamp('send_at')->useCurrent();
+            $table->timestamps();
         });
 
         // Aggiungi la colonna MEDIUMBLOB
         Schema::table('messages', function (Blueprint $table) {
-            DB::statement('ALTER TABLE messages ADD file MEDIUMBLOB NULL'); //in futuro potrebbero essere sia vocali che immagini o video
+            DB::statement('ALTER TABLE messages ADD file MEDIUMBLOB NULL');  //in futuro potrebbero essere sia vocali che immagini o video
+            $table->string('file_type')->nullable(); //serve ad indicare il tipo di file registrato in codice binario
         });
     }
 
