@@ -6,8 +6,10 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -50,8 +52,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(InterestPlace::class);
     }
-    public function travel(): HasMany
+    public function travels(): BelongsToMany
     {
-        return $this->hasMany(Travel::class);
+        return $this->belongsToMany(Travel::class, 'travel_user');
     }
 }

@@ -17,12 +17,12 @@ class TravelFactory extends Factory
      */
     public function definition(): array
     {
-        $user_id = User::all()->pluck('id')->all();
+        // $user_id = User::all()->pluck('id')->all();
         $type_moto = ['race bikes', 'motocross', 'scooter', 'off-road', 'harley'];
         $cc_moto = [150, 300, 600, 1200];
 
         return [
-            'user_id' => fake()->randomElement($user_id),
+            // 'user_id' => fake()->randomElement($user_id),
             'start_location' => 'milano',
             'lat' => fake()->randomFloat(6, 0, 5), // Assicurati che le coordinate siano numeri in virgola mobile
             'lon' => fake()->randomFloat(6, 0, 5),

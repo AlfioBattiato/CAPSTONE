@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('travel', function (Blueprint $table) {
+        Schema::create('metas', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('user_id')->constrained();
-            $table->string('start_location');
+            // non lo metto onDelete('cascade') im modo che man mano nel tempo mi riempiono il database di mete da poter suggerire ai prossimi viaggi tramite dropdown/option
+            $table->foreignId('travel_id')->constrained();
+            $table->string('name_location');
             $table->float('lat');
             $table->float('lon');
-            $table->string('type_moto');
-            $table->integer('cc_moto');
-            $table->date('departure_date')->nullable();
-            $table->date('expiration_date')->nullable();
-            $table->boolean('active');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('travel');
+        Schema::dropIfExists('metas');
     }
 };
