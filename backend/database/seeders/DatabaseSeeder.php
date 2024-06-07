@@ -16,8 +16,27 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'username' => 'admin',
+            'email' => 'a@a.a',
+            'role' => 'admin',
+            'active' => true,
+            'rating' => 0,
+            'profile_img' => '/storage/profiles/Missing_photo.svg',
         ]);
+        User::factory()->create([
+            'username' => 'guest',
+            'email' => 'g@g.g',
+            'role' => 'guest',
+            'profile_img' => '/storage/profiles/Missing_photo.svg',
+
+        ]);
+
+
+
+        // $this->call([
+        //     ActivitySeeder::class,
+        //     SlotSeeder::class,
+        //     CourseSeeder::class,
+        // ]);
     }
 }
