@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\InterestPlace;
+use App\Models\Travel;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class InterestPlaceSeeder extends Seeder
+class TravelSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        InterestPlace::factory(5)->create();
+        Travel::factory(1)->create();
     }
 }

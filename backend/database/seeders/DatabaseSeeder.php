@@ -35,10 +35,10 @@ class DatabaseSeeder extends Seeder
 
 
 
-        // $this->call([
-        //     ActivitySeeder::class,
-        //     SlotSeeder::class,
-        //     CourseSeeder::class,
-        // ]);
+        $this->call([
+            InterestPlaceSeeder::class,
+            TravelSeeder::class,
+          
+        ]);
     }
 }

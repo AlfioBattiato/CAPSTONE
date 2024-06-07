@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('interest_places', function (Blueprint $table) {
+        Schema::create('travel', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->string('name_location');
-            $table->text('description');
-            $table->string('location_img')->nullable();
-            $table->integer('rating')->nullable();
+            $table->string('start_location');
             $table->float('lat');
             $table->float('lon');
+            $table->string('type_moto');
+            $table->integer('cc_moto');
+            $table->date('departure_date')->nullable();
+            $table->date('expiration_date')->nullable();
+            $table->boolean('active');
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('interest_places');
+        Schema::dropIfExists('travel');
     }
 };
