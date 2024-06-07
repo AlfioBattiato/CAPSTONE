@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
             'username' => 'guest',
             'email' => 'g@g.g',
             'role' => 'guest',
+            'active' => true,
+            'rating' => 0,
             'profile_img' => '/storage/profiles/Missing_photo.svg',
 
         ]);
