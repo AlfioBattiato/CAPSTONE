@@ -56,4 +56,16 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Travel::class, 'travel_user');
     }
+
+    public function chats(): BelongsToMany
+    {
+        return $this->belongsToMany(Chat::class, 'lobby');
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            $user->chats()->detach();
+        });
+    }
 }

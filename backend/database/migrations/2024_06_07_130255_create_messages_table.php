@@ -21,10 +21,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Aggiungi la colonna MEDIUMBLOB
+        // Add the MEDIUMBLOB column
         Schema::table('messages', function (Blueprint $table) {
-            DB::statement('ALTER TABLE messages ADD file MEDIUMBLOB NULL');  //in futuro potrebbero essere sia vocali che immagini o video
-            $table->string('file_type')->nullable(); //serve ad indicare il tipo di file registrato in codice binario
+            DB::statement('ALTER TABLE messages ADD file MEDIUMBLOB NULL');  // in the future it could be used for voice messages, images, or videos
+            $table->string('file_type')->nullable(); // indicates the type of file stored in binary code
         });
     }
 
