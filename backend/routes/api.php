@@ -8,15 +8,15 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
-// Rotte per l'autenticazione fornite da Breeze
+// Authentication routes provided by Breeze
 Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth:sanctum');
 
-// Rotte protette da autenticazione
+// Routes protected by authentication
 Route::middleware('auth:sanctum')->group(function () {
 
-    // Rotte per il UserController
+    // Routes for the UserController
     Route::get('users', [UserController::class, 'index']);
     Route::get('users/{user}', [UserController::class, 'show']);
     Route::put('users/{user}', [UserController::class, 'update']);
@@ -24,18 +24,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ***************************************CHAT***************************************
 
-    // Rotte per il ChatController
+    // Routes for the ChatController
     Route::get('chats', [ChatController::class, 'index']);
     Route::get('chats/{chat}', [ChatController::class, 'show']);
     Route::post('chats', [ChatController::class, 'store']);
     Route::put('chats/{chat}', [ChatController::class, 'update']);
     Route::delete('chats/{chat}', [ChatController::class, 'destroy']);
 
-    // Rotte per aggiungere e rimuovere utenti dalle chat
+    // Routes to add and remove users from chats
     Route::post('chats/{chat}/add-user', [ChatController::class, 'addUserToChat']);
     Route::post('chats/{chat}/remove-user', [ChatController::class, 'removeUserFromChat']);
 
-    // Rotte per il MessageController
+    // Routes for the MessageController
     Route::get('messages', [MessageController::class, 'index']);
     Route::get('messages/{message}', [MessageController::class, 'show']);
     Route::post('messages', [MessageController::class, 'store']);
@@ -43,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('messages/{message}', [MessageController::class, 'destroy']);
 });
 
-// Rotta per ottenere l'utente autenticato
+// Route to get the authenticated user
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
