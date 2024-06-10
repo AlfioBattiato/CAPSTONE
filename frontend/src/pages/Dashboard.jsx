@@ -8,7 +8,7 @@ function Dashboard() {
   const [email, setEmail] = useState(user.email);
 
   const handleResetPassword = () => {
-    axios.post("api/forgot-password", { email });
+    axios.post("/api/forgot-password", { email });
   };
 
   return (
