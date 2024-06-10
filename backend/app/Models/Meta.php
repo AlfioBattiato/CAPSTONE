@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Meta extends Model
 {
     use HasFactory;
-    public function user(): BelongsTo
+    public function travel(): BelongsTo
     {
         return $this->belongsTo(Travel::class);
     }

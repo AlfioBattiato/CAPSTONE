@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -46,11 +47,22 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-// inserire le relazioni molti a molti e uno a molti per i viaggi
+    // inserire le relazioni molti a molti e uno a molti per i viaggi
+    public function travels(): BelongsToMany
+    {
+        return $this->belongsToMany(Travel::class, 'travel_user');
+    }
+    public function interestplaces(): HasMany
+    {
+        return $this->hasMany(InterestPlace::class);
+    }
 
+    //  ****************************************************************************************************************************
     /**
      * Get the related chats.
      */
+
+
     public function chats(): BelongsToMany
     {
         return $this->belongsToMany(Chat::class, 'lobby');
