@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('travel_id')->constrained()->onDelete('cascade')->nullable();
+            $table->foreignId('travel_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('name')->nullable(); 
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

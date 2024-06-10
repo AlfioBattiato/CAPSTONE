@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
@@ -64,6 +63,7 @@ class User extends Authenticatable
     {
         static::deleting(function ($user) {
             $user->chats()->detach();
+            $user->messages()->delete();
             // Add other necessary detachments if needed
         });
     }
