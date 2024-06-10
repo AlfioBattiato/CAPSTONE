@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('password');
             $table->string('role')->nullable();
             $table->string('profile_img')->nullable();
-            $table->integer('rating');
-            $table->boolean('active');
+            $table->integer('rating')->nullable();;
+            $table->boolean('active')->nullable();;
             $table->rememberToken();
             $table->timestamps();
         });

@@ -14,6 +14,7 @@ import ProtectedRoutes from './components/ProtectedRoutes';
 import Homepage from './pages/Homepage';
 import Dashboard from './pages/Dashboard';
 import PasswordReset from './pages/PasswordReset';
+import Register from './pages/Register';
 
 
 function App() {
@@ -44,13 +45,14 @@ function App() {
           <Route path="/" element={<Welcome />} />
           {/* <Route path="/detail/:id" element={<Detail />} /> */}
           <Route path="/login/" element={<Login />} />
+          <Route path="/Register/" element={<Register />} />
 
 
           <Route element={<ProtectedRoutes />}>
           <Route path="/password-reset/:token" element={<PasswordReset />} />
           {/* <Route path="/corsiutente/:id" element={<CorsiUtente />} /> */}
           <Route path="/dashboard/:id" element={<Dashboard />} />
-          <Route path="/homepage" element={<Homepage />} />
+          <Route path="/homepage/" element={<Homepage />} />
         </Route>
 
 

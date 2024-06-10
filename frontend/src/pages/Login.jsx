@@ -3,11 +3,16 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { LOGIN } from "../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Alert from "react-bootstrap/Alert";
 
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [spinner, setSpinner] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -21,6 +26,37 @@ function Login() {
     }));
   };
 
+  const [show, setShow] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    setResetEmail(formData.email);
+    setShow(true);
+  };
+
+  const handleResetEmailChange = (ev) => {
+    setResetEmail(ev.target.value);
+  };
+
+  const handleResetPassword = () => {
+    setSpinner(true);
+    axios
+      .post("/api/forgot-password", { email: resetEmail })
+      .then((res) => {
+        setMessage(res.data.status);
+        setError(null);
+        setSpinner(false);
+        handleClose()
+      })
+      .catch((err) => {
+        setMessage(null);
+        setError(err.response.data.message);
+        setSpinner(false);
+        handleClose()
+      });
+  };
+
   const submitLogin = async (ev) => {
     ev.preventDefault();
 
@@ -28,15 +64,15 @@ function Login() {
       await axios.post("/api/login", formData);
       const res = await axios.get("/api/user");
 
-      // salvare i dati dello user nel Redux state
+      // Salvare i dati dello user nel Redux state
       dispatch({
         type: LOGIN,
         payload: res.data,
       });
-      navigate("/homepage");
+      navigate("/homepage/");
     } catch (err) {
-      console.log(err);
       setError(err.response.data.message);
+      setMessage(null);
       setFormData({
         email: "",
         password: "",
@@ -47,12 +83,9 @@ function Login() {
   return (
     <>
       <div className="container my-5 py-5">
-        {error && (
-          <div className="alert alert-danger" role="alert">
-            {error}
-          </div>
-        )}
-        <form onSubmit={(ev) => submitLogin(ev)} noValidate>
+        {message && <Alert variant="success">{message}</Alert>}
+        {error && <Alert variant="danger">{error}</Alert>}
+        <form onSubmit={submitLogin} noValidate>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
               Email address
@@ -62,7 +95,7 @@ function Login() {
               className="form-control"
               id="email"
               name="email"
-              onChange={(ev) => updateInputValue(ev)}
+              onChange={updateInputValue}
               value={formData.email}
             />
           </div>
@@ -76,7 +109,7 @@ function Login() {
               className="form-control"
               id="password"
               name="password"
-              onChange={(ev) => updateInputValue(ev)}
+              onChange={updateInputValue}
               value={formData.password}
             />
           </div>
@@ -86,12 +119,42 @@ function Login() {
           </button>
         </form>
         <div className="mt-5 pt-5">
-          <Link to={`/Register/`} className=" fw-bold txt-primary ">
-            Non sei registrato?
+          <p className="fw-bold text-primary" onClick={handleShow}>
+            Password dimenticata?
+          </p>
+          <hr />
+          <Link to={`/Register/`} className="fw-bold text-success">
+            Crea nuovo account?
           </Link>
+
+          <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Reset password</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <form>
+                <label htmlFor="reset-email" className="form-label">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="reset-email"
+                  name="reset-email"
+                  onChange={handleResetEmailChange}
+                  value={resetEmail}
+                />
+                <Button variant="primary" onClick={handleResetPassword} className="mt-2" disabled={spinner}>
+                  {spinner ? "Loading..." : "Reset Password"}
+                </Button>
+              </form>
+            </Modal.Body>
+            <Modal.Footer></Modal.Footer>
+          </Modal>
         </div>
       </div>
     </>
   );
 }
+
 export default Login;

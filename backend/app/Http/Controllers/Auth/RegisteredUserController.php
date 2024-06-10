@@ -28,7 +28,8 @@ class RegisteredUserController extends Controller
             'profile_img' => ['nullable', 'image', 'max:1024'],
         ]);
 
-        $file_path = $request["profile_img"] ? Storage::put('/profiles', $request['profile_img']) : 'profiles/Missing_photo.svg';
+        // $file_path = $request["profile_img"] ? Storage::put('/profiles', $request['profile_img']) : 'profiles/Missing_photo.svg';
+        $file_path = $request->file('profile_img') ? $request->file('profile_img')->store('profiles', 'public') : '/profiles/Missing_photo.svg';
 
         $data = $request->all();
         $user = new User();
@@ -38,16 +39,11 @@ class RegisteredUserController extends Controller
         $user->role = 'guest';
         $user->active = true;
         $user->rating = 0;
-        $user->profile_img = asset('storage/' . $file_path);
+        $user->profile_img = 'http://localhost:8000/storage/' . $file_path;
         $user->save();
 
 
-        $user = User::create([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->string('password')),
-        ]);
-
+      
         event(new Registered($user));
 
         Auth::login($user);
