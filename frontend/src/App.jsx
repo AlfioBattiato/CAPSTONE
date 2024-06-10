@@ -13,6 +13,7 @@ import { LOGIN } from './redux/actions';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import Homepage from './pages/Homepage';
 import Dashboard from './pages/Dashboard';
+import PasswordReset from './pages/PasswordReset';
 
 
 function App() {
@@ -46,7 +47,7 @@ function App() {
 
 
           <Route element={<ProtectedRoutes />}>
-          {/* <Route path="/password-reset/:token" element={<PasswordReset />} /> */}
+          <Route path="/password-reset/:token" element={<PasswordReset />} />
           {/* <Route path="/corsiutente/:id" element={<CorsiUtente />} /> */}
           <Route path="/dashboard/:id" element={<Dashboard />} />
           <Route path="/homepage" element={<Homepage />} />
