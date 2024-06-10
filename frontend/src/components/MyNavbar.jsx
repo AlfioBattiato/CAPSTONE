@@ -4,15 +4,25 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import { Link,  } from 'react-router-dom';
+import { Link, useNavigate,  } from 'react-router-dom';
 import { BiSolidLogIn } from "react-icons/bi";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from "axios";
+import { LOGOUT } from '../redux/actions';
 // import { CgMenuGridR } from "react-icons/cg";
 
 
 function MyNavbar() {
   // const location = useLocation();
   const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const logout = () => {
+    axios.post("api/logout").then(() => {
+      dispatch({ type: LOGOUT });
+      navigate("/");
+    });
+  };
   return (
     <>
       {[false].map((expand) => (
@@ -41,8 +51,12 @@ function MyNavbar() {
                       <Nav className="justify-content-end flex-grow-1 pe-3">
 
                         <>
+                          <Link  to={`/dashboard/${user.id}`}>Profile</Link>
                           <Link to={'/'}>Welcome</Link>
-                          <Link to={'/Home'}>Home</Link>
+                          <Link to={'/Homepage'}>Home</Link>
+                          <Link onClick={logout} className="dropdown-item border-0 ps-1">
+                          Logout
+                        </Link>
                           {/* <Nav.Link href="#action2">Link</Nav.Link> */}
 
                           {/* <Form className="d-flex">

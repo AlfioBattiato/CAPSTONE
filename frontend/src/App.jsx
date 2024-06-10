@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { LOGIN } from './redux/actions';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import Homepage from './pages/Homepage';
+import Dashboard from './pages/Dashboard';
 
 
 function App() {
@@ -47,8 +48,8 @@ function App() {
           <Route element={<ProtectedRoutes />}>
           {/* <Route path="/password-reset/:token" element={<PasswordReset />} /> */}
           {/* <Route path="/corsiutente/:id" element={<CorsiUtente />} /> */}
-          {/* <Route path="/dashboard/:id" element={<Dashboard />} /> */}
-          <Route path="/home" element={<Homepage />} />
+          <Route path="/dashboard/:id" element={<Dashboard />} />
+          <Route path="/homepage" element={<Homepage />} />
         </Route>
 
 

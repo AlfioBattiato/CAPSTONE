@@ -28,7 +28,7 @@ function Login() {
         // gli indirizzi relativi, con il proxy attivo fanno la richiesta a http://localhost:8000/login mascherandolo come indirizzo nello stesso host di react (che nel nostro caso è http://localhost:3000/login)
         axios
             .get('/sanctum/csrf-cookie')
-            .then(() => axios.post('/login', formData))
+            .then(() => axios.post('api/login', formData))
             .then(() => axios.get('/api/user'))
             .then((res) => {
 
@@ -37,7 +37,7 @@ function Login() {
                     type: LOGIN,
                     payload: res.data,
                 });
-                navigate('/')
+                navigate('/homepage')
             })
             .catch((err) => {
                 console.log(err)
