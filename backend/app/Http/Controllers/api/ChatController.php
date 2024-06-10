@@ -95,15 +95,3 @@ class ChatController extends Controller
     }
 
 }
-
-/**
- * DA INSERIRE IN USERCONTROLLER
- * 
- * public function destroy(User $user)
- * {
- *    $user->chats()->detach();
- *    $user->delete();
- * 
- *    return response()->json(null, 204);
- * }
- */

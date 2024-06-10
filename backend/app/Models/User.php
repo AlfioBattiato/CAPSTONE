@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -24,6 +21,10 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'role',
+        'profile_img',
+        'rating',
+        'active',
     ];
 
     /**
@@ -37,35 +38,33 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-    public function interestplace(): HasMany
-    {
-        return $this->hasMany(InterestPlace::class);
-    }
-    public function travels(): BelongsToMany
-    {
-        return $this->belongsToMany(Travel::class, 'travel_user');
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
+// inserire le relazioni molti a molti e uno a molti per i viaggi
+
+    /**
+     * Get the related chats.
+     */
     public function chats(): BelongsToMany
     {
         return $this->belongsToMany(Chat::class, 'lobby');
     }
 
+    /**
+     * Handle the User "deleting" event.
+     */
     protected static function booted()
     {
         static::deleting(function ($user) {
             $user->chats()->detach();
+            // Add other necessary detachments if needed
         });
     }
 }
