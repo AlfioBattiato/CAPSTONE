@@ -10,7 +10,7 @@ const Register = () => {
 
     const [profileImage, setProfileImage] = useState(null);
     const [formData, setFormData] = useState({
-        name: '',
+        username: '',
         email: '',
         password: '',
         password_confirmation: '',
@@ -37,7 +37,7 @@ const Register = () => {
             .get('/sanctum/csrf-cookie')
             .then(() => {
                 const body = new FormData();
-                body.append('name', formData.name);
+                body.append('username', formData.username);
                 body.append('email', formData.email);
                 body.append('password', formData.password);
                 body.append(
@@ -48,7 +48,7 @@ const Register = () => {
                     body.append('profile_img', profileImage)
                 }
                  
-                return axios.post('/register', body);
+                return axios.post('/api/register', body);
             })
             .then(() => axios.get('/api/user'))
             .then((res) => {
@@ -66,18 +66,19 @@ const Register = () => {
 
     return (
         // <form method="POST" action="....." novalidate enctype='multipart/form-data'> // se fatto in Blade
-        <form onSubmit={(ev) => submitLogin(ev)} noValidate>
+        <div className="container">
+            <form onSubmit={(ev) => submitLogin(ev)} noValidate>
             <div className="mb-3">
-                <label htmlFor="name" className="form-label">
-                    Name
+                <label htmlFor="username" className="form-label">
+                    Username
                 </label>
                 <input
                     type="text"
                     className="form-control"
-                    id="name"
-                    name="name"
+                    id="username"
+                    name="username"
                     onChange={(ev) => updateInputValue(ev)}
-                    value={formData.name}
+                    value={formData.username}
                 />
             </div>
             <div className="mb-3">
@@ -136,6 +137,7 @@ const Register = () => {
                 Register
             </button>
         </form>
+        </div>
     );
 };
 

@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'active' => true,
             'rating' => 0,
-            'profile_img' => '/storage/profiles/Missing_photo.svg',
+            'profile_img' => 'http://localhost:8000/storage/profiles/Missing_photo.svg',
         ]);
         User::factory()->create([
             'username' => 'guest',
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'guest',
             'active' => true,
             'rating' => 0,
-            'profile_img' => '/storage/profiles/Missing_photo.svg',
+            'profile_img' => 'http://localhost:8000/storage/profiles/Missing_photo.svg',
 
         ]);
 

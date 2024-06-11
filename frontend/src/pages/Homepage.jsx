@@ -1,8 +1,8 @@
 
 function Homepage() {
     return (
-        <div>
-           sono nella home 
+        <div className="container-fluid">
+           <h1>sono nella home </h1>
         </div>
     );
 }
