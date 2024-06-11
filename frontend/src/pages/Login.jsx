@@ -145,7 +145,7 @@ function Login() {
                   value={resetEmail}
                 />
                 <Button variant="primary" onClick={handleResetPassword} className="mt-2" disabled={spinner}>
-                  {spinner ? "Loading..." : "Reset Password"}
+                  {spinner ? "Please wait..." : "Reset Password"}
                 </Button>
               </form>
             </Modal.Body>
