@@ -16,27 +16,8 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'username' => 'admin',
-            'email' => 'a@a.a',
-            'role' => 'admin',
-            'active' => true,
-            'rating' => 0,
-            'profile_img' => 'http://localhost:8000/storage/profiles/Missing_photo.svg',
-        ]);
-        User::factory()->create([
-            'username' => 'guest',
-            'email' => 'g@g.g',
-            'role' => 'guest',
-            'active' => true,
-            'rating' => 0,
-            'profile_img' => 'http://localhost:8000/storage/profiles/Missing_photo.svg',
-
-        ]);
-
-
-
         $this->call([
+            UserSeeder::class,
             InterestPlaceSeeder::class,
             TravelSeeder::class,
             MetaSeeder::class,

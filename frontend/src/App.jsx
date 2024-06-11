@@ -1,21 +1,19 @@
-
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import MyNavbar from "./components/MyNavbar";
-import Footer from './components/Footer';
-import Welcome from './pages/Welcome';
-import { useDispatch, } from 'react-redux';
-import Login from './pages/Login';
+import Footer from "./components/Footer";
+import Welcome from "./pages/Welcome";
+import { useDispatch } from "react-redux";
+import Login from "./pages/Login";
 import axios from "axios";
-import { useEffect, useState } from 'react';
-import { LOGIN } from './redux/actions';
-import ProtectedRoutes from './components/ProtectedRoutes';
-import Homepage from './pages/Homepage';
-import Dashboard from './pages/Dashboard';
-import PasswordReset from './pages/PasswordReset';
-import Register from './pages/Register';
-
+import { useEffect, useState } from "react";
+import { LOGIN } from "./redux/actions";
+import ProtectedRoutes from "./components/ProtectedRoutes";
+import Homepage from "./pages/Homepage";
+import Dashboard from "./pages/Dashboard";
+import PasswordReset from "./pages/PasswordReset";
+import Register from "./pages/Register";
 
 function App() {
   // const user = useSelector((state) => state.user);
@@ -47,15 +45,12 @@ function App() {
           <Route path="/login/" element={<Login />} />
           <Route path="/Register/" element={<Register />} />
 
-
           <Route element={<ProtectedRoutes />}>
-          <Route path="/password-reset/:token" element={<PasswordReset />} />
-          {/* <Route path="/corsiutente/:id" element={<CorsiUtente />} /> */}
-          <Route path="/dashboard/:id" element={<Dashboard />} />
-          <Route path="/homepage/" element={<Homepage />} />
-        </Route>
-
-
+            <Route path="/password-reset/:token" element={<PasswordReset />} />
+            {/* <Route path="/corsiutente/:id" element={<CorsiUtente />} /> */}
+            <Route path="/dashboard/:id" element={<Dashboard />} />
+            <Route path="/homepage/" element={<Homepage />} />
+          </Route>
 
           {/* <Route path="/Register/" element={<Register />} />
         <Route path="/backoffice/" element={<Backoffice />} /> */}
@@ -87,7 +82,7 @@ function App() {
         <Footer></Footer>
       </BrowserRouter>
     )
-  )
+  );
 }
 
-export default App
+export default App;
