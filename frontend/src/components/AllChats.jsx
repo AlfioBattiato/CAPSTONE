@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { ListGroup } from "react-bootstrap";
-// import { setChats, setSelectedChat } from "../redux/actions";
+import { setChats, setSelectedChat } from "../redux/actions";
 
 const AllChats = () => {
   const dispatch = useDispatch();

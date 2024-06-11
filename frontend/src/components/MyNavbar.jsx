@@ -14,7 +14,7 @@ import { RiLogoutBoxFill } from "react-icons/ri";
 import { FaMessage } from "react-icons/fa6";
 
 function MyNavbar() {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
