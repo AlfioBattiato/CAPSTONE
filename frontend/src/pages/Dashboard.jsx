@@ -43,7 +43,7 @@ function Dashboard() {
               </p>
             </div>
             <div className="col-6">
-              <p className="fw-bold text-primary">Change</p>
+              <p className="fw-bold text-primary btn">Change</p>
             </div>
             <hr />
             <div className="col-6">
@@ -52,7 +52,7 @@ function Dashboard() {
               </p>
             </div>
             <div className="col-6">
-              <p className="fw-bold text-primary">Change</p>
+              <p className="fw-bold text-primary btn">Change</p>
             </div>
             <hr />
             <div className="col-6">
@@ -61,7 +61,7 @@ function Dashboard() {
               </p>
             </div>
             <div className="col-6">
-              <p className="fw-bold text-primary" onClick={handleResetPassword}>
+              <p className="fw-bold text-primary btn" onClick={handleResetPassword}>
                 Change
               </p>
             </div>
