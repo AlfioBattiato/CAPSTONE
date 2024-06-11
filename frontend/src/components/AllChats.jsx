@@ -23,6 +23,7 @@ const AllChats = () => {
   }, [dispatch]);
 
   const handleChatClick = (chat) => {
+    console.log("Chat clicked:", chat);
     dispatch(setSelectedChat(chat));
   };
 
@@ -30,9 +31,16 @@ const AllChats = () => {
     <ListGroup variant="flush">
       {Array.isArray(chats) && chats.length > 0 ? (
         chats.map((chat) => (
-          <ListGroup.Item key={chat.id} onClick={() => handleChatClick(chat)}>
+          <ListGroup.Item key={chat.id} onClick={() => handleChatClick(chat)} style={{ cursor: "pointer" }}>
             {chat.name ||
-              (chat.users ? `Chat with ${chat.users.map((user) => user.username).join(", ")}` : "Chat with no users")}
+              (chat.users && chat.users.length === 1
+                ? chat.users[0].username
+                : chat.users
+                ? chat.users
+                    .filter((user) => user.id !== chat.pivot.user_id)
+                    .map((user) => user.username)
+                    .join(", ")
+                : "Chat with no users")}
           </ListGroup.Item>
         ))
       ) : (

@@ -8,11 +8,10 @@ const Chat = ({ chat }) => {
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
-    if (chat && chat.id) {
-      axios.get(`/api/chats/${chat.id}/messages`).then((response) => {
-        setMessages(response.data);
-      });
-    }
+    axios.get(`/api/chats/${chat.id}/messages`).then((response) => {
+      console.log("Loaded messages:", response.data);
+      setMessages(response.data);
+    });
   }, [chat]);
 
   const handleSendMessage = async (e) => {
@@ -25,6 +24,7 @@ const Chat = ({ chat }) => {
         chat_id: chat.id,
         message: newMessage,
       });
+      console.log("Sent message:", response.data);
       setMessages([...messages, response.data]);
       setNewMessage("");
     } catch (error) {
@@ -32,13 +32,20 @@ const Chat = ({ chat }) => {
     }
   };
 
-  if (!chat) {
-    return <div>Please select a chat</div>;
-  }
-
   return (
     <Card className="h-100">
-      <Card.Header>{chat.name || `Chat with ${chat.users.map((user) => user.username).join(", ")}`}</Card.Header>
+      <Card.Header>
+        {" "}
+        {chat.name ||
+          (chat.users && chat.users.length === 1
+            ? chat.users[0].username
+            : chat.users
+            ? chat.users
+                .filter((user) => user.id !== chat.pivot.user_id)
+                .map((user) => user.username)
+                .join(", ")
+            : "Chat with no users")}
+      </Card.Header>
       <ListGroup variant="flush" className="flex-grow-1 overflow-auto">
         {messages.map((message) => (
           <Message key={message.id} message={message} />

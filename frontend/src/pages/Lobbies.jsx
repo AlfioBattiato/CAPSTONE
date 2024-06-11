@@ -5,7 +5,7 @@ import AllChats from "../components/AllChats";
 import Chat from "../components/Chat";
 
 const Lobbies = () => {
-  const selectedChat = useSelector((state) => state.selectedChat);
+  const selectedChat = useSelector((state) => state.chats.selectedChat);
 
   return (
     <Row className="h-100">

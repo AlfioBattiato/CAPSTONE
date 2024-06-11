@@ -42,6 +42,8 @@ class MessageController extends Controller
     $message->send_at = now();  // Sets send_at with the current time
     $message->save();  // Saves the new message to the database
 
+    $message->load('user');
+
     return response()->json($message, 201);  // Returns the JSON response with the created message and the 201 (Created) status code
 }
 
@@ -88,7 +90,7 @@ class MessageController extends Controller
 
     public function getMessagesByChat(Chat $chat)
     {
-        $messages = $chat->messages;
+        $messages = $chat->messages()->with('user')->get();
         return response()->json($messages);
     }
 }
