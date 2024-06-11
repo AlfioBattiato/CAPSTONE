@@ -12,13 +12,11 @@ const chatReducer = (state = initialState, action) => {
         ...state,
         chats: action.payload,
       };
-
     case SET_SELECTED_CHAT:
       return {
         ...state,
         selectedChat: action.payload,
       };
-
     default:
       return state;
   }

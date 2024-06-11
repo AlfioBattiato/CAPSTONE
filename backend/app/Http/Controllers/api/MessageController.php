@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Message;
+use App\Models\Chat;
 
 class MessageController extends Controller
 {
@@ -83,5 +84,11 @@ class MessageController extends Controller
     {
         $message->delete();
         return response()->json(null, 204); //Returns the JSON response with the created message and the 204 (No Content) status code
+    }
+
+    public function getMessagesByChat(Chat $chat)
+    {
+        $messages = $chat->messages;  // Assuming you have a relationship defined in Chat model
+        return response()->json($messages);
     }
 }

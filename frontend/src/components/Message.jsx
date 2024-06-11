@@ -1,14 +1,18 @@
 import React from "react";
-import { Card } from "react-bootstrap";
+import { ListGroup } from "react-bootstrap";
 
 const Message = ({ message }) => {
   return (
-    <Card className="mb-2">
-      <Card.Body>
-        <Card.Title>{message.user.username}</Card.Title>
-        <Card.Text>{message.message}</Card.Text>
-      </Card.Body>
-    </Card>
+    <ListGroup.Item>
+      <strong>{message.user.username}:</strong> {message.message}
+      {message.file && (
+        <div>
+          <a href={`data:${message.file_type};base64,${message.file}`} download>
+            Download File
+          </a>
+        </div>
+      )}
+    </ListGroup.Item>
   );
 };
 
