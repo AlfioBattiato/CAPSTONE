@@ -41,18 +41,6 @@ class UserSeeder extends Seeder
             'profile_img' => 'http://localhost:8000/storage/profiles/Missing_photo.svg',
         ]);
 
-        $chat1 = Chat::create();
-        $chat1->users()->attach([$user1->id, $user2->id]);
-
-        $chat2 = Chat::create();
-        $chat2->users()->attach([$user1->id, $user3->id]);
-
-        $chat3 = Chat::create();
-        $chat3->users()->attach([$user2->id, $user3->id]);
-
-
-        $groupChat = Chat::create(['name' => 'Group Chat']);
-        $groupChat->users()->attach([$user1->id, $user2->id, $user3->id]);
     }
 }
 

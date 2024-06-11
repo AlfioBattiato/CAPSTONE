@@ -13,7 +13,7 @@ import chatReducer from "../reducers/chatReducers";
 
 const unifiedReducer = combineReducers({
   auth: mainReducer,
-  chat: chatReducer,
+  chats: chatReducer,
 });
 
 const store = configureStore({

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Chat;
 
 class User extends Authenticatable
 {
@@ -57,12 +58,15 @@ class User extends Authenticatable
         return $this->hasMany(InterestPlace::class);
     }
 
-    //  ****************************************************************************************************************************
+
+
+    //  ********************************************************CHATS********************************************************************
+
+
+
     /**
      * Get the related chats.
      */
-
-
     public function chats(): BelongsToMany
     {
         return $this->belongsToMany(Chat::class, 'lobby');

@@ -8,9 +8,11 @@ const Chat = ({ chat }) => {
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
-    axios.get(`/api/chats/${chat.id}/messages`).then((response) => {
-      setMessages(response.data);
-    });
+    if (chat && chat.id) {
+      axios.get(`/api/chats/${chat.id}/messages`).then((response) => {
+        setMessages(response.data);
+      });
+    }
   }, [chat]);
 
   const handleSendMessage = async (e) => {
@@ -29,6 +31,10 @@ const Chat = ({ chat }) => {
       console.error("Failed to send message", error);
     }
   };
+
+  if (!chat) {
+    return <div>Please select a chat</div>;
+  }
 
   return (
     <Card className="h-100">

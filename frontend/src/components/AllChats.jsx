@@ -1,26 +1,43 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import React, { useEffect } from "react";
 import { ListGroup } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 import { setChats, setSelectedChat } from "../redux/actions";
 
 const AllChats = () => {
+  const chats = useSelector((state) => state.chats);
   const dispatch = useDispatch();
-  const chats = useSelector((state) => state.chat.chats);
+
+  console.log("Redux state chats:", chats);
 
   useEffect(() => {
-    axios.get("/api/chats").then((response) => {
-      dispatch(setChats(response.data));
-    });
+    axios
+      .get("/api/chats")
+      .then((response) => {
+        console.log("Fetched chats:", response.data);
+        dispatch(setChats(response.data));
+      })
+      .catch((error) => {
+        console.error("Failed to fetch chats", error);
+      });
   }, [dispatch]);
+
+  const handleChatClick = (chat) => {
+    dispatch(setSelectedChat(chat));
+  };
 
   return (
     <ListGroup variant="flush">
-      {chats.map((chat) => (
-        <ListGroup.Item key={chat.id} action onClick={() => dispatch(setSelectedChat(chat))}>
-          {chat.name || `Chat with ${chat.users.map((user) => user.username).join(", ")}`}
-        </ListGroup.Item>
-      ))}
+      {Array.isArray(chats) && chats.length > 0 ? (
+        chats.map((chat) => (
+          <ListGroup.Item key={chat.id} onClick={() => handleChatClick(chat)}>
+            {chat.name ||
+              (chat.users ? `Chat with ${chat.users.map((user) => user.username).join(", ")}` : "Chat with no users")}
+          </ListGroup.Item>
+        ))
+      ) : (
+        <ListGroup.Item>No chats available</ListGroup.Item>
+      )}
     </ListGroup>
   );
 };

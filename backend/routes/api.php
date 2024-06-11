@@ -70,6 +70,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('chats/{chat}/add-user', [ChatController::class, 'addUserToChat']);
     Route::post('chats/{chat}/remove-user', [ChatController::class, 'removeUserFromChat']);
 
+    // Route to get messages for a specific chat
+    Route::get('chats/{chat}/messages', [MessageController::class, 'getMessagesByChat']);
+
     // Routes for the MessageController
     Route::get('messages', [MessageController::class, 'index']);
     Route::get('messages/{message}', [MessageController::class, 'show']);
