@@ -2,9 +2,12 @@ import React from "react";
 import { ListGroup } from "react-bootstrap";
 
 const Message = ({ message }) => {
+  console.log(message);
+  const username = message.user ? message.user.username : "Unknown User";
+
   return (
     <ListGroup.Item>
-      <strong>{message.user.username}:</strong> {message.message}
+      <strong>{username}</strong>: {message.message}
     </ListGroup.Item>
   );
 };
