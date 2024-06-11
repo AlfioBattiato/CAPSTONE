@@ -88,7 +88,7 @@ class MessageController extends Controller
 
     public function getMessagesByChat(Chat $chat)
     {
-        $messages = $chat->messages;  // Assuming you have a relationship defined in Chat model
+        $messages = $chat->messages;
         return response()->json($messages);
     }
 }

@@ -21,8 +21,9 @@ class DatabaseSeeder extends Seeder
             InterestPlaceSeeder::class,
             TravelSeeder::class,
             MetaSeeder::class,
-
+            ChatSeeder::class,
         ]);
+        
         $travels = Travel::all();
         $users = User::all();
 

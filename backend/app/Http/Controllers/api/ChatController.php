@@ -2,35 +2,46 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\UpdateChatRequest;
-use App\Http\Requests\StoreChatRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Chat;
 use App\Models\User;
+
 class ChatController extends Controller
 {
     public function index()
     {
-        $chats = Chat::all();
+        $user = Auth::user();
+        $chats = $user->chats()->with('users')->get();
         return response()->json($chats);
     }
 
     public function show(Chat $chat)
     {
-        return response()->json($chat);
+        return response()->json($chat->load('users'));
     }
 
-    public function store(StoreChatRequest $request)
+    public function store(Request $request)
     {
-        $chat = Chat::create($request->validated());
+        $request->validate([
+            'name' => 'nullable|string|max:255',
+            'active' => 'boolean',
+        ]);
+
+        $chat = Chat::create($request->all());
 
         return response()->json($chat, 201);
     }
 
-    public function update(UpdateChatRequest $request, Chat $chat)
+    public function update(Request $request, Chat $chat)
     {
-        $chat->update($request->validated());
+        $request->validate([
+            'name' => 'nullable|string|max:255',
+            'active' => 'boolean',
+        ]);
+
+        $chat->update($request->all());
 
         return response()->json($chat);
     }

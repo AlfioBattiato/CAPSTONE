@@ -5,13 +5,16 @@ import axios from "axios";
 import { setChats, setSelectedChat } from "../redux/actions";
 
 const AllChats = () => {
-  const chats = useSelector((state) => state.chat.user);
+  const chats = useSelector((state) => state.chats);
   const dispatch = useDispatch();
+
+  console.log("Redux state chats:", chats);
 
   useEffect(() => {
     axios
       .get("/api/chats")
       .then((response) => {
+        console.log("Fetched chats:", response.data);
         dispatch(setChats(response.data));
       })
       .catch((error) => {
@@ -28,7 +31,8 @@ const AllChats = () => {
       {Array.isArray(chats) && chats.length > 0 ? (
         chats.map((chat) => (
           <ListGroup.Item key={chat.id} onClick={() => handleChatClick(chat)}>
-            {chat.name || `Chat with ${chat.users.map((user) => user.username).join(", ")}`}
+            {chat.name ||
+              (chat.users ? `Chat with ${chat.users.map((user) => user.username).join(", ")}` : "Chat with no users")}
           </ListGroup.Item>
         ))
       ) : (
