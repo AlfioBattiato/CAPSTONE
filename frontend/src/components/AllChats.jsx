@@ -5,7 +5,7 @@ import axios from "axios";
 import { setChats, setSelectedChat } from "../redux/actions";
 
 const AllChats = () => {
-  const chats = useSelector((state) => state.chats);
+  const chats = useSelector((state) => state.chats.chats);
   const dispatch = useDispatch();
 
   console.log("Redux state chats:", chats);
