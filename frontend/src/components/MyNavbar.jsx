@@ -11,6 +11,7 @@ import { GiCartwheel } from "react-icons/gi";
 import { MdFirstPage } from "react-icons/md";
 import { FaHome } from "react-icons/fa";
 import { RiLogoutBoxFill } from "react-icons/ri";
+import { FaMessage } from "react-icons/fa6";
 
 function MyNavbar() {
   const user = useSelector((state) => state.user);
@@ -41,16 +42,15 @@ function MyNavbar() {
               <>
                 <div className="d-flex align-items-center">
                   <div className="position-relative">
-                    <img
-                      src={user.profile_img}
-                      alt="Profile"
-                      className="img_profile"
-                    />
+                    <img src={user.profile_img} alt="Profile" className="img_profile" />
                     <span className="position-absolute translate-middle badge border online rounded-circle bg-success">
                       <span className="visually-hidden">unread messages</span>
                     </span>
                   </div>
-                  <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} className="border-0 shadow-0 ms-3"></Navbar.Toggle>
+                  <Navbar.Toggle
+                    aria-controls={`offcanvasNavbar-expand-${expand}`}
+                    className="border-0 shadow-0 ms-3"
+                  ></Navbar.Toggle>
                   <Navbar.Offcanvas
                     id={`offcanvasNavbar-expand-${expand}`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
@@ -63,11 +63,26 @@ function MyNavbar() {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                       <Nav className="justify-content-end flex-grow-1 pe-3">
-                        <Link to={`/dashboard/${user.id}`} className="nav-link fs-5"><GiCartwheel className="me-2" />Profile</Link>
-                        <Link to="/Homepage" className="nav-link fs-5"> <FaHome className="me-2" /> Home</Link>
-                        <Link to="/" className="nav-link fs-5"><MdFirstPage className="me-2" />Welcome</Link>
+                        <Link to={`/dashboard/${user.id}`} className="nav-link fs-5">
+                          <GiCartwheel className="me-2" />
+                          Profile
+                        </Link>
+                        <Link to="/Homepage" className="nav-link fs-5">
+                          {" "}
+                          <FaHome className="me-2" /> Home
+                        </Link>
+                        <Link to="/Lobbies" className="nav-link fs-5">
+                          {" "}
+                          <FaMessage className="me-2" /> Chats
+                        </Link>
+                        <Link to="/" className="nav-link fs-5">
+                          <MdFirstPage className="me-2" />
+                          Welcome
+                        </Link>
                         <hr />
-                        <Link onClick={logout} className="nav-link fs-5"><RiLogoutBoxFill className="me-2" />Logout
+                        <Link onClick={logout} className="nav-link fs-5">
+                          <RiLogoutBoxFill className="me-2" />
+                          Logout
                         </Link>
                       </Nav>
                     </Offcanvas.Body>
