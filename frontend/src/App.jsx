@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { LOGIN } from "./redux/actions";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import Homepage from "./pages/Homepage";
+import AllTravels from "./pages/AllTravels";
 import Dashboard from "./pages/Dashboard";
 import PasswordReset from "./pages/PasswordReset";
 import Register from "./pages/Register";
@@ -45,13 +46,14 @@ function App() {
           {/* <Route path="/detail/:id" element={<Detail />} /> */}
           <Route path="/login/" element={<Login />} />
           <Route path="/Register/" element={<Register />} />
+          <Route path="/AllTravels/" element={<AllTravels />} />
 
           <Route element={<ProtectedRoutes />}>
             <Route path="/password-reset/:token" element={<PasswordReset />} />
-            {/* <Route path="/corsiutente/:id" element={<CorsiUtente />} /> */}
             <Route path="/dashboard/:id" element={<Dashboard />} />
             <Route path="/homepage/" element={<Homepage />} />
             <Route path="/lobbies" element={<Lobbies />} />
+            {/* <Route path="/corsiutente/:id" element={<CorsiUtente />} /> */}
           </Route>
 
           {/* <Route path="/Register/" element={<Register />} />

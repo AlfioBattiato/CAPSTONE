@@ -12,6 +12,7 @@ import { MdFirstPage } from "react-icons/md";
 import { FaHome } from "react-icons/fa";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { TiMessages } from "react-icons/ti";
+import { MdOutlineTravelExplore } from "react-icons/md";
 function MyNavbar() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ function MyNavbar() {
   return (
     <>
       {[false].map((expand) => (
-        <Navbar key={expand} expand={expand} className="bg-body-tertiary mb-3">
+        <Navbar key={expand} expand={expand} className="bg-body-tertiary ">
           <Container fluid>
             <Link to="/" className="navbar-brand">
               TrailBlazers
@@ -54,7 +55,7 @@ function MyNavbar() {
                     id={`offcanvasNavbar-expand-${expand}`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
                     placement="end"
-                    className='bg-black text-white'
+                    className='bg-dark text-white'
                   >
                     <Offcanvas.Header closeButton>
                       <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`} className="fs-3">
@@ -74,6 +75,10 @@ function MyNavbar() {
                         <Link to="/Lobbies" className="nav-link fs-6">
                           {" "}
                           <TiMessages  className="me-2" /> Chats
+                        </Link>
+                        <Link to="/AllTravels" className="nav-link fs-6">
+                          {" "}
+                          <MdOutlineTravelExplore   className="me-2" /> Users Travel
                         </Link>
                         <Link to="/" className="nav-link fs-6">
                           <MdFirstPage className="me-2" />

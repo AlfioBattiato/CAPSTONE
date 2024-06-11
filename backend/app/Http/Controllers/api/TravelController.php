@@ -14,7 +14,8 @@ class TravelController extends Controller
      */
     public function index()
     {
-        //
+        $travels = Travel::with('users','metas')->get(); 
+        return $travels;
     }
 
     /**

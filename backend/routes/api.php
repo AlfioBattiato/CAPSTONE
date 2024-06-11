@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\TravelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
@@ -15,6 +16,22 @@ use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 // Authentication routes provided by Breeze
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
 Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
+
+//travel
+Route::name('api.v1.') 
+    ->prefix('v1')    
+    ->group(function () {
+        Route::get('/travels', [TravelController::class, 'index'])->name('travels.index');
+        // Route::get('/courses/{id}', [CourseController::class, 'show'])->name('courses.show');
+
+        // Route::get('/users/{id}', [RegisteredUserController::class, 'show'])->name('users.show')->middleware(['auth:sanctum']);
+      
+  
+    });
+
+
+
+// Route::get('/travel', [TravelController::class, 'index'])->name('travel.index');
 
 Route::group(['middleware' => ['guest']], function () {
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');

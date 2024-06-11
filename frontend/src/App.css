@@ -20,3 +20,6 @@
     left: 30px;
     padding: 0.3rem!important;
 }
+.vh-100{
+    height:max-content;
+}
