@@ -47,13 +47,13 @@ function Login() {
         setMessage(res.data.status);
         setError(null);
         setSpinner(false);
-        handleClose()
+        handleClose();
       })
       .catch((err) => {
         setMessage(null);
         setError(err.response.data.message);
         setSpinner(false);
-        handleClose()
+        handleClose();
       });
   };
 

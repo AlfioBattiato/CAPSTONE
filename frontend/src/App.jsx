@@ -14,6 +14,7 @@ import Homepage from "./pages/Homepage";
 import Dashboard from "./pages/Dashboard";
 import PasswordReset from "./pages/PasswordReset";
 import Register from "./pages/Register";
+import Lobbies from "./pages/Lobbies";
 
 function App() {
   // const user = useSelector((state) => state.user);
@@ -50,6 +51,7 @@ function App() {
             {/* <Route path="/corsiutente/:id" element={<CorsiUtente />} /> */}
             <Route path="/dashboard/:id" element={<Dashboard />} />
             <Route path="/homepage/" element={<Homepage />} />
+            <Route path="/lobbies" element={<Lobbies />} />
           </Route>
 
           {/* <Route path="/Register/" element={<Register />} />
