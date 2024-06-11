@@ -13,12 +13,14 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 
 // Authentication routes provided by Breeze
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
+
 Route::group(['middleware' => ['guest']], function () {
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
-    Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
-    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
-});
+    
+    });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

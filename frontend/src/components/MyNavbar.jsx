@@ -11,8 +11,7 @@ import { GiCartwheel } from "react-icons/gi";
 import { MdFirstPage } from "react-icons/md";
 import { FaHome } from "react-icons/fa";
 import { RiLogoutBoxFill } from "react-icons/ri";
-import { FaMessage } from "react-icons/fa6";
-
+import { TiMessages } from "react-icons/ti";
 function MyNavbar() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -35,7 +34,7 @@ function MyNavbar() {
             </Link>
 
             {!user ? (
-              <Link to="/login" className="fs-5">
+              <Link to="/login" className="fs-6">
                 <BiSolidLogIn /> Login
               </Link>
             ) : (
@@ -55,6 +54,7 @@ function MyNavbar() {
                     id={`offcanvasNavbar-expand-${expand}`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
                     placement="end"
+                    className='bg-black text-white'
                   >
                     <Offcanvas.Header closeButton>
                       <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`} className="fs-3">
@@ -63,24 +63,24 @@ function MyNavbar() {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                       <Nav className="justify-content-end flex-grow-1 pe-3">
-                        <Link to={`/dashboard/${user.id}`} className="nav-link fs-5">
+                        <Link to={`/dashboard/${user.id}`} className="nav-link fs-6">
                           <GiCartwheel className="me-2" />
                           Profile
                         </Link>
-                        <Link to="/Homepage" className="nav-link fs-5">
+                        <Link to="/Homepage" className="nav-link fs-6">
                           {" "}
                           <FaHome className="me-2" /> Home
                         </Link>
-                        <Link to="/Lobbies" className="nav-link fs-5">
+                        <Link to="/Lobbies" className="nav-link fs-6">
                           {" "}
-                          <FaMessage className="me-2" /> Chats
+                          <TiMessages  className="me-2" /> Chats
                         </Link>
-                        <Link to="/" className="nav-link fs-5">
+                        <Link to="/" className="nav-link fs-6">
                           <MdFirstPage className="me-2" />
                           Welcome
                         </Link>
                         <hr />
-                        <Link onClick={logout} className="nav-link fs-5">
+                        <Link onClick={logout} className="nav-link fs-6">
                           <RiLogoutBoxFill className="me-2" />
                           Logout
                         </Link>

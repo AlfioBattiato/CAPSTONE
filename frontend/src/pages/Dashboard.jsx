@@ -5,7 +5,7 @@ import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
 function Dashboard() {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.auth.user);
   const [email, setEmail] = useState(user.email);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
