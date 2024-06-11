@@ -69,7 +69,7 @@ function Dashboard() {
               {spinner ? (
                 <Spinner animation="grow" size="sm" />
               ) : (
-                <p className="fw-bold text-primary" onClick={handleResetPassword}>
+                <p className="fw-bold text-primary btn" onClick={handleResetPassword}>
                   Change
                 </p>
               )}
