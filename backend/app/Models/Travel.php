@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Chat;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -18,5 +20,21 @@ class Travel extends Model
     public function metas(): HasMany
     {
         return $this->hasMany(Meta::class);
+    }
+
+    public function chat(): HasOne
+    {
+        return $this->hasOne(Chat::class);
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($travel) {
+            Chat::create([
+                'name' => 'Chat for travel ' . $travel->id,
+                'travel_id' => $travel->id,
+                'active' => true,
+            ]);
+        });
     }
 }

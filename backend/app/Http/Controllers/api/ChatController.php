@@ -27,6 +27,7 @@ class ChatController extends Controller
         $request->validate([
             'name' => 'nullable|string|max:255',
             'active' => 'boolean',
+            'travel_id' => 'nullable|exists:travels,id',
         ]);
 
         $chat = Chat::create($request->all());
@@ -39,6 +40,7 @@ class ChatController extends Controller
         $request->validate([
             'name' => 'nullable|string|max:255',
             'active' => 'boolean',
+            'travel_id' => 'nullable|exists:travels,id',
         ]);
 
         $chat->update($request->all());
