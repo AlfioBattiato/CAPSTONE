@@ -31,7 +31,7 @@ function MyNavbar() {
       {[false].map((expand) => (
         <Navbar key={expand} expand={expand} className=" my-nav pt-3">
           <Container>
-            <Link to="/" className="navbar-brand purple-700 ">
+            <Link to="/" className="navbar-brand text-white ">
               TrailBlazers
             </Link>
 
