@@ -26,9 +26,10 @@ class DatabaseSeeder extends Seeder
         
         $travels = Travel::all();
         $users = User::all();
-
+        
         foreach ($travels as $travel) {
-            foreach ($users as $user) {
+            $randomUsers = $users->random(rand(1, $users->count()));
+            foreach ($randomUsers as $user) {
                 $travel->users()->attach($user->id);
             }
         }

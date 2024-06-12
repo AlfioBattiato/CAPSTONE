@@ -9,7 +9,7 @@ const Chat = ({ chat }) => {
 
   useEffect(() => {
     axios.get(`/api/chats/${chat.id}/messages`).then((response) => {
-      console.log("Loaded messages:", response.data);
+      // console.log("Loaded messages:", response.data);
       setMessages(response.data);
     });
   }, [chat]);
@@ -24,7 +24,7 @@ const Chat = ({ chat }) => {
         chat_id: chat.id,
         message: newMessage,
       });
-      console.log("Sent message:", response.data);
+      // console.log("Sent message:", response.data);
       setMessages([...messages, response.data]);
       setNewMessage("");
     } catch (error) {

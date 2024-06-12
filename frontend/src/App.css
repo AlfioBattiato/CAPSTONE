@@ -21,5 +21,11 @@
     padding: 0.3rem!important;
 }
 .vh-100{
-    height:max-content;
+    height:min-content;
+}
+.purple-700{
+    color: #69359c!important;
+}
+.my-nav{
+    background-color: black!important;
 }

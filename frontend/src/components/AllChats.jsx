@@ -14,7 +14,7 @@ const AllChats = () => {
     axios
       .get("/api/chats")
       .then((response) => {
-        console.log("Fetched chats:", response.data);
+        // console.log("Fetched chats:", response.data);
         dispatch(setChats(response.data));
       })
       .catch((error) => {
@@ -23,7 +23,7 @@ const AllChats = () => {
   }, [dispatch]);
 
   const handleChatClick = (chat) => {
-    console.log("Chat clicked:", chat);
+    // console.log("Chat clicked:", chat);
     dispatch(setSelectedChat(chat));
   };
 

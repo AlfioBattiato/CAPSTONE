@@ -13,6 +13,6 @@ class TravelSeeder extends Seeder
      */
     public function run(): void
     {
-        Travel::factory(1)->create();
+        Travel::factory(10)->create();
     }
 }

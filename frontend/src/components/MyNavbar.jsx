@@ -13,6 +13,7 @@ import { FaHome } from "react-icons/fa";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { TiMessages } from "react-icons/ti";
 import { MdOutlineTravelExplore } from "react-icons/md";
+import { Button } from "react-bootstrap";
 function MyNavbar() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -28,16 +29,22 @@ function MyNavbar() {
   return (
     <>
       {[false].map((expand) => (
-        <Navbar key={expand} expand={expand} className="bg-body-tertiary ">
-          <Container fluid>
-            <Link to="/" className="navbar-brand">
+        <Navbar key={expand} expand={expand} className=" my-nav pt-3">
+          <Container >
+
+            <Link to="/" className="navbar-brand purple-700 ">
               TrailBlazers
             </Link>
 
+
+
             {!user ? (
-              <Link to="/login" className="fs-6">
-                <BiSolidLogIn /> Login
-              </Link>
+              <Button variant="outline-light">
+                <Link to="/login" className="fs-6 nav-link fs-5">
+                  <BiSolidLogIn /> Login
+                </Link>
+
+              </Button>
             ) : (
               <>
                 <div className="d-flex align-items-center">
@@ -74,11 +81,11 @@ function MyNavbar() {
                         </Link>
                         <Link to="/Lobbies" className="nav-link fs-6">
                           {" "}
-                          <TiMessages  className="me-2" /> Chats
+                          <TiMessages className="me-2" /> Chats
                         </Link>
                         <Link to="/AllTravels" className="nav-link fs-6">
                           {" "}
-                          <MdOutlineTravelExplore   className="me-2" /> Users Travel
+                          <MdOutlineTravelExplore className="me-2" /> Users Travel
                         </Link>
                         <Link to="/" className="nav-link fs-6">
                           <MdFirstPage className="me-2" />
@@ -95,6 +102,7 @@ function MyNavbar() {
                 </div>
               </>
             )}
+
           </Container>
         </Navbar>
       ))}
