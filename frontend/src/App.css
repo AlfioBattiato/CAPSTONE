@@ -32,3 +32,6 @@
 .bg-blue{
     background-color: #05203C!important;
 }
+.card{
+    cursor: pointer;
+}

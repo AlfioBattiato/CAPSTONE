@@ -9,6 +9,7 @@ import { setTravels } from '../redux/actions';
 // import Badge from 'react-bootstrap/Badge';
 // import { BsFillPeopleFill } from "react-icons/bs";
 import TravelCard from '../components/TravelCard';
+import Sponsor from '../components/Sponsor';
 
 function AllTravels() {
     const navigate = useNavigate();
@@ -36,7 +37,7 @@ function AllTravels() {
                     <p>filter</p>
                 </Col>
                 <Col md={7}>
-                    <h2 className='py-5'>Viaggi programmati da altri utenti</h2>
+                    <h5 className='my-2 pb-2'>Viaggi programmati da altri utenti</h5>
                     <Row>
 
 
@@ -52,7 +53,8 @@ function AllTravels() {
                     </Row>
                 </Col>
                 <Col md={2} className='border-start vh-100'>
-                    <p>sponsor</p>
+                    <h5 className='mt-2'>I nostri partner</h5>
+                    <Sponsor></Sponsor>
                 </Col>
             </Row>
         </div >
