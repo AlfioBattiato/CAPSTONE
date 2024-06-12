@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Chat;
+use App\Models\Message;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use App\Models\Message;
-use App\Models\Chat;
+use Illuminate\Support\Facades\Log;
 
 class MessageController extends Controller
 {
@@ -34,9 +35,12 @@ class MessageController extends Controller
     $message->chat_id = $request->input('chat_id');  // Sets chat_id from the value provided in the request
     $message->user_id = Auth::id();  // Sets user_id with the authenticated user's ID
     $message->message = $request->input('message');  // Sets message from the value provided in the request, if present
-    
+
     if ($request->hasFile('file')) {
-        $message->file = $request->file('file');  // Sets the file attribute if a file was uploaded
+        $file = $request->file('file');
+        // Log::info('File details: ', ['name' => $file->getClientOriginalName(), 'type' => $file->getClientMimeType()]);
+        $message->file = file_get_contents($file->getRealPath());
+        $message->file_type = $file->getClientMimeType();
     }
 
     $message->send_at = now();  // Sets send_at with the current time
@@ -46,6 +50,7 @@ class MessageController extends Controller
 
     return response()->json($message, 201);  // Returns the JSON response with the created message and the 201 (Created) status code
 }
+
 
 
     /**

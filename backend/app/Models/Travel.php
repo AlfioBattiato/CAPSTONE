@@ -30,11 +30,20 @@ class Travel extends Model
     protected static function booted()
     {
         static::created(function ($travel) {
-            Chat::create([
+            $chat = Chat::create([
                 'name' => 'Chat for travel ' . $travel->id,
                 'travel_id' => $travel->id,
                 'active' => true,
             ]);
+
+            $chat->addUsersFromTravel($travel);
+        });
+
+        static::updated(function ($travel) {
+            if ($travel->isDirty('users')) {
+                $chat = $travel->chat;
+                $chat->addUsersFromTravel($travel);
+            }
         });
     }
 }
