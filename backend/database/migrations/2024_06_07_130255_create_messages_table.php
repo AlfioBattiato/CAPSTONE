@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -17,14 +16,10 @@ return new class extends Migration
             $table->foreignId('chat_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->text('message')->nullable();
+            $table->string('file_path')->nullable(); // Percorso del file nel filesystem
+            $table->string('file_type')->nullable(); // Tipo di file MIME
             $table->timestamp('send_at')->useCurrent();
             $table->timestamps();
-        });
-
-        // Add the MEDIUMBLOB column
-        Schema::table('messages', function (Blueprint $table) {
-            DB::statement('ALTER TABLE messages ADD file MEDIUMBLOB NULL');  // in the future it could be used for voice messages, images, or videos
-            $table->string('file_type')->nullable(); // indicates the type of file stored in binary code
         });
     }
 

@@ -7,63 +7,47 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class MessageController extends Controller
 {
-    /**
-     * Display a listing of the messages.
-     */
     public function index()
     {
         $messages = Message::all();
         return response()->json($messages);
     }
 
-    /**
-     * Store a newly created message in storage.
-     */
     public function store(Request $request)
-{
-    $request->validate([
-        'chat_id' => 'required|exists:chats,id',  // Checks that chat_id is provided and exists in the chats table
-        'message' => 'nullable|string',  // message is optional and must be a string if provided
-        'file' => 'nullable|file',  // file is optional and must be a file if provided
-    ]);
+    {
+        $request->validate([
+            'chat_id' => 'required|exists:chats,id',
+            'message' => 'nullable|string',
+            'file' => 'nullable|file',
+        ]);
 
-    $message = new Message();
-    $message->chat_id = $request->input('chat_id');  // Sets chat_id from the value provided in the request
-    $message->user_id = Auth::id();  // Sets user_id with the authenticated user's ID
-    $message->message = $request->input('message');  // Sets message from the value provided in the request, if present
+        $message = new Message();
+        $message->chat_id = $request->input('chat_id');
+        $message->user_id = Auth::id();
+        $message->message = $request->input('message');
 
-    if ($request->hasFile('file')) {
-        $file = $request->file('file');
-        // Log::info('File details: ', ['name' => $file->getClientOriginalName(), 'type' => $file->getClientMimeType()]);
-        $message->file = file_get_contents($file->getRealPath());
-        $message->file_type = $file->getClientMimeType();
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $message->file = $file;
+        }
+
+        $message->send_at = now();
+        $message->save();
+
+        $message->load('user');
+
+        return response()->json($message, 201);
     }
 
-    $message->send_at = now();  // Sets send_at with the current time
-    $message->save();  // Saves the new message to the database
-
-    $message->load('user');
-
-    return response()->json($message, 201);  // Returns the JSON response with the created message and the 201 (Created) status code
-}
-
-
-
-    /**
-     * Display the specified message.
-     */
     public function show(Message $message)
     {
         return response()->json($message);
     }
 
-    /**
-     * Update the specified message in storage.
-     */
     public function update(Request $request, Message $message)
     {
         $request->validate([
@@ -84,13 +68,15 @@ class MessageController extends Controller
         return response()->json($message);
     }
 
-    /**
-     * Remove the specified message from storage.
-     */
     public function destroy(Message $message)
     {
+        // Elimina il file dal filesystem locale
+        if ($message->file_path) {
+            Storage::delete($message->file_path);
+        }
+
         $message->delete();
-        return response()->json(null, 204); //Returns the JSON response with the created message and the 204 (No Content) status code
+        return response()->json(null, 204);
     }
 
     public function getMessagesByChat(Chat $chat)
