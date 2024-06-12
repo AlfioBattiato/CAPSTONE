@@ -29,7 +29,7 @@ function MyNavbar() {
   return (
     <>
       {[false].map((expand) => (
-        <Navbar key={expand} expand={expand} className=" my-nav pt-3">
+        <Navbar key={expand} expand={expand} className=" bg-blue pt-3" data-bs-theme="dark">
           <Container >
 
             <Link to="/" className="navbar-brand text-white ">
@@ -39,7 +39,7 @@ function MyNavbar() {
             {!user ? (
               <Button variant="outline-light">
                 <Link to="/login" className="fs-6 nav-link fs-5">
-                  <BiSolidLogIn /> Login
+                  <BiSolidLogIn /> Entra
                 </Link>
               </Button>
             ) : (
@@ -59,7 +59,7 @@ function MyNavbar() {
                     id={`offcanvasNavbar-expand-${expand}`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
                     placement="end"
-                    className="bg-dark text-white"
+                    className="bg-blue text-white"
                   >
                     <Offcanvas.Header closeButton>
                       <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`} className="fs-3">
@@ -70,28 +70,28 @@ function MyNavbar() {
                       <Nav className="justify-content-end flex-grow-1 pe-3">
                         <Link to={`/dashboard/${user.id}`} className="nav-link fs-6">
                           <GiCartwheel className="me-2" />
-                          Profile
+                          Profilo
                         </Link>
                         <Link to="/Homepage" className="nav-link fs-6">
                           {" "}
-                          <FaHome className="me-2" /> Home
+                          <FaHome className="me-2" /> Organizza il tuo viaggio
                         </Link>
                         <Link to="/Lobbies" className="nav-link fs-6">
                           {" "}
-                          <TiMessages className="me-2" /> Chats
+                          <TiMessages className="me-2" />Messaggi
                         </Link>
                         <Link to="/AllTravels" className="nav-link fs-6">
                           {" "}
-                          <MdOutlineTravelExplore className="me-2" /> Users Travel
+                          <MdOutlineTravelExplore className="me-2" /> Viaggi utenti
                         </Link>
                         <Link to="/" className="nav-link fs-6">
                           <MdFirstPage className="me-2" />
-                          Welcome
+                          Benvenuto
                         </Link>
                         <hr />
                         <Link onClick={logout} className="nav-link fs-6">
                           <RiLogoutBoxFill className="me-2" />
-                          Logout
+                          Esci
                         </Link>
                       </Nav>
                     </Offcanvas.Body>

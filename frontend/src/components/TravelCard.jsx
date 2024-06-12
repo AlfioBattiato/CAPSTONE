@@ -4,80 +4,86 @@ import Badge from 'react-bootstrap/Badge';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { BsFillPeopleFill } from "react-icons/bs";
+import { PiMotorcycleFill } from "react-icons/pi";
+import { BsCalendarDate } from "react-icons/bs";
+import { Button } from 'react-bootstrap';
+import { FaArrowRight } from "react-icons/fa";
 
 export default function TravelCard(props) {
     const getImageSource = (vehicleType) => {
         switch (vehicleType) {
             case 'race bikes':
-                return '/assets/moto.png';
+                return '/assets/moto2.png';
             case 'motocross':
-                return '/assets/motocross.png';
+                return '/assets/motocross1.png';
             case 'scooter':
-                return '/assets/scooter.png';
+                return '/assets/vespa.png';
             case 'off-road':
-                return '/assets/fuoristrada.png';
+                return '/assets/motocross1.png';
             case 'harley':
-                return '/assets/harley.png';
+                return '/assets/harley2.png';
             default:
                 return '/assets/moto.png';
         }
     };
     return (
-        <Card className='bg-blue text-white ' style={{ width: "" }}>
+        <Card className='bg-white text-dark mb-2 shadow-sm ' style={{ width: "" }}>
             <Card.Body>
                 {props.travel && (
                     <>
-                        <Row>
-                            <Col xs={8}>
-                                <span>Partenza:</span>
-                                <h3>{props.travel.start_location.toUpperCase()}</h3>
-                                <div className="d-flex gap-2 flex-wrap justify-content-between">
-                                    <div>
+                        <Row >
+                            <Col xs={12}>
+                                <Row >
+                                    <Col md={8}>
+                                        <span className='text-secondary fs-12 fw-semi-bold'>Partenza:</span>
+                                        <h5 className=' ms-2 '>{props.travel.start_location.toUpperCase()}</h5>
+                                        <div className='d-flex justify-content-center align-items-center h-50'>
+                                            {/* <p className='m-0'>Data partenza</p> */}
+                                            <BsCalendarDate className='me-1 text-warning' />
+                                            <p className='fs-12 fw-bold me-2 mb-0'>
+                                                {props.travel.departure_date}
+                                            </p>
+ 
 
-                                        <p className='m-0'>Data partenza</p>
-                                        <Badge bg="light" text="dark">
-                                            {props.travel.departure_date}
-                                        </Badge>
-                                        <hr />
-                                        <p className='m-0'>Data arrivo</p>
-                                        <Badge bg="light" text="dark">
-                                            {props.travel.expiration_date}
-                                        </Badge>
-                                    </div>
-                                    <div>
-                                        <p className='m-0'>Tipologia moto:</p>
+                                            <span className='line'></span>
+                                            <PiMotorcycleFill className='ms-2' />
+                                            <BsCalendarDate className='ms-3 text-success' />
+                                            <h6 className='fw-bold fs-12 ms-1 mb-0'>
+                                                {props.travel.expiration_date}
+                                            </h6>
+                                        </div>
+
+
+                                    </Col>
+                                    <Col md={4}>
+                                        <img src={getImageSource(props.travel.type_moto)} alt="mototype" className='img-fluid d-block' style={{ width: "3rem" }} />
+
+                                        <span className='me-1 fs-12'>Tipologia moto:</span>
                                         <Badge bg="light" text="dark">
                                             {props.travel.type_moto}
                                         </Badge>
                                         <hr />
-                                        <p className='m-0'>Cilindrata</p>
+                                        <span className='me-1 fs-12'>MIN Cilindrata</span>
                                         <Badge bg="light" text="dark">
                                             {props.travel.cc_moto}
                                         </Badge>
-                                    </div>
 
+                                    </Col>
+                                    <hr className='my-1' />
+                                    <Col xs={6}>
+                                        <p className='m-0 fs-12 text-secondary'>Partecipanti attuali:</p>
+                                        <BsFillPeopleFill className='me-2 text-success' />
+                                        <Badge bg="light" text="dark">
 
-
-                                </div>
-
-
-
-                            </Col>
-                            <Col xs={4} >
-                                <img src={getImageSource(props.travel.type_moto)} alt="mototype" className='img-fluid' style={{ width:"8rem"}} />
+                                            {props.travel.users.length}
+                                        </Badge>
+                                    </Col>
+                                    <Col xs={6} className='d-flex justify-content-center  align-items-center'>
+                                   <Button className='btn-blue-dark fw-bold border-0 ms-auto' >Vedi viaggio <FaArrowRight /></Button>
+                                    </Col>
+                                </Row>
                             </Col>
                         </Row>
-                        <hr />
-                        <div className='mt-1'>
-                            <p className='m-0'>Partecipanti Attuali:</p>
-                            <BsFillPeopleFill className='me-2' />
-                            <Badge bg="black" text="white">
-
-                                {props.travel.users.length}
-                            </Badge>
-
-                        </div>
-
                     </>
                 )}
 

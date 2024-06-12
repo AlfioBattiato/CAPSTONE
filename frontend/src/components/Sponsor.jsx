@@ -11,10 +11,10 @@ export default function Sponsor() {
   return (
     <>
       {sponsors.map((sponsor, index) => (
-        <Card key={index} className='mb-2' style={{ width: '100%' }}>
+        <div key={index} className='mb-2 p-2 rounded border bg-white' style={{ width: '100%' }}>
               <img src={sponsor} alt="sponsor" className='img-fluid'  />
-            {/* <Card.Link href="#">Another Link</Card.Link> */}
-        </Card>
+            <a href="">Another Link</a>
+        </div>
       ))}
     </>
   );
