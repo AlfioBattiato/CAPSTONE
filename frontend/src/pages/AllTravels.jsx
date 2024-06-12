@@ -33,18 +33,18 @@ function AllTravels() {
     return (
         <div className="container-fluid m-0">
             <Row className='w-100'>
-                <Col md={3} className='border-end vh-100'>
+                <Col md={3} className='border-end '>
                     <p>filter</p>
                 </Col>
                 <Col md={7}>
                     <h5 className='my-2 pb-2'>Viaggi programmati da altri utenti</h5>
-                    <Row>
+                    <Row className='gy-2'> 
 
 
                         {alltravel && alltravel.length > 0 ? (
                             alltravel.map((travel, index) => (
-                                <Col xs={6}>
-                                    <TravelCard key={index} travel={travel}></TravelCard>
+                                <Col md={6} key={index}>
+                                    <TravelCard  travel={travel}></TravelCard>
                                 </Col>
                             ))
                         ) : (
@@ -52,7 +52,7 @@ function AllTravels() {
                         )}
                     </Row>
                 </Col>
-                <Col md={2} className='border-start vh-100'>
+                <Col md={2} className='border-start '>
                     <h5 className='mt-2'>I nostri partner</h5>
                     <Sponsor></Sponsor>
                 </Col>

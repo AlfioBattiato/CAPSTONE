@@ -23,7 +23,7 @@ export default function TravelCard(props) {
         }
     };
     return (
-        <Card className='p-2 m-1 bg-blue text-white ' style={{ width: "" }}>
+        <Card className='bg-blue text-white ' style={{ width: "" }}>
             <Card.Body>
                 {props.travel && (
                     <>

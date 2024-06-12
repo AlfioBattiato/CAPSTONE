@@ -11,8 +11,8 @@ export default function Sponsor() {
   return (
     <>
       {sponsors.map((sponsor, index) => (
-        <Card key={index} className='mb-2' style={{ width: '18rem' }}>
-              <img src={sponsor} alt="sponsor" className='img-fluid' style={{ width: "100%" }} />
+        <Card key={index} className='mb-2' style={{ width: '100%' }}>
+              <img src={sponsor} alt="sponsor" className='img-fluid'  />
             {/* <Card.Link href="#">Another Link</Card.Link> */}
         </Card>
       ))}
