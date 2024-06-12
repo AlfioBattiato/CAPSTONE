@@ -52,19 +52,22 @@ body {
 .btn-blue-dark {
     background-color: #05203C !important;
 }
+.bg-blue-light {
+    background-color:  #08325f !important;
+}
 
 .btn-blue-dark:hover {
     background-color: #154679 !important;
 }
 
-.card {
+.travelCard {
     cursor: pointer;
     /* position: relative; */
     /* overflow: hidden; */
     transition: color 0.5s;
 }
 
-.card::before {
+.travelCard::before {
     content: '';
     position: absolute;
     top: 0;
@@ -76,15 +79,15 @@ body {
     z-index: 1;
 }
 
-.card:hover::before {
+.travelCard:hover::before {
     left: 0;
 }
 
-.card:hover {
+.travelCard:hover {
     color: white !important;
 }
 
-.card>* {
+.travelCard>* {
     position: relative;
     z-index: 2;
 }

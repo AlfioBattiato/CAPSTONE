@@ -1,7 +1,7 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import { setTravels } from '../redux/actions';
@@ -11,28 +11,30 @@ import FilterTravel from '../components/FilterTravel';
 import Pagination from 'react-bootstrap/Pagination';
 
 function AllTravels() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const alltravel = useSelector((state) => state.infotravels.travels);
     const dispatch = useDispatch();
-    
-    const [currentPage, setCurrentPage] = useState(1);
-    const travelsPerPage = 5;
+    const [filter, setFilter] = useState([]);
+
 
     useEffect(() => {
         axios('api/v1/travels')
             .then((res) => {
                 dispatch(setTravels(res.data));
-                console.log(res.data);
+                setFilter(res.data)
+                // console.log(res.data);
             })
             .catch((error) => {
                 console.error('Error fetching travels:', error);
             });
     }, [dispatch]);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const travelsPerPage = 5;
     const indexOfLastTravel = currentPage * travelsPerPage;
     const indexOfFirstTravel = indexOfLastTravel - travelsPerPage;
-    const currentTravels = alltravel.slice(indexOfFirstTravel, indexOfLastTravel);
-    const totalPages = Math.ceil(alltravel.length / travelsPerPage);
+    const currentTravels = filter.slice(indexOfFirstTravel, indexOfLastTravel);
+    const totalPages = Math.ceil(filter.length / travelsPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -45,7 +47,7 @@ function AllTravels() {
                     <h5 className='mt-2'>Filtri di ricerca</h5>
                     <FilterTravel />
                 </Col>
-                <Col md={7}>
+                <Col md={7} >
                     <h5 className='my-2 pb-2'>Viaggi programmati da altri utenti</h5>
                     <p className='text-primary'>{currentPage} di {totalPages} pagine</p>
 

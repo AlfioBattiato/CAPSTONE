@@ -27,7 +27,7 @@ export default function TravelCard(props) {
         }
     };
     return (
-        <Card className='bg-white text-dark mb-2 shadow-sm ' style={{ width: "" }}>
+        <Card className='bg-white text-dark mb-2 shadow-sm travelCard ' style={{ width: "" }}>
             <Card.Body>
                 {props.travel && (
                     <>
