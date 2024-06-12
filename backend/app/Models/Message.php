@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Message extends Model
 {
@@ -15,54 +15,40 @@ class Message extends Model
         'user_id',
         'message',
         'send_at',
-        'file',
+        'file_path',
         'file_type',
     ];
 
-    protected $dates = [
-        'send_at',
-    ];
+    protected $dates = ['send_at'];
+    protected $appends = ['file_url']; 
 
-    // Chat relation
+    public function setFileAttribute($file)
+    {
+        if ($file) {
+            // Salva il file nel filesystem locale
+            $path = $file->store('files');
+            $this->attributes['file_path'] = $path;
+            $this->attributes['file_type'] = $file->getClientMimeType();
+        }
+    }
+
+    public function getFileUrlAttribute()
+    {
+        if ($this->file_path) {
+            return Storage::url($this->file_path);
+        }
+        return null;
+    }
+
+    // Relazione con Chat
     public function chat()
     {
         return $this->belongsTo(Chat::class);
     }
 
-    // User relation
+    // Relazione con User
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Method to set the file and file type.
-     * setFileAttribute is a mutator in Laravel that allows modifying the value of an attribute before it is saved to the database.
-     * It is used to handle the upload and storage of binary files.
-     */
-    public function setFileAttribute($file) 
-    {
-        if ($file) {
-            // Log::info('File set: ', ['original_name' => $file->getClientOriginalName(), 'type' => $file->getClientMimeType()]);
-            // Checks if the file is uploaded
-            $this->attributes['file'] = file_get_contents($file);
-            // Reads the uploaded file and returns it as a binary string, then assigns it to 'file'
-            $this->attributes['file_type'] = $file->getClientMimeType();
-            // The MIME type is important because it indicates the type of content of the file (e.g., image/jpeg, audio/mpeg)
-            // This method is provided by the UploadedFile object in Laravel and returns the MIME type of the uploaded file
-        }
-    }
-
-    /**
-     * Method to get the decoded file.
-     * Converts the content previously assigned to 'file' and 'file_type'.
-     * Saving a file in base64 allows converting the binary code into a string for use in a JSON file for API requests.
-     * Doing so increases the file size by about 33%.
-     * Considering that the size of a photo taken by an average phone and a 5-minute voice message is about 5MB,
-     * even with a one-third increase in size, it can still fit within the 16MB capacity of a MEDIUMBLOB.
-     */
-    public function getFileAttribute($file)
-    {
-        return base64_encode($file);
     }
 }

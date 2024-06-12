@@ -15,6 +15,16 @@ const Message = ({ message }) => {
             {message.file_type.startsWith("image/") && (
               <img src={message.file_url} alt="Attachment" style={{ maxWidth: "200px", maxHeight: "200px" }} />
             )}
+            {message.file_type.startsWith("video/") && (
+              <video controls style={{ maxWidth: "200px", maxHeight: "200px" }}>
+                <source src={message.file_url} type={message.file_type} />
+              </video>
+            )}
+            {message.file_type.startsWith("audio/") && (
+              <audio controls>
+                <source src={message.file_url} type={message.file_type} />
+              </audio>
+            )}
             {/* Aggiungi ulteriori controlli per altri tipi di file */}
           </div>
         )}
