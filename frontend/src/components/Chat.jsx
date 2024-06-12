@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Card, ListGroup, Form, Button } from "react-bootstrap";
 import Message from "./Message";
@@ -6,36 +6,61 @@ import Message from "./Message";
 const Chat = ({ chat }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [file, setFile] = useState(null);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    axios.get(`/api/chats/${chat.id}/messages`).then((response) => {
-      // console.log("Loaded messages:", response.data);
-      setMessages(response.data);
-    });
+    axios
+      .get(`/api/chats/${chat.id}/messages`)
+      .then((response) => {
+        console.log("Loaded messages:", response.data);
+        setMessages(response.data);
+      })
+      .catch((error) => {
+        console.error("Error loading messages:", error);
+      });
   }, [chat]);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
-    if (newMessage.trim() === "") return;
+    const formData = new FormData();
+    formData.append("chat_id", chat.id);
+    formData.append("message", newMessage);
+    if (file) {
+      formData.append("file", file);
+    }
+
+    console.log("Sending message:", {
+      chat_id: chat.id,
+      message: newMessage,
+      file: file ? file.name : "No file",
+    });
 
     try {
-      const response = await axios.post(`/api/messages`, {
-        chat_id: chat.id,
-        message: newMessage,
+      const response = await axios.post("/api/messages", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      // console.log("Sent message:", response.data);
+      console.log("Sent message:", response.data);
       setMessages([...messages, response.data]);
       setNewMessage("");
+      setFile(null);
     } catch (error) {
-      console.error("Failed to send message", error);
+      console.error("Failed to send message:", error);
     }
   };
 
   return (
-    <Card className="h-100">
+    <Card className="h-100 d-flex flex-column" style={{ height: "100vh" }}>
       <Card.Header>
-        {" "}
         {chat.name ||
           (chat.users && chat.users.length === 1
             ? chat.users[0].username
@@ -50,20 +75,23 @@ const Chat = ({ chat }) => {
         {messages.map((message) => (
           <Message key={message.id} message={message} />
         ))}
+        <div ref={messagesEndRef} />
       </ListGroup>
-      <Card.Footer>
+      <Card.Footer className="mt-auto">
         <Form onSubmit={handleSendMessage}>
-          <Form.Group controlId="messageInput">
+          <Form.Group controlId="messageInput" className="d-flex">
             <Form.Control
               type="text"
               placeholder="Type a message..."
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
+              className="me-2"
             />
+            <Form.Control type="file" onChange={(e) => setFile(e.target.files[0])} className="me-2" />
+            <Button variant="primary" type="submit">
+              Send
+            </Button>
           </Form.Group>
-          <Button variant="primary" type="submit" className="mt-2">
-            Send
-          </Button>
         </Form>
       </Card.Footer>
     </Card>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
@@ -42,6 +43,7 @@ class Message extends Model
     public function setFileAttribute($file) 
     {
         if ($file) {
+            // Log::info('File set: ', ['original_name' => $file->getClientOriginalName(), 'type' => $file->getClientMimeType()]);
             // Checks if the file is uploaded
             $this->attributes['file'] = file_get_contents($file);
             // Reads the uploaded file and returns it as a binary string, then assigns it to 'file'
