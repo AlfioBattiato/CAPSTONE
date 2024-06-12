@@ -18,10 +18,9 @@ class TravelSeeder extends Seeder
 
         
         Travel::factory(10)->create()->each(function ($travel) use ($users) {
-            
-            $randomUsers = $users->random(rand(2, $users->count()))->pluck('id')->toArray();   
-            $travel->users()->attach($randomUsers);
-            
+
+            $travelUsers = $users->random(rand(1, 3))->pluck('id')->toArray();
+            $travel->users()->attach($travelUsers);
         });
     }
 }

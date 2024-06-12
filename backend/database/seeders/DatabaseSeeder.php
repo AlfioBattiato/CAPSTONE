@@ -32,9 +32,10 @@ class DatabaseSeeder extends Seeder
             foreach ($randomUsers as $user) {
                 $travel->users()->attach($user->id);
             }
+
+            if ($travel->chat) {
+                $travel->chat->addUsersFromTravel($travel);
+            }
         }
-
-
-
     }
 }

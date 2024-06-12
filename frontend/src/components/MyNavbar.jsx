@@ -30,20 +30,16 @@ function MyNavbar() {
     <>
       {[false].map((expand) => (
         <Navbar key={expand} expand={expand} className=" my-nav pt-3">
-          <Container >
-
+          <Container>
             <Link to="/" className="navbar-brand purple-700 ">
               TrailBlazers
             </Link>
-
-
 
             {!user ? (
               <Button variant="outline-light">
                 <Link to="/login" className="fs-6 nav-link fs-5">
                   <BiSolidLogIn /> Login
                 </Link>
-
               </Button>
             ) : (
               <>
@@ -62,7 +58,7 @@ function MyNavbar() {
                     id={`offcanvasNavbar-expand-${expand}`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
                     placement="end"
-                    className='bg-dark text-white'
+                    className="bg-dark text-white"
                   >
                     <Offcanvas.Header closeButton>
                       <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`} className="fs-3">
@@ -102,7 +98,6 @@ function MyNavbar() {
                 </div>
               </>
             )}
-
           </Container>
         </Navbar>
       ))}
