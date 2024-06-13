@@ -3,7 +3,7 @@ import axios from "axios";
 import { Card, ListGroup, Form, Button, Col } from "react-bootstrap";
 import Message from "./Message";
 import { MdAttachFile } from "react-icons/md";
-import AudioRecorder from "./AudioRecorder"; // Importa il nuovo componente
+import AudioRecorder from "./AudioRecorder";
 
 const Chat = ({ chat }) => {
   const [messages, setMessages] = useState([]);
@@ -80,6 +80,10 @@ const Chat = ({ chat }) => {
       });
   };
 
+  const handleDeleteMessage = (messageId) => {
+    setMessages(messages.filter((message) => message.id !== messageId));
+  };
+
   const otherUser = chat.users?.find((user) => user.id !== chat.pivot.user_id);
 
   return (
@@ -108,7 +112,7 @@ const Chat = ({ chat }) => {
       </Card.Header>
       <ListGroup variant="flush" className="flex-grow-1 overflow-auto p-2 custom-scrollbar">
         {messages.map((message) => (
-          <Message key={message.id} message={message} />
+          <Message key={message.id} message={message} onDelete={handleDeleteMessage} />
         ))}
         <div ref={messagesEndRef} />
       </ListGroup>

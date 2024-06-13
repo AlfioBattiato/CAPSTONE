@@ -35,6 +35,7 @@ const AudioRecorder = ({ onAudioRecorded }) => {
   return (
     <div>
       <button
+        type="button"
         onClick={isRecording ? stopRecording : startRecording}
         className={`btn ${isRecording ? "bg-white" : "bg-blue"} p-2 rounded-circle`}
         style={{

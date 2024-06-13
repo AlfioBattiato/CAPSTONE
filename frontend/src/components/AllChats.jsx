@@ -25,7 +25,7 @@ const AllChats = () => {
   };
 
   return (
-    <ListGroup variant="flush" className="custom-scrollbar bg-white" style={{ height: "80vh", maxHeight: "80vh" }}>
+    <ListGroup className="custom-scrollbar bg-white" style={{ height: "80vh", maxHeight: "80vh" }}>
       {Array.isArray(chats) && chats.length > 0 ? (
         chats.map((chat) => (
           <ListGroup.Item

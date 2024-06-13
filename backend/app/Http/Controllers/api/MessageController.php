@@ -70,7 +70,6 @@ class MessageController extends Controller
 
     public function destroy(Message $message)
     {
-        // Elimina il file dal filesystem locale
         if ($message->file_path) {
             Storage::delete($message->file_path);
         }
