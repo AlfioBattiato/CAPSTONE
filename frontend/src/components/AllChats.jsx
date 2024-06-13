@@ -25,25 +25,19 @@ const AllChats = () => {
   };
 
   return (
-    <ListGroup className="custom-scrollbar bg-white" style={{ height: "80vh", maxHeight: "80vh" }}>
+    <ListGroup className="custom-scrollbar bg-white rounded-0" style={{ height: "90vh", maxHeight: "90vh" }}>
       {Array.isArray(chats) && chats.length > 0 ? (
         chats.map((chat) => (
           <ListGroup.Item
             key={chat.id}
             onClick={() => handleChatClick(chat)}
-            className={`chat-item ${
-              selectedChat && selectedChat.id === chat.id ? "bg-danger text-white" : "bg-blue text-white"
+            className={`chat-item px-4 rounded-0 py-3 btn fs-4 text-start ${
+              selectedChat && selectedChat.id === chat.id ? "bg-red" : "bg-blue text-white"
             }`}
-            style={{
-              cursor: "pointer",
-              border: "none",
-              padding: "10px 15px",
-            }}
             onMouseEnter={(e) => {
               if (!(selectedChat && selectedChat.id === chat.id)) {
                 e.currentTarget.classList.add("bg-white");
                 e.currentTarget.classList.add("text-black");
-                e.currentTarget.classList.remove("bg-danger");
                 e.currentTarget.classList.remove("bg-blue");
                 e.currentTarget.classList.remove("text-white");
               }
@@ -53,7 +47,7 @@ const AllChats = () => {
                 e.currentTarget.classList.remove("bg-white");
                 e.currentTarget.classList.remove("text-black");
                 if (selectedChat && selectedChat.id === chat.id) {
-                  e.currentTarget.classList.add("bg-danger");
+                  e.currentTarget.classList.add("bg-red");
                 } else {
                   e.currentTarget.classList.add("bg-blue");
                 }

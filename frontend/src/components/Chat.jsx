@@ -88,10 +88,11 @@ const Chat = ({ chat }) => {
 
   return (
     <Card
+      variant="flush"
       className="d-flex flex-column"
-      style={{ height: "80vh", maxHeight: "80vh", backgroundColor: "#FFF", color: "#000" }}
+      style={{ height: "90vh", maxHeight: "90vh", backgroundColor: "#FFF", color: "#000" }}
     >
-      <Card.Header className="bg-blue text-white fs-2 d-flex align-items-center border-bottom">
+      <Card.Header className="bg-blue text-white fs-2 d-flex align-items-center border-bottom rounded-0">
         {otherUser && (
           <img
             src={otherUser.profile_img}
@@ -119,7 +120,7 @@ const Chat = ({ chat }) => {
       <Card.Footer className="bg-blue text-white">
         <Form onSubmit={handleSendMessage} className="w-100">
           <Form.Group controlId="messageInput" className="d-flex align-items-center">
-            <Col xs={8} md={9} className="p-1">
+            <Col xs={8} md={9} xl={11} className="p-1">
               <Form.Control
                 type="text"
                 placeholder="Type a message..."
@@ -129,7 +130,7 @@ const Chat = ({ chat }) => {
                 style={{ backgroundColor: "#FFF", color: "#000" }}
               />
             </Col>
-            <Col xs={4} md={3} className="p-1 d-flex align-items-center justify-content-around">
+            <Col xs={4} md={3} xl={1} className="p-1 d-flex align-items-center justify-content-around">
               <label htmlFor="fileInput" className="mb-0 d-flex align-items-center fs-3">
                 <MdAttachFile style={{ color: "#FFF", cursor: "pointer" }} />
                 <input id="fileInput" type="file" onChange={(e) => setFile(e.target.files[0])} className="d-none" />
@@ -142,6 +143,7 @@ const Chat = ({ chat }) => {
                 type="submit"
                 className="d-flex align-items-center justify-content-center"
                 style={{ backgroundColor: "#CC0000", borderColor: "#CC0000", height: "38px" }}
+                disabled={!newMessage.trim() && !file}
               >
                 <p style={{ color: "#FFF" }} className="m-0 fs-5">
                   Invia

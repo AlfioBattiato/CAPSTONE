@@ -132,3 +132,8 @@ body {
 .custom-scrollbar::-webkit-scrollbar-track {
   background-color: #f1f1f1;
 }
+
+.bg-red {
+  background-color: #cc0100 !important;
+  color: white !important;
+}
