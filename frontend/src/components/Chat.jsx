@@ -3,7 +3,6 @@ import axios from "axios";
 import { Card, ListGroup, Form, Button, Col, Row } from "react-bootstrap";
 import Message from "./Message";
 import { MdAttachFile } from "react-icons/md";
-import { GrSend } from "react-icons/gr";
 
 const Chat = ({ chat }) => {
   const [messages, setMessages] = useState([]);
@@ -60,57 +59,68 @@ const Chat = ({ chat }) => {
     }
   };
 
+  const otherUser = chat.users?.find((user) => user.id !== chat.pivot.user_id);
+
   return (
-    <Card className="h-100 d-flex flex-column " style={{ height: "100vh" }}>
-      <Card.Header>
+    <Card
+      className="d-flex flex-column"
+      style={{ height: "80vh", maxHeight: "80vh", backgroundColor: "#FFF", color: "#000" }}
+    >
+      <Card.Header className="bg-blue text-white fs-2 d-flex align-items-center">
+        {otherUser && (
+          <img
+            src={otherUser.profile_img}
+            alt="Profile"
+            className="rounded-circle me-3"
+            style={{ width: "40px", height: "40px" }}
+          />
+        )}
         {chat.name ||
           (chat.users && chat.users.length === 1
             ? chat.users[0].username
             : chat.users
-              ? chat.users
+            ? chat.users
                 .filter((user) => user.id !== chat.pivot.user_id)
                 .map((user) => user.username)
                 .join(", ")
-              : "Chat with no users")}
+            : "Chat with no users")}
       </Card.Header>
-      <ListGroup variant="flush" className="flex-grow-1 overflow-auto p-2">
+      <ListGroup variant="flush" className="flex-grow-1 overflow-auto p-2 custom-scrollbar">
         {messages.map((message) => (
           <Message key={message.id} message={message} />
         ))}
         <div ref={messagesEndRef} />
       </ListGroup>
-      <Card.Footer className="mt-auto">
-        <Form onSubmit={handleSendMessage}>
+      <Card.Footer className="bg-blue text-white">
+        <Form onSubmit={handleSendMessage} className="w-100">
           <Form.Group controlId="messageInput" className="d-flex align-items-center">
-            <Row className="w-100 align-tems-center">
-              <Col xs={9} md={10} className="p-1">
-                <Form.Control
-                  type="text"
-                  placeholder="Type a message..."
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  className="me-2 rounded-pill"
-                />
-              </Col>
-              <Col xs={3} md={2} className="d-flex">
-                <label htmlFor="fileInput" className="me-2">
-                  <span className="fs-3 mb-2"><MdAttachFile /></span>
-                  <input
-                    id="fileInput"
-                    type="file"
-                    onChange={(e) => setFile(e.target.files[0])}
-                    className="d-none"
-                  />
-
-                </label>
-                <Button variant="light" type="submit" className="rounded-pill">
+            <Col xs={9} md={10} className="p-1">
+              <Form.Control
+                type="text"
+                placeholder="Type a message..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                className="rounded-pill"
+                style={{ backgroundColor: "#FFF", color: "#000" }}
+              />
+            </Col>
+            <Col xs={3} md={2} className="d-flex align-items-center justify-content-end p-1">
+              <label htmlFor="fileInput" className="me-3 mb-0 d-flex align-items-center fs-3">
+                <MdAttachFile style={{ color: "#FFF", cursor: "pointer" }} />
+                <input id="fileInput" type="file" onChange={(e) => setFile(e.target.files[0])} className="d-none" />
+              </label>
+              <Button
+                variant="light"
+                type="submit"
+                className="d-flex align-items-center justify-content-center"
+                style={{ backgroundColor: "#CC0000", borderColor: "#CC0000", height: "38px" }}
+              >
+                <p style={{ color: "#FFF" }} className="m-0 fs-5">
                   Invia
-                </Button>
-              </Col>
-            </Row>
-
+                </p>
+              </Button>
+            </Col>
           </Form.Group>
-
         </Form>
       </Card.Footer>
     </Card>

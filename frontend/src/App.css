@@ -1,44 +1,40 @@
 body {
-    background-color: #EFF3F8 !important;
-
-
+  background-color: #eff3f8 !important;
 }
 
 .bg-lgrey {
-    background-color: #EFF3F8 !important;
+  background-color: #eff3f8 !important;
 }
 
 .img_profile {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
 
-    margin-right: 5px;
-
+  margin-right: 5px;
 }
 
 .img_profile2 {
-    width: 100%;
-    height: 15rem;
+  width: 100%;
+  height: 15rem;
 }
 
 .navbar-toggler:focus {
-
-    box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 .online {
-    top: 25px;
-    left: 30px;
-    padding: 0.3rem !important;
+  top: 25px;
+  left: 30px;
+  padding: 0.3rem !important;
 }
 
 .vh-100 {
-    height: min-content;
+  height: min-content;
 }
 
 .purple-700 {
-    color: #69359c !important;
+  color: #69359c !important;
 }
 
 /* .my-nav {
@@ -46,74 +42,93 @@ body {
 } */
 
 .bg-blue {
-    background-color: #05203C !important;
+  background-color: #05203c !important;
 }
 
 .btn-blue-dark {
-    background-color: #05203C !important;
+  background-color: #05203c !important;
 }
 .bg-blue-light {
-    background-color:  #08325f !important;
+  background-color: #08325f !important;
 }
 
 .btn-blue-dark:hover {
-    background-color: #154679 !important;
+  background-color: #154679 !important;
 }
 
 .travelCard {
-    cursor: pointer;
-    /* position: relative; */
-    /* overflow: hidden; */
-    transition: color 0.5s;
+  cursor: pointer;
+  /* position: relative; */
+  /* overflow: hidden; */
+  transition: color 0.5s;
 }
 
 .travelCard::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 100%;
-    bottom: 0;
-    right: 0;
-    background-color: #08325f;
-    transition: left 0.5s;
-    z-index: 1;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 100%;
+  bottom: 0;
+  right: 0;
+  background-color: #08325f;
+  transition: left 0.5s;
+  z-index: 1;
 }
 
 .travelCard:hover::before {
-    left: 0;
+  left: 0;
 }
 
 .travelCard:hover {
-    color: white !important;
+  color: white !important;
 }
 
-.travelCard>* {
-    position: relative;
-    z-index: 2;
+.travelCard > * {
+  position: relative;
+  z-index: 2;
 }
 
 .fs-12 {
-    font-size: 12px !important;
+  font-size: 12px !important;
 }
 
 .line {
-    background-color: #c1c7cf;
-    border-radius: .5rem;
-    display: block;
-    height: .125rem;
-    position: relative;
-    text-align: center;
-    width: 40%;
+  background-color: #c1c7cf;
+  border-radius: 0.5rem;
+  display: block;
+  height: 0.125rem;
+  position: relative;
+  text-align: center;
+  width: 40%;
 }
 
 .react-datepicker__header {
-    background-color: #08325f !important;
+  background-color: #08325f !important;
 }
 
 .react-datepicker__current-month {
-    color: white !important;
+  color: white !important;
 }
 
 .react-datepicker__day-name {
-    color: white !important;
+  color: white !important;
+}
+
+/* SCROLL BAR */
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #05203c;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #394a6d;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
 }

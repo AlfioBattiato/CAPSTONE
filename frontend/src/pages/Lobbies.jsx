@@ -8,12 +8,12 @@ const Lobbies = () => {
   const selectedChat = useSelector((state) => state.chats.selectedChat);
 
   return (
-    <div className="container mt-5">
-      <Row className="">
-        <Col md={4} className="">
+    <div className="container mt-5" style={{ height: "90vh" }}>
+      <Row className="h-100">
+        <Col md={4} className="h-100">
           <AllChats />
         </Col>
-        <Col md={8} className="">
+        <Col md={8} className="h-100">
           {selectedChat ? (
             <Chat chat={selectedChat} />
           ) : (
@@ -23,7 +23,6 @@ const Lobbies = () => {
           )}
         </Col>
       </Row>
-
     </div>
   );
 };
