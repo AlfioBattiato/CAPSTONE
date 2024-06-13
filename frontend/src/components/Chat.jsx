@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Card, ListGroup, Form, Button, Col, Row } from "react-bootstrap";
+import { Card, ListGroup, Form, Button, Col } from "react-bootstrap";
 import Message from "./Message";
 import { MdAttachFile } from "react-icons/md";
+import AudioRecorder from "./AudioRecorder"; // Importa il nuovo componente
 
 const Chat = ({ chat }) => {
   const [messages, setMessages] = useState([]);
@@ -59,6 +60,26 @@ const Chat = ({ chat }) => {
     }
   };
 
+  const handleAudioRecorded = (audioBlob) => {
+    const formData = new FormData();
+    formData.append("chat_id", chat.id);
+    formData.append("file", audioBlob, "recording.wav");
+
+    axios
+      .post("/api/messages", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log("Sent audio message:", response.data);
+        setMessages([...messages, response.data]);
+      })
+      .catch((error) => {
+        console.error("Failed to send audio message:", error);
+      });
+  };
+
   const otherUser = chat.users?.find((user) => user.id !== chat.pivot.user_id);
 
   return (
@@ -66,7 +87,7 @@ const Chat = ({ chat }) => {
       className="d-flex flex-column"
       style={{ height: "80vh", maxHeight: "80vh", backgroundColor: "#FFF", color: "#000" }}
     >
-      <Card.Header className="bg-blue text-white fs-2 d-flex align-items-center">
+      <Card.Header className="bg-blue text-white fs-2 d-flex align-items-center border-bottom">
         {otherUser && (
           <img
             src={otherUser.profile_img}
@@ -94,7 +115,7 @@ const Chat = ({ chat }) => {
       <Card.Footer className="bg-blue text-white">
         <Form onSubmit={handleSendMessage} className="w-100">
           <Form.Group controlId="messageInput" className="d-flex align-items-center">
-            <Col xs={9} md={10} className="p-1">
+            <Col xs={8} md={9} className="p-1">
               <Form.Control
                 type="text"
                 placeholder="Type a message..."
@@ -104,11 +125,14 @@ const Chat = ({ chat }) => {
                 style={{ backgroundColor: "#FFF", color: "#000" }}
               />
             </Col>
-            <Col xs={3} md={2} className="d-flex align-items-center justify-content-end p-1">
-              <label htmlFor="fileInput" className="me-3 mb-0 d-flex align-items-center fs-3">
+            <Col xs={4} md={3} className="p-1 d-flex align-items-center justify-content-around">
+              <label htmlFor="fileInput" className="mb-0 d-flex align-items-center fs-3">
                 <MdAttachFile style={{ color: "#FFF", cursor: "pointer" }} />
                 <input id="fileInput" type="file" onChange={(e) => setFile(e.target.files[0])} className="d-none" />
               </label>
+
+              <AudioRecorder onAudioRecorded={handleAudioRecorded} />
+
               <Button
                 variant="light"
                 type="submit"

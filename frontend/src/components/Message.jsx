@@ -23,7 +23,6 @@ const Message = ({ message }) => {
           borderRadius: "15px",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
           border: "1px solid rgba(0, 0, 0, 0.1)",
-          transform: "translateY(-2px)",
         }}
       >
         <strong>{message.user?.username || "Unknown User"}:</strong>
