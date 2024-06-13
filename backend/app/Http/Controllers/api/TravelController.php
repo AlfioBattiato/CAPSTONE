@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Models\Travel;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTravelRequest;
 use App\Http\Requests\UpdateTravelRequest;
@@ -12,11 +13,49 @@ class TravelController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $travels = Travel::with('users','metas')->get(); 
-        return $travels;
+    public function index(Request $request)
+{
+    $query = Travel::with('users', 'metas');
+
+    if ($request->has('start_date')) {
+        $query->where('departure_date', '>=', $request->input('start_date'));
     }
+
+    if ($request->has('city')) {
+        $query->where('start_location', 'like', '%' . $request->input('city') . '%');
+    }
+
+    if ($request->has('cc')) {
+        $query->where('cc_moto', '>=', $request->input('cc'));
+    }
+
+    if ($request->has('participants')) {
+        $query->whereHas('users', function ($q) use ($request) {
+            $q->havingRaw('COUNT(users.id) >= ?', [$request->input('participants')]);
+        });
+    }
+
+    if ($request->has('days')) {
+        $query->whereRaw('DATEDIFF(expiration_date, departure_date) + 1 <= ?', [$request->input('days')]);
+    }
+
+    if ($request->has('types')) {
+        $types = explode(',', $request->input('types'));
+        $query->where(function($q) use ($types) {
+            foreach ($types as $type) {
+                $q->orWhere('type_moto', 'like', '%' . $type . '%');
+            }
+        });
+    }
+
+    $travels = $query->get();
+
+    return response()->json($travels);
+}
+
+    
+
+
 
     /**
      * Show the form for creating a new resource.

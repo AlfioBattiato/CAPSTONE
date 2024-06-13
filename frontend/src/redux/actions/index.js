@@ -4,6 +4,7 @@ export const LOGOUT = "logout";
 export const SET_CHATS = "SET_CHATS";
 export const SET_SELECTED_CHAT = "SET_SELECTED_CHAT";
 export const SET_TRAVELS = "SET_TRAVELS";
+export const SET_FILTERS = "SET_FILTERS";
 
 export const setChats = (chats) => ({
   type: SET_CHATS,
@@ -14,7 +15,13 @@ export const setSelectedChat = (chat) => ({
   type: SET_SELECTED_CHAT,
   payload: chat,
 });
+
 export const setTravels = (travels) => ({
-  type: SET_TRAVELS,
+  type: "SET_TRAVELS",
   payload: travels,
+});
+
+export const setFilters = (filters) => ({
+  type: "SET_FILTERS",
+  payload: filters,
 });
