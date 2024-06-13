@@ -74,7 +74,7 @@ function MyNavbar() {
                         </Link>
                         <Link to="/Homepage" className="nav-link fs-6">
                           {" "}
-                          <FaHome className="me-2" /> Organizza il tuo viaggio
+                          <FaHome className="me-2" />Organizza il tuo viaggio
                         </Link>
                         <Link to="/Lobbies" className="nav-link fs-6">
                           {" "}
@@ -82,7 +82,7 @@ function MyNavbar() {
                         </Link>
                         <Link to="/AllTravels" className="nav-link fs-6">
                           {" "}
-                          <MdOutlineTravelExplore className="me-2" /> Viaggi utenti
+                          <MdOutlineTravelExplore className="me-2" />Viaggi utenti
                         </Link>
                         <Link to="/" className="nav-link fs-6">
                           <MdFirstPage className="me-2" />

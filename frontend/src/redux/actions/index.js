@@ -14,7 +14,7 @@ export const setSelectedChat = (chat) => ({
   type: SET_SELECTED_CHAT,
   payload: chat,
 });
-export const setTravels = (travels) => ({
+export const setActionTravels = (travels) => ({
   type: SET_TRAVELS,
   payload: travels,
 });

@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Travel>
@@ -18,8 +19,10 @@ class TravelFactory extends Factory
     public function definition(): array
     {
         // $user_id = User::all()->pluck('id')->all();
-        $type_moto = ['race bikes', 'motocross', 'scooter', 'off-road', 'harley'];
+        $type_moto = ['race_bikes', 'motocross', 'scooter', 'off_road', 'harley'];
         $cc_moto = [150, 300, 600, 1200];
+        $departure_date = fake()->dateTimeBetween('now', '+1 week');
+        $expiration_date = (clone $departure_date)->modify('+'.fake()->numberBetween(0, 3).' days');
 
         return [
             // 'user_id' => fake()->randomElement($user_id),
@@ -28,8 +31,8 @@ class TravelFactory extends Factory
             'lon' => fake()->randomFloat(6, 0, 5),
             'type_moto' => fake()->randomElement($type_moto),
             'cc_moto' => fake()->randomElement($cc_moto),
-            'departure_date' => fake()->date(),
-            'expiration_date' => fake()->date(),
+            'departure_date' => $departure_date->format('Y-m-d'), 
+            'expiration_date' => $expiration_date->format('Y-m-d'),
             'active' => true,
         ];
     }

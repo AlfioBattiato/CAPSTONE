@@ -1,65 +1,51 @@
+import React, { useEffect, useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useDispatch, useSelector } from "react-redux";
-import { setTravels } from '../redux/actions';
+import { useSelector } from 'react-redux';
 import TravelCard from '../components/TravelCard';
 import Sponsor from '../components/Sponsor';
 import FilterTravel from '../components/FilterTravel';
 import Pagination from 'react-bootstrap/Pagination';
 
 function AllTravels() {
-    // const navigate = useNavigate();
     const alltravel = useSelector((state) => state.infotravels.travels);
-    const dispatch = useDispatch();
-    const [filter, setFilter] = useState([]);
-
-
-    useEffect(() => {
-        axios('api/v1/travels')
-            .then((res) => {
-                dispatch(setTravels(res.data));
-                setFilter(res.data)
-                // console.log(res.data);
-            })
-            .catch((error) => {
-                console.error('Error fetching travels:', error);
-            });
-    }, [dispatch]);
-
+    const [travels, setTravels] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const travelsPerPage = 5;
-    const indexOfLastTravel = currentPage * travelsPerPage;
-    const indexOfFirstTravel = indexOfLastTravel - travelsPerPage;
-    const currentTravels = filter.slice(indexOfFirstTravel, indexOfLastTravel);
-    const totalPages = Math.ceil(filter.length / travelsPerPage);
+    const travelsPerPage = 5; // Numero di viaggi per pagina
+    const [totalPages, setTotalPages] = useState(0);
 
+    // Funzione per gestire il cambio di pagina
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
+    // Effetto per impostare i viaggi filtrati e il numero totale di pagine
+    useEffect(() => {
+        const filteredTravels = alltravel.slice(
+            (currentPage - 1) * travelsPerPage,
+            currentPage * travelsPerPage
+        );
+        setTravels(filteredTravels);
+        setTotalPages(Math.ceil(alltravel.length / travelsPerPage));
+    }, [alltravel, currentPage]);
+
     return (
         <div className="container">
             <Row>
-                <Col md={3} className='border-end'>
-                    <h5 className='mt-2'>Filtri di ricerca</h5>
-                    <FilterTravel />
+                <Col md={3} className="border-end">
+                    <h5 className="mt-2">Filtri di ricerca</h5>
+                    <FilterTravel setTravels={setTravels} />
                 </Col>
-                <Col md={7} >
-                    <h5 className='my-2 pb-2'>Viaggi programmati da altri utenti</h5>
-                    <p className='text-primary'>{currentPage} di {totalPages} pagine</p>
-
-                    {currentTravels && currentTravels.length > 0 ? (
-                        currentTravels.map((travel, index) => (
+                <Col md={7}>
+                    <h5 className="my-2 pb-2">Viaggi programmati da altri utenti</h5>
+                    <p className="text-primary">Pagina {currentPage} di {totalPages}</p>
+                    {travels && travels.length > 0 ? (
+                        travels.map((travel, index) => (
                             <TravelCard key={index} travel={travel} />
                         ))
                     ) : (
                         <p>No match found</p>
                     )}
-
-                    {/* Pagina */}
                     <Pagination className="justify-content-center mt-4">
                         <Pagination.First onClick={() => handlePageChange(1)} />
                         <Pagination.Prev onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : 1)} />
@@ -76,8 +62,8 @@ function AllTravels() {
                         <Pagination.Last onClick={() => handlePageChange(totalPages)} />
                     </Pagination>
                 </Col>
-                <Col md={2} className='border-start'>
-                    <h5 className='mt-2'>I nostri partner</h5>
+                <Col md={2} className="border-start">
+                    <h5 className="mt-2">I nostri partner</h5>
                     <Sponsor />
                 </Col>
             </Row>

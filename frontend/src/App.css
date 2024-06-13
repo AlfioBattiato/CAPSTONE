@@ -1,7 +1,16 @@
 body {
     background-color: #EFF3F8 !important;
 
+}
 
+/* Nascondi la barra di scorrimento solo per WebKit */
+html::-webkit-scrollbar {
+    display: none !important;
+    /* Per Chrome, Safari, e Opera */
+    scrollbar-width: none !important;
+    /* Per Firefox */
+    -ms-overflow-style: none !important;
+    /* Per IE e Edge */
 }
 
 .bg-lgrey {
@@ -52,8 +61,9 @@ body {
 .btn-blue-dark {
     background-color: #05203C !important;
 }
+
 .bg-blue-light {
-    background-color:  #08325f !important;
+    background-color: #08325f !important;
 }
 
 .btn-blue-dark:hover {

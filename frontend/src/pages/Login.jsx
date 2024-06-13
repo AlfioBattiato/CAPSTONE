@@ -82,7 +82,7 @@ function Login() {
 
   return (
     <>
-      <div className="container my-5 py-5">
+      <div className="container my-5 py-5 w-50">
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
         <form onSubmit={submitLogin} noValidate>

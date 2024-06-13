@@ -12,13 +12,13 @@ import { FaArrowRight } from "react-icons/fa";
 export default function TravelCard(props) {
     const getImageSource = (vehicleType) => {
         switch (vehicleType) {
-            case 'race bikes':
+            case 'race_bikes':
                 return '/assets/moto2.png';
             case 'motocross':
                 return '/assets/motocross1.png';
             case 'scooter':
                 return '/assets/vespa.png';
-            case 'off-road':
+            case 'off_road':
                 return '/assets/motocross1.png';
             case 'harley':
                 return '/assets/harley2.png';
@@ -56,7 +56,7 @@ export default function TravelCard(props) {
 
                                     </Col>
                                     <Col md={4}>
-                                        <img src={getImageSource(props.travel.type_moto)} alt="mototype" className='img-fluid d-block' style={{ width: "3rem" }} />
+                                        <img src={getImageSource(props.travel.type_moto)} alt="mototype" className='img-fluid d-block' style={{ width: "48px" ,height:'48px',objectFit:"contain"}} />
 
                                         <span className='me-1 fs-12'>Tipologia moto:</span>
                                         <Badge bg="light" text="dark">
