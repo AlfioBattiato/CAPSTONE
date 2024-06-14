@@ -137,3 +137,11 @@ body {
   background-color: #cc0100 !important;
   color: white !important;
 }
+
+.group-item img {
+  transition: transform 0.2s ease-in-out;
+}
+
+.group-item img:hover {
+  transform: scale(1.1);
+}
