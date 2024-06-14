@@ -19,14 +19,15 @@ class TravelFactory extends Factory
     public function definition(): array
     {
         // $user_id = User::all()->pluck('id')->all();
-        $type_moto = ['race_bikes', 'motocross', 'scooter', 'off_road', 'harley'];
+        $citys = ['milano', 'roma', 'catania', 'napoli', 'brindisi', 'la spezia'];
+        $type_moto = ['race bikes', 'motocross', 'scooter', 'off road', 'harley'];
         $cc_moto = [150, 300, 600, 1200];
         $departure_date = fake()->dateTimeBetween('now', '+1 week');
         $expiration_date = (clone $departure_date)->modify('+'.fake()->numberBetween(0, 3).' days');
 
         return [
             // 'user_id' => fake()->randomElement($user_id),
-            'start_location' => 'milano',
+            'start_location' => fake()->randomElement($citys),
             'lat' => fake()->randomFloat(6, 0, 5), // Assicurati che le coordinate siano numeri in virgola mobile
             'lon' => fake()->randomFloat(6, 0, 5),
             'type_moto' => fake()->randomElement($type_moto),

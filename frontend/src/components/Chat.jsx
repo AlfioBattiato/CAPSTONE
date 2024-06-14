@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Card, ListGroup, Form, Button, Col, Row } from "react-bootstrap";
+import { Card, ListGroup, Form, Button, Col } from "react-bootstrap";
 import Message from "./Message";
 import { MdAttachFile } from "react-icons/md";
-import { GrSend } from "react-icons/gr";
+import AudioRecorder from "./AudioRecorder";
 
 const Chat = ({ chat }) => {
   const [messages, setMessages] = useState([]);
@@ -15,8 +15,30 @@ const Chat = ({ chat }) => {
     axios
       .get(`/api/chats/${chat.id}/messages`)
       .then((response) => {
-        console.log("Loaded messages:", response.data);
-        setMessages(response.data);
+        const loadedMessages = response.data;
+        console.log("Loaded messages:", loadedMessages);
+        setMessages(loadedMessages);
+
+        // Contrassegna i messaggi come letti se non sono dell'utente corrente
+        const unreadMessageIds = loadedMessages
+          .filter((message) => message.is_unread && message.user_id !== chat.pivot.user_id)
+          .map((message) => message.id);
+
+        if (unreadMessageIds.length > 0) {
+          axios
+            .post(`/api/messages/mark-as-read`, { messageIds: unreadMessageIds })
+            .then(() => {
+              // Aggiorna lo stato dei messaggi nel frontend
+              setMessages((prevMessages) =>
+                prevMessages.map((message) =>
+                  unreadMessageIds.includes(message.id) ? { ...message, is_unread: false } : message
+                )
+              );
+            })
+            .catch((error) => {
+              console.error("Error marking messages as read:", error);
+            });
+        }
       })
       .catch((error) => {
         console.error("Error loading messages:", error);
@@ -60,57 +82,103 @@ const Chat = ({ chat }) => {
     }
   };
 
+  const handleAudioRecorded = (audioBlob) => {
+    const formData = new FormData();
+    formData.append("chat_id", chat.id);
+    formData.append("file", audioBlob, "recording.wav");
+
+    axios
+      .post("/api/messages", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log("Sent audio message:", response.data);
+        setMessages([...messages, response.data]);
+      })
+      .catch((error) => {
+        console.error("Failed to send audio message:", error);
+      });
+  };
+
+  const handleDeleteMessage = (messageId) => {
+    setMessages(messages.filter((message) => message.id !== messageId));
+  };
+
+  const handleMarkAsRead = (messageId) => {
+    setMessages((prevMessages) =>
+      prevMessages.map((message) => (message.id === messageId ? { ...message, is_unread: false } : message))
+    );
+  };
+
+  const otherUser = chat.users?.find((user) => user.id !== chat.pivot.user_id);
+
   return (
-    <Card className="h-100 d-flex flex-column " style={{ height: "100vh" }}>
-      <Card.Header>
+    <Card
+      variant="flush"
+      className="d-flex flex-column"
+      style={{ height: "90vh", maxHeight: "90vh", backgroundColor: "#FFF", color: "#000" }}
+    >
+      <Card.Header className="bg-blue text-white fs-2 d-flex align-items-center border-bottom rounded-0">
+        <img
+          src={chat.image || otherUser?.profile_img}
+          alt="Chat"
+          className="rounded-circle me-3"
+          style={{ width: "40px", height: "40px" }}
+        />
         {chat.name ||
-          (chat.users && chat.users.length === 1
+          (chat.group_chat
+            ? "Group Chat"
+            : chat.users && chat.users.length === 1
             ? chat.users[0].username
             : chat.users
-              ? chat.users
+            ? chat.users
                 .filter((user) => user.id !== chat.pivot.user_id)
                 .map((user) => user.username)
                 .join(", ")
-              : "Chat with no users")}
+            : "Chat with no users")}
       </Card.Header>
-      <ListGroup variant="flush" className="flex-grow-1 overflow-auto p-2">
+      <ListGroup variant="flush" className="flex-grow-1 overflow-auto p-2 custom-scrollbar">
         {messages.map((message) => (
-          <Message key={message.id} message={message} />
+          <Message key={message.id} message={message} onDelete={handleDeleteMessage} onMarkAsRead={handleMarkAsRead} />
         ))}
         <div ref={messagesEndRef} />
       </ListGroup>
-      <Card.Footer className="mt-auto">
-        <Form onSubmit={handleSendMessage}>
+      <Card.Footer className="bg-blue text-white">
+        <Form onSubmit={handleSendMessage} className="w-100">
           <Form.Group controlId="messageInput" className="d-flex align-items-center">
-            <Row className="w-100 align-tems-center">
-              <Col xs={9} md={10} className="p-1">
-                <Form.Control
-                  type="text"
-                  placeholder="Type a message..."
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  className="me-2 rounded-pill"
-                />
-              </Col>
-              <Col xs={3} md={2} className="d-flex">
-                <label htmlFor="fileInput" className="me-2">
-                  <span className="fs-3 mb-2"><MdAttachFile /></span>
-                  <input
-                    id="fileInput"
-                    type="file"
-                    onChange={(e) => setFile(e.target.files[0])}
-                    className="d-none"
-                  />
+            <Col xs={8} md={9} xl={10} className="p-1">
+              <Form.Control
+                type="text"
+                placeholder="Type a message..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                className="rounded-pill"
+                style={{ backgroundColor: "#FFF", color: "#000" }}
+              />
+            </Col>
+            <Col xs={4} md={3} xl={2} className="p-1 d-flex align-items-center justify-content-around">
+              <label htmlFor="fileInput" className="mb-0 d-flex align-items-center fs-3">
+                <MdAttachFile style={{ color: "#FFF", cursor: "pointer" }} />
+                <input id="fileInput" type="file" onChange={(e) => setFile(e.target.files[0])} className="d-none" />
+              </label>
 
-                </label>
-                <Button variant="light" type="submit" className="rounded-pill">
+              <AudioRecorder onAudioRecorded={handleAudioRecorded} />
+
+              <Button
+                variant="light"
+                type="submit"
+                className="d-flex align-items-center justify-content-center"
+                style={{ backgroundColor: "#CC0000", borderColor: "#CC0000", height: "38px" }}
+                disabled={!newMessage.trim() && !file}
+              >
+                <p style={{ color: "#FFF" }} className="m-0 fs-5">
                   Invia
-                </Button>
-              </Col>
-            </Row>
-
+                </p>
+              </Button>
+            </Col>
           </Form.Group>
-
         </Form>
       </Card.Footer>
     </Card>

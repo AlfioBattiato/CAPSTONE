@@ -18,6 +18,8 @@ function useCheckboxes(initialState) {
             [id]: checked,
         }));
     };
+    dispatch(setFilters(newFilters));
+  };
 
     return [checkboxes, handleCheckboxChange];
 }

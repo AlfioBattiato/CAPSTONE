@@ -14,6 +14,7 @@ class ChatFactory extends Factory
         return [
             'name' => $this->faker->sentence,
             'active' => true,
+            'group_chat' => false,
         ];
     }
 }

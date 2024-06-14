@@ -17,6 +17,7 @@ class Message extends Model
         'send_at',
         'file_path',
         'file_type',
+        'is_unread',
     ];
 
     protected $dates = ['send_at'];

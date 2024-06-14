@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Container } from "react-bootstrap";
 import AllChats from "../components/AllChats";
 import Chat from "../components/Chat";
 
@@ -8,12 +8,12 @@ const Lobbies = () => {
   const selectedChat = useSelector((state) => state.chats.selectedChat);
 
   return (
-    <div className="container mt-5">
-      <Row className="">
-        <Col md={4} className="">
+    <Container style={{ height: "90vh" }}>
+      <Row className="h-100">
+        <Col md={3} className="h-100 p-0">
           <AllChats />
         </Col>
-        <Col md={8} className="">
+        <Col md={9} className="h-100 p-0">
           {selectedChat ? (
             <Chat chat={selectedChat} />
           ) : (
@@ -23,8 +23,7 @@ const Lobbies = () => {
           )}
         </Col>
       </Row>
-
-    </div>
+    </Container>
   );
 };
 

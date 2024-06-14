@@ -28,9 +28,11 @@ class ChatController extends Controller
             'name' => 'nullable|string|max:255',
             'active' => 'boolean',
             'travel_id' => 'nullable|exists:travels,id',
+            'image' => 'nullable|string|max:255',
         ]);
 
         $chat = Chat::create($request->all());
+        $chat->updateGroupChatStatus();
 
         return response()->json($chat, 201);
     }
@@ -41,9 +43,11 @@ class ChatController extends Controller
             'name' => 'nullable|string|max:255',
             'active' => 'boolean',
             'travel_id' => 'nullable|exists:travels,id',
+            'image' => 'nullable|string|max:255',
         ]);
 
         $chat->update($request->all());
+        $chat->updateGroupChatStatus();
 
         return response()->json($chat);
     }
@@ -64,6 +68,7 @@ class ChatController extends Controller
 
         $user = User::findOrFail($request->input('user_id'));
         $chat->users()->attach($user);
+        $chat->updateGroupChatStatus();
 
         return response()->json(['message' => 'User added to chat successfully'], 200);
     }
@@ -76,7 +81,10 @@ class ChatController extends Controller
 
         $user = User::findOrFail($request->input('user_id'));
         $chat->users()->detach($user);
+        $chat->updateGroupChatStatus();
 
         return response()->json(['message' => 'User removed from chat successfully'], 200);
     }
+
+    
 }

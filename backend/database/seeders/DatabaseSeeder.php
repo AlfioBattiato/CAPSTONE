@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
 
             if ($travel->chat) {
                 $travel->chat->addUsersFromTravel($travel);
+                $travel->chat->updateGroupChatStatus();
             }
         }
     }

@@ -1,20 +1,23 @@
-import React, { useEffect } from "react";
-import { ListGroup } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { ListGroup, Row, Col, Card } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { setChats, setSelectedChat } from "../redux/actions";
+import GroupList from "./GroupList";
+import ChatList from "./ChatList";
+import GroupMembers from "./GroupMembers";
 
 const AllChats = () => {
   const chats = useSelector((state) => state.chats.chats);
+  const selectedChat = useSelector((state) => state.chats.selectedChat);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [isPrivateChatsSelected, setIsPrivateChatsSelected] = useState(true);
   const dispatch = useDispatch();
-
-  console.log("Redux state chats:", chats);
 
   useEffect(() => {
     axios
       .get("/api/chats")
       .then((response) => {
-        // console.log("Fetched chats:", response.data);
         dispatch(setChats(response.data));
       })
       .catch((error) => {
@@ -22,31 +25,50 @@ const AllChats = () => {
       });
   }, [dispatch]);
 
+  const handleGroupClick = (group) => {
+    setSelectedGroup(group);
+    dispatch(setSelectedChat(group));
+    setIsPrivateChatsSelected(false);
+  };
+
   const handleChatClick = (chat) => {
-    // console.log("Chat clicked:", chat);
     dispatch(setSelectedChat(chat));
   };
 
+  const handlePrivateChatsClick = () => {
+    setSelectedGroup(null);
+    setIsPrivateChatsSelected(true);
+  };
+
+  const groupChats = chats.filter((chat) => chat.group_chat);
+  const privateChats = chats.filter((chat) => !chat.group_chat);
+
   return (
-    <ListGroup variant="flush">
-      {Array.isArray(chats) && chats.length > 0 ? (
-        chats.map((chat) => (
-          <ListGroup.Item key={chat.id} onClick={() => handleChatClick(chat)} style={{ cursor: "pointer" }}>
-            {chat.name ||
-              (chat.users && chat.users.length === 1
-                ? chat.users[0].username
-                : chat.users
-                ? chat.users
-                    .filter((user) => user.id !== chat.pivot.user_id)
-                    .map((user) => user.username)
-                    .join(", ")
-                : "Chat with no users")}
-          </ListGroup.Item>
-        ))
-      ) : (
-        <ListGroup.Item>No chats available</ListGroup.Item>
-      )}
-    </ListGroup>
+    <Card style={{ height: "90vh", maxHeight: "90vh" }}>
+      <Card.Header
+        className={`fs-2 d-flex align-items-center border-bottom rounded-0 ${
+          isPrivateChatsSelected ? "bg-red" : "bg-blue text-white"
+        }`}
+        onClick={handlePrivateChatsClick}
+        style={{ cursor: "pointer" }}
+      >
+        <span>Private Chats</span>
+      </Card.Header>
+      <Card.Body className="p-0">
+        <Row className="h-100 m-0">
+          <Col md={3} className="p-0 h-100">
+            <GroupList groups={groupChats} selectedGroup={selectedGroup} onGroupClick={handleGroupClick} />
+          </Col>
+          <Col md={9} className="p-0 h-100">
+            {isPrivateChatsSelected ? (
+              <ChatList chats={privateChats} onChatClick={handleChatClick} selectedChat={selectedChat} />
+            ) : (
+              <GroupMembers group={selectedGroup} />
+            )}
+          </Col>
+        </Row>
+      </Card.Body>
+    </Card>
   );
 };
 
