@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
             $table->foreignId('travel_id')->nullable()->constrained()->onDelete('cascade');
-            $table->string('name')->nullable(); 
+            $table->string('name')->nullable();
+            $table->string('image')->nullable();
             $table->boolean('active')->default(true);
+            $table->boolean('group_chat')->default(false);
             $table->timestamps();
         });
     }

@@ -77,6 +77,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('messages', [MessageController::class, 'index']);
     Route::get('messages/{message}', [MessageController::class, 'show']);
     Route::post('messages', [MessageController::class, 'store']);
+    Route::post('messages/mark-as-read', [MessageController::class, 'markAsRead']);
     Route::put('messages/{message}', [MessageController::class, 'update']);
     Route::delete('messages/{message}', [MessageController::class, 'destroy']);
 });

@@ -35,6 +35,7 @@ class MessageController extends Controller
             $message->file = $file;
         }
 
+        $message->is_unread = true;
         $message->send_at = now();
         $message->save();
 
@@ -77,6 +78,22 @@ class MessageController extends Controller
         $message->delete();
         return response()->json(null, 204);
     }
+
+    public function markAsRead(Request $request)
+{
+    $messageIds = $request->input('messageIds', []);
+
+    // Assicurati che solo i destinatari dei messaggi possano contrassegnarli come letti
+    $messages = Message::whereIn('id', $messageIds)->where('user_id', '!=', Auth::id())->get();
+
+    foreach ($messages as $message) {
+        $message->is_unread = false;
+        $message->save();
+    }
+
+    return response()->json(['message' => 'Messages marked as read']);
+}
+ 
 
     public function getMessagesByChat(Chat $chat)
     {

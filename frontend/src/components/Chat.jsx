@@ -15,8 +15,30 @@ const Chat = ({ chat }) => {
     axios
       .get(`/api/chats/${chat.id}/messages`)
       .then((response) => {
-        console.log("Loaded messages:", response.data);
-        setMessages(response.data);
+        const loadedMessages = response.data;
+        console.log("Loaded messages:", loadedMessages);
+        setMessages(loadedMessages);
+
+        // Contrassegna i messaggi come letti se non sono dell'utente corrente
+        const unreadMessageIds = loadedMessages
+          .filter((message) => message.is_unread && message.user_id !== chat.pivot.user_id)
+          .map((message) => message.id);
+
+        if (unreadMessageIds.length > 0) {
+          axios
+            .post(`/api/messages/mark-as-read`, { messageIds: unreadMessageIds })
+            .then(() => {
+              // Aggiorna lo stato dei messaggi nel frontend
+              setMessages((prevMessages) =>
+                prevMessages.map((message) =>
+                  unreadMessageIds.includes(message.id) ? { ...message, is_unread: false } : message
+                )
+              );
+            })
+            .catch((error) => {
+              console.error("Error marking messages as read:", error);
+            });
+        }
       })
       .catch((error) => {
         console.error("Error loading messages:", error);
@@ -84,6 +106,12 @@ const Chat = ({ chat }) => {
     setMessages(messages.filter((message) => message.id !== messageId));
   };
 
+  const handleMarkAsRead = (messageId) => {
+    setMessages((prevMessages) =>
+      prevMessages.map((message) => (message.id === messageId ? { ...message, is_unread: false } : message))
+    );
+  };
+
   const otherUser = chat.users?.find((user) => user.id !== chat.pivot.user_id);
 
   return (
@@ -93,16 +121,16 @@ const Chat = ({ chat }) => {
       style={{ height: "90vh", maxHeight: "90vh", backgroundColor: "#FFF", color: "#000" }}
     >
       <Card.Header className="bg-blue text-white fs-2 d-flex align-items-center border-bottom rounded-0">
-        {otherUser && (
-          <img
-            src={otherUser.profile_img}
-            alt="Profile"
-            className="rounded-circle me-3"
-            style={{ width: "40px", height: "40px" }}
-          />
-        )}
+        <img
+          src={chat.image || otherUser?.profile_img}
+          alt="Chat"
+          className="rounded-circle me-3"
+          style={{ width: "40px", height: "40px" }}
+        />
         {chat.name ||
-          (chat.users && chat.users.length === 1
+          (chat.group_chat
+            ? "Group Chat"
+            : chat.users && chat.users.length === 1
             ? chat.users[0].username
             : chat.users
             ? chat.users
@@ -113,14 +141,14 @@ const Chat = ({ chat }) => {
       </Card.Header>
       <ListGroup variant="flush" className="flex-grow-1 overflow-auto p-2 custom-scrollbar">
         {messages.map((message) => (
-          <Message key={message.id} message={message} onDelete={handleDeleteMessage} />
+          <Message key={message.id} message={message} onDelete={handleDeleteMessage} onMarkAsRead={handleMarkAsRead} />
         ))}
         <div ref={messagesEndRef} />
       </ListGroup>
       <Card.Footer className="bg-blue text-white">
         <Form onSubmit={handleSendMessage} className="w-100">
           <Form.Group controlId="messageInput" className="d-flex align-items-center">
-            <Col xs={8} md={9} xl={11} className="p-1">
+            <Col xs={8} md={9} xl={10} className="p-1">
               <Form.Control
                 type="text"
                 placeholder="Type a message..."
@@ -130,7 +158,7 @@ const Chat = ({ chat }) => {
                 style={{ backgroundColor: "#FFF", color: "#000" }}
               />
             </Col>
-            <Col xs={4} md={3} xl={1} className="p-1 d-flex align-items-center justify-content-around">
+            <Col xs={4} md={3} xl={2} className="p-1 d-flex align-items-center justify-content-around">
               <label htmlFor="fileInput" className="mb-0 d-flex align-items-center fs-3">
                 <MdAttachFile style={{ color: "#FFF", cursor: "pointer" }} />
                 <input id="fileInput" type="file" onChange={(e) => setFile(e.target.files[0])} className="d-none" />

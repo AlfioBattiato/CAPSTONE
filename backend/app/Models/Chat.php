@@ -16,7 +16,7 @@ class Chat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'travel_id', 'name', 'active',
+        'travel_id', 'name', 'active', 'group_chat', 'image',
     ];
 
     /**
@@ -44,6 +44,13 @@ class Chat extends Model
     {
         $users = $travel->users()->pluck('user_id')->toArray();
         $this->users()->syncWithoutDetaching($users);
+        $this->updateGroupChatStatus();
+    }
+
+    public function updateGroupChatStatus()
+    {
+        $this->group_chat = ($this->users()->count() > 2 || $this->travel_id !== null);
+        $this->save();
     }
 
     /**
@@ -51,14 +58,31 @@ class Chat extends Model
      */
     protected static function booted()
     {
+
+
+        static::creating(function ($chat) {
+            if ($chat->group_chat && is_null($chat->image)) {
+                $chat->image = 'http://localhost:8000/storage/profiles/group-of-people.svg';
+            }
+        });
+
         static::created(function ($chat) {
             if ($chat->travel_id) {
                 $travel = Travel::find($chat->travel_id);
                 if ($travel) {
                     $chat->users()->attach($travel->users->pluck('id')->toArray());
                 }
+                $chat->updateGroupChatStatus();
             }
         });
+
+
+        static::updating(function ($chat) {
+            if ($chat->group_chat && is_null($chat->image)) {
+                $chat->image = 'http://localhost:8000/storage/profiles/group-of-people.svg';
+            }
+        });
+
 
         static::deleting(function ($chat) {
             $chat->users()->detach();

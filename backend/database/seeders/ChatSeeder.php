@@ -19,19 +19,21 @@ class ChatSeeder extends Seeder
         $user3 = User::where('email', 'pincor@pancor.com')->first();
 
         if ($user1 && $user2 && $user3) {
-
-            $chat1 = Chat::create(['name' => null]);
+            $chat1 = Chat::create(['name' => null, 'group_chat' => false]);
             $chat1->users()->attach([$user1->id, $user2->id]);
+            $chat1->updateGroupChatStatus();
 
-            $chat2 = Chat::create(['name' => null]);
+            $chat2 = Chat::create(['name' => null, 'group_chat' => false]);
             $chat2->users()->attach([$user1->id, $user3->id]);
+            $chat2->updateGroupChatStatus();
 
-            $chat3 = Chat::create(['name' => null]);
+            $chat3 = Chat::create(['name' => null, 'group_chat' => false]);
             $chat3->users()->attach([$user2->id, $user3->id]);
+            $chat3->updateGroupChatStatus();
 
-
-            $groupChat = Chat::create(['name' => 'Group Chat']);
+            $groupChat = Chat::create(['name' => 'Group Chat', 'group_chat' => true]);
             $groupChat->users()->attach([$user1->id, $user2->id, $user3->id]);
+            $groupChat->updateGroupChatStatus();
         } else {
 
             $this->command->error('Gli utenti non sono stati trovati. Assicurati di eseguire UserSeeder prima di ChatSeeder.');

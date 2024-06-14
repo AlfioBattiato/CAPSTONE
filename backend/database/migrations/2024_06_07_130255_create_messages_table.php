@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('message')->nullable();
             $table->string('file_path')->nullable(); // Percorso del file nel filesystem
             $table->string('file_type')->nullable(); // Tipo di file MIME
+            $table->boolean('is_unread')->default(true);
             $table->timestamp('send_at')->useCurrent();
             $table->timestamps();
         });

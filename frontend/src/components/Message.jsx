@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ListGroup, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
-const Message = ({ message, onDelete }) => {
+const Message = ({ message, onDelete, onMarkAsRead }) => {
   const [isHovered, setIsHovered] = useState(false);
   const user = useSelector((state) => state.auth.user);
   const isOwnMessage = user.id === message.user_id;
