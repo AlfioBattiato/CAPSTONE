@@ -12,13 +12,13 @@ import { FaArrowRight } from "react-icons/fa";
 export default function TravelCard(props) {
     const getImageSource = (vehicleType) => {
         switch (vehicleType) {
-            case 'race_bikes':
+            case 'race bikes':
                 return '/assets/moto2.png';
             case 'motocross':
                 return '/assets/motocross1.png';
             case 'scooter':
                 return '/assets/vespa.png';
-            case 'off_road':
+            case 'off road':
                 return '/assets/motocross1.png';
             case 'harley':
                 return '/assets/harley2.png';

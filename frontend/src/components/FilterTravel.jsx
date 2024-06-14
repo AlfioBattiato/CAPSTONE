@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import Switch from 'react-switch';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { setActionTravels } from '../redux/actions';
@@ -11,8 +14,7 @@ import { format } from 'date-fns';
 function useCheckboxes(initialState) {
     const [checkboxes, setCheckboxes] = useState(initialState);
 
-    const handleCheckboxChange = (event) => {
-        const { id, checked } = event.target;
+    const handleCheckboxChange = (id, checked) => {
         setCheckboxes((prevState) => ({
             ...prevState,
             [id]: checked,
@@ -44,23 +46,23 @@ export default function FilterTravel({ setTravels }) {
     const [days, setDays] = useState(0);
 
     const [checkboxes, handleCheckboxChange] = useCheckboxes({
-        scooter: true,
-        race_bikes: true,
-        motocross: true,
-        off_road: true,
-        harley: true,
+        scooter: false,
+        racebikes: false,
+        motocross: false,
+        offroad: false,
+        harley: false,
     });
 
-    const handleCcChange = (e) => {
-        setCc(parseInt(e.target.value, 10));
+    const handleCcChange = (value) => {
+        setCc(value);
     };
 
-    const handleParticipantsChange = (e) => {
-        setParticipants(parseInt(e.target.value, 10));
+    const handleParticipantsChange = (value) => {
+        setParticipants(value);
     };
 
-    const handleDaysChange = (e) => {
-        setDays(parseInt(e.target.value, 10));
+    const handleDaysChange = (value) => {
+        setDays(value);
     };
 
     const getCcValue = (step) => {
@@ -95,8 +97,11 @@ export default function FilterTravel({ setTravels }) {
         }
 
         const selectedTypes = Object.keys(checkboxes).filter(key => checkboxes[key]);
-        if (selectedTypes.length > 0 && selectedTypes.length < Object.keys(checkboxes).length) {
-            filteredTravels = filteredTravels.filter((travel) => selectedTypes.includes(travel.type_moto));
+        if (selectedTypes.length > 0) {
+            filteredTravels = filteredTravels.filter((travel) => {
+                const travelType = travel.type_moto.toLowerCase().replace(' ', '');
+                return selectedTypes.includes(travelType);
+            });
         }
 
         if (days > 0) {
@@ -133,29 +138,62 @@ export default function FilterTravel({ setTravels }) {
                 placeholderText='Data di partenza'
             />
             <hr />
-            {Object.keys(checkboxes).map((key) => (
-                <div className="form-check" key={key}>
-                    <input
-                        checked={checkboxes[key]}
-                        className="form-check-input"
-                        type="checkbox"
-                        id={key}
-                        onChange={handleCheckboxChange}
-                    />
-                    <label className="form-check-label" htmlFor={key}>{key}</label>
-                </div>
-            ))}
+            {Object.keys(checkboxes).map((key) => {
+                const label = key === 'racebikes' ? 'Race Bikes' : key === 'offroad' ? 'Off Road' : key.charAt(0).toUpperCase() + key.slice(1);
+                return (
+                    <div className="form-check" key={key}>
+                        <Switch
+                            checked={checkboxes[key]}
+                            onChange={(checked) => handleCheckboxChange(key, checked)}
+                            onColor="#86d3ff"
+                            onHandleColor="#2693e6"
+                            handleDiameter={22}
+                            uncheckedIcon={false}
+                            checkedIcon={false}
+                            height={18}
+                            width={40}
+                            className="react-switch"
+                            id={key}
+                        />
+                        <label className="form-check-label ms-2" htmlFor={key}>{label}</label>
+                    </div>
+                );
+            })}
             <Form.Label className="mt-3 fw-bold">Cilindrata minima</Form.Label>
-            <Form.Range min={0} max={4} step={1} value={cc} onChange={handleCcChange} />
+            <Slider 
+                min={0} 
+                max={4} 
+                step={1} 
+                value={cc} 
+                onChange={handleCcChange} 
+                trackStyle={{ backgroundColor: '#86d3ff' }} 
+                handleStyle={{ borderColor: '#2693e6', backgroundColor: '#2693e6' }}
+            />
             <p className='mb-0'>Cilindrata: {cc === 0 ? 'Nessun filtro' : `${getCcValue(cc)} cc`}</p>
             <hr />
             <Form.Label className="mt-3 fw-bold">Numero partecipanti</Form.Label>
-            <Form.Range min={0} max={10} step={1} value={participants} onChange={handleParticipantsChange} />
+            <Slider 
+                min={0} 
+                max={10} 
+                step={1} 
+                value={participants} 
+                onChange={handleParticipantsChange} 
+                trackStyle={{ backgroundColor: '#86d3ff' }} 
+                handleStyle={{ borderColor: '#2693e6', backgroundColor: '#2693e6' }}
+            />
             <p className='mb-0'>Numero partecipanti:</p>
             <div className="fw-bold text-secondary">{participants === 0 ? 'Nessun filtro' : participants}</div>
             <hr />
             <Form.Label className="mt-3 fw-bold">Giorni in viaggio</Form.Label>
-            <Form.Range min={0} max={10} step={1} value={days} onChange={handleDaysChange} />
+            <Slider 
+                min={0} 
+                max={10} 
+                step={1} 
+                value={days} 
+                onChange={handleDaysChange} 
+                trackStyle={{ backgroundColor: '#86d3ff' }} 
+                handleStyle={{ borderColor: '#2693e6', backgroundColor: '#2693e6' }}
+            />
             <p className='mb-0'>Giorni in viaggio:</p>
             <div className="fw-bold text-secondary">{days === 0 ? 'Nessun filtro' : days}</div>
         </div>
