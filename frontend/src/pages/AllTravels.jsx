@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { useSelector } from 'react-redux';
 import TravelCard from '../components/TravelCard';
 import Sponsor from '../components/Sponsor';
 import FilterTravel from '../components/FilterTravel';
 import Pagination from 'react-bootstrap/Pagination';
 
 function AllTravels() {
-    const alltravel = useSelector((state) => state.infotravels.travels);
     const [travels, setTravels] = useState([]);
+    const [activeTravels, setActiveTravels] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const travelsPerPage = 5; // Numero di viaggi per pagina
     const [totalPages, setTotalPages] = useState(0);
@@ -19,15 +18,19 @@ function AllTravels() {
         setCurrentPage(pageNumber);
     };
 
-    // Effetto per impostare i viaggi filtrati e il numero totale di pagine
+    // Effetto per impostare i viaggi visualizzati sulla pagina corrente
     useEffect(() => {
-        const filteredTravels = alltravel.slice(
-            (currentPage - 1) * travelsPerPage,
-            currentPage * travelsPerPage
-        );
-        setTravels(filteredTravels);
-        setTotalPages(Math.ceil(alltravel.length / travelsPerPage));
-    }, [alltravel, currentPage]);
+        const startIndex = (currentPage - 1) * travelsPerPage;
+        const endIndex = startIndex + travelsPerPage;
+        setActiveTravels(travels.slice(startIndex, endIndex));
+        
+    }, [travels, currentPage]);
+
+    // Effetto per calcolare il numero totale di pagine
+    useEffect(() => {
+        setTotalPages(Math.ceil(travels.length / travelsPerPage));
+        setCurrentPage(1)
+    }, [travels]);
 
     return (
         <div className="container">
@@ -39,8 +42,8 @@ function AllTravels() {
                 <Col md={7}>
                     <h5 className="my-2 pb-2">Viaggi programmati da altri utenti</h5>
                     <p className="text-primary">Pagina {currentPage} di {totalPages}</p>
-                    {travels && travels.length > 0 ? (
-                        travels.map((travel, index) => (
+                    {activeTravels && activeTravels.length > 0 ? (
+                        activeTravels.map((travel, index) => (
                             <TravelCard key={index} travel={travel} />
                         ))
                     ) : (
