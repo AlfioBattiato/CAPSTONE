@@ -5,7 +5,7 @@ import TravelCard from '../components/TravelCard';
 import Sponsor from '../components/Sponsor';
 import FilterTravel from '../components/FilterTravel';
 import Pagination from 'react-bootstrap/Pagination';
-import { Switch, Spacer } from "@nextui-org/react";
+
 function AllTravels() {
     const [travels, setTravels] = useState([]);
     const [activeTravels, setActiveTravels] = useState([]);
@@ -37,8 +37,7 @@ function AllTravels() {
             <Row>
                 <Col md={3} className="border-end">
                     <h5 className="mt-2">Filtri di ricerca</h5>
-
-                    <FilterTravel setTravels={setTravels} />
+                   <FilterTravel setTravels={setTravels} />
                 </Col>
                 <Col md={7}>
                     <h5 className="my-2 pb-2">Viaggi programmati da altri utenti</h5>

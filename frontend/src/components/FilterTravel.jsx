@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { setActionTravels } from '../redux/actions';
 import { format } from 'date-fns';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 // Hook per gestire i checkbox
 function useCheckboxes(initialState) {
@@ -41,7 +42,6 @@ export default function FilterTravel({ setTravels }) {
 
     const [city, setCity] = useState("");
     const [startDate, setStartDate] = useState(null);
-    const [cc, setCc] = useState(0);
     const [participants, setParticipants] = useState(0);
     const [days, setDays] = useState(0);
 
@@ -53,28 +53,12 @@ export default function FilterTravel({ setTravels }) {
         harley: false,
     });
 
-    const handleCcChange = (value) => {
-        setCc(value);
-    };
-
-    const handleParticipantsChange = (value) => {
-        setParticipants(value);
-    };
-
-    const handleDaysChange = (value) => {
-        setDays(value);
-    };
-
-    const getCcValue = (step) => {
-        switch (step) {
-            case 0: return null;
-            case 1: return 150;
-            case 2: return 300;
-            case 3: return 600;
-            case 4: return 1200;
-            default: return null;
-        }
-    };
+    const [checkboxes2, handleCheckboxChange2] = useCheckboxes({
+        150: false,
+        300: false,
+        600: false,
+        1200: false,
+    });
 
     useEffect(() => {
         let filteredTravels = [...alltravel];
@@ -88,12 +72,9 @@ export default function FilterTravel({ setTravels }) {
             filteredTravels = filteredTravels.filter((travel) => travel.departure_date === formattedDate);
         }
 
-        if (getCcValue(cc) !== null) {
-            filteredTravels = filteredTravels.filter((travel) => travel.cc_moto === getCcValue(cc));
-        }
-
-        if (participants > 0) {
-            filteredTravels = filteredTravels.filter((travel) => travel.users.length === participants || travel.users.length > 10);
+        const selectedCcs = Object.keys(checkboxes2).filter(key => checkboxes2[key]);
+        if (selectedCcs.length > 0) {
+            filteredTravels = filteredTravels.filter((travel) => selectedCcs.includes(travel.cc_moto.toString()));
         }
 
         const selectedTypes = Object.keys(checkboxes).filter(key => checkboxes[key]);
@@ -102,6 +83,10 @@ export default function FilterTravel({ setTravels }) {
                 const travelType = travel.type_moto.toLowerCase().replace(' ', '');
                 return selectedTypes.includes(travelType);
             });
+        }
+
+        if (participants > 0) {
+            filteredTravels = filteredTravels.filter((travel) => travel.users.length === participants || travel.users.length > 10);
         }
 
         if (days > 0) {
@@ -115,7 +100,7 @@ export default function FilterTravel({ setTravels }) {
 
         setTravels(filteredTravels);
 
-    }, [city, startDate, cc, participants, checkboxes, days, alltravel, setTravels]);
+    }, [city, startDate, participants, checkboxes, days, alltravel, setTravels, checkboxes2]);
 
     return (
         <div className="mt-2">
@@ -123,7 +108,7 @@ export default function FilterTravel({ setTravels }) {
                 type="text"
                 required
                 name="city"
-                className="form-control"
+                className="form-control rounded-pill"
                 placeholder="Città di partenza"
                 onChange={(e) => setCity(e.target.value.toUpperCase())}
             />
@@ -131,17 +116,31 @@ export default function FilterTravel({ setTravels }) {
             <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
-                className="form-control"
+                className="form-control rounded-pill"
                 minDate={new Date()}
                 dateFormat="dd/MM/yyyy"
                 isClearable
                 placeholderText='Data di partenza'
             />
             <hr />
+            <Form.Label className="fw-bold">
+                Tipologia moto{' '}
+                <OverlayTrigger
+                    placement="right"
+                    overlay={
+                        <Tooltip id="tooltip-help">
+                            Seleziona i tipi di moto che desideri includere nella ricerca.
+                        </Tooltip>
+                    }
+                >
+                    <span style={{ cursor: 'pointer' }}>?</span>
+                </OverlayTrigger>
+            </Form.Label>
             {Object.keys(checkboxes).map((key) => {
-                const label = key === 'racebikes' ? 'Race Bikes' : key === 'offroad' ? 'Off Road' : key.charAt(0).toUpperCase() + key.slice(1);
+                const label =
+                    key === 'racebikes' ? 'Race Bikes' : key === 'offroad' ? 'Off Road' : key.charAt(0).toUpperCase() + key.slice(1);
                 return (
-                    <div className="form-check" key={key}>
+                    <div className="form-check ps-0" key={key}>
                         <Switch
                             checked={checkboxes[key]}
                             onChange={(checked) => handleCheckboxChange(key, checked)}
@@ -155,43 +154,71 @@ export default function FilterTravel({ setTravels }) {
                             className="react-switch"
                             id={key}
                         />
-                        <label className="form-check-label ms-2" htmlFor={key}>{label}</label>
+                        <label className="form-check-label ms-2" htmlFor={key}>
+                            {label}
+                        </label>
                     </div>
                 );
             })}
-            <Form.Label className="mt-3 fw-bold">Cilindrata minima</Form.Label>
-            <Slider 
-                min={0} 
-                max={4} 
-                step={1} 
-                value={cc} 
-                onChange={handleCcChange} 
-                trackStyle={{ backgroundColor: '#86d3ff' }} 
-                handleStyle={{ borderColor: '#2693e6', backgroundColor: '#2693e6' }}
-            />
-            <p className='mb-0'>Cilindrata: {cc === 0 ? 'Nessun filtro' : `${getCcValue(cc)} cc`}</p>
             <hr />
+            <Form.Label className="fw-bold">
+                Cilindrata minima{' '}
+                <OverlayTrigger
+                    placement="right"
+                    overlay={
+                        <Tooltip id="tooltip-help">
+                            Chiedi al creatore del viaggio se la cilindrata della tua moto è adatta per il tipo di percorso previsto.
+                        </Tooltip>
+                    }
+                >
+                    <span style={{ cursor: 'pointer' }}>?</span>
+                </OverlayTrigger>
+            </Form.Label>
+            {Object.keys(checkboxes2).map((key) => {
+                const label =
+                    key === 'racebikes' ? 'Race Bikes' : key === 'offroad' ? 'Off Road' : key.charAt(0).toUpperCase() + key.slice(1);
+                return (
+                    <div className="form-check ps-0" key={key}>
+                        <Switch
+                            checked={checkboxes2[key]}
+                            onChange={(checked) => handleCheckboxChange2(key, checked)}
+                            onColor="#86d3ff"
+                            onHandleColor="#2693e6"
+                            handleDiameter={22}
+                            uncheckedIcon={false}
+                            checkedIcon={false}
+                            height={18}
+                            width={40}
+                            className="react-switch"
+                            id={key}
+                        />
+                        <label className="form-check-label ms-2" htmlFor={key}>
+                            {label}
+                        </label>
+                    </div>
+                );
+            })}
             <Form.Label className="mt-3 fw-bold">Numero partecipanti</Form.Label>
-            <Slider 
-                min={0} 
-                max={10} 
-                step={1} 
-                value={participants} 
-                onChange={handleParticipantsChange} 
-                trackStyle={{ backgroundColor: '#86d3ff' }} 
+            <Slider
+                min={0}
+                max={10}
+                step={1}
+                value={participants}
+                onChange={(value) => setParticipants(value)}
+                trackStyle={{ backgroundColor: '#86d3ff' }}
                 handleStyle={{ borderColor: '#2693e6', backgroundColor: '#2693e6' }}
             />
             <p className='mb-0'>Numero partecipanti:</p>
             <div className="fw-bold text-secondary">{participants === 0 ? 'Nessun filtro' : participants}</div>
             <hr />
             <Form.Label className="mt-3 fw-bold">Giorni in viaggio</Form.Label>
-            <Slider 
-                min={0} 
-                max={10} 
-                step={1} 
-                value={days} 
-                onChange={handleDaysChange} 
-                trackStyle={{ backgroundColor: '#86d3ff' }} 
+            <Slider
+                min={0}
+                max={10}
+                step={1}
+                value={days}
+                onChange={(value) => setDays(value)}
+                trackStyle={{ backgroundColor: '#86d3ff' }}
                 handleStyle={{ borderColor: '#2693e6', backgroundColor: '#2693e6' }}
             />
             <p className='mb-0'>Giorni in viaggio:</p>
