@@ -26,7 +26,7 @@ function useCheckboxes(initialState) {
 }
 
 export default function FilterTravel({ setTravels }) {
-    const alltravel = useSelector((state) => state.infotravels.travels);
+    const alltravel = useSelector((state) => state.infotravels.alltravels);
     const dispatch = useDispatch();
 
     useEffect(() => {

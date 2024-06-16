@@ -1,8 +1,14 @@
-import { SET_TRAVELS, SET_FILTERS } from "../actions";
+import { SET_ALLTRAVELS, SET_TRAVEL } from "../actions";
 
 const initialState = {
-  travels: [],
-  filters: {
+  alltravels: [],
+  setTravel: {
+    start_location: {
+      city: '',
+      lat: 0,
+      lon: 0,
+    },
+    metas: [],
     startDate: null,
     city: "",
     cc: null,
@@ -20,15 +26,15 @@ const initialState = {
 
 const travelsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_TRAVELS:
+    case SET_ALLTRAVELS:
       return {
         ...state,
-        travels: action.payload,
+        alltravels: action.payload,
       };
-    case SET_FILTERS:
+    case SET_TRAVEL:
       return {
         ...state,
-        filters: action.payload,
+        setTravel: action.payload,
       };
     default:
       return state;

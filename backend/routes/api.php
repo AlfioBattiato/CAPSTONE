@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use Illuminate\Support\Facades\Http;
 
 // Authentication routes provided by Breeze
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
@@ -80,4 +81,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('messages/mark-as-read', [MessageController::class, 'markAsRead']);
     Route::put('messages/{message}', [MessageController::class, 'update']);
     Route::delete('messages/{message}', [MessageController::class, 'destroy']);
+});
+// funzioni per il map 
+Route::get('/proxy/nominatim', function (Request $request) {
+    $query = $request->input('q');
+    $response = Http::get('https://nominatim.openstreetmap.org/search', [
+        'q' => $query,
+        'format' => 'json',
+        'addressdetails' => 1,
+        'limit' => 10,
+    ]);
+
+    return $response->json();
 });
