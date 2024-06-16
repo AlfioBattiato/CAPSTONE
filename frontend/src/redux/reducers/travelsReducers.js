@@ -1,4 +1,4 @@
-import { SET_ALLTRAVELS, SET_TRAVEL } from "../actions";
+import { REMOVE_META, SET_ALLTRAVELS, SET_TRAVEL } from "../actions";
 
 const initialState = {
   alltravels: [],
@@ -35,6 +35,14 @@ const travelsReducer = (state = initialState, action) => {
       return {
         ...state,
         setTravel: action.payload,
+      };
+      case REMOVE_META:
+      return {
+          ...state,
+          setTravel: {
+              ...state.setTravel,
+              metas: state.setTravel.metas.filter((_, index) => index !== action.payload)
+          }
       };
     default:
       return state;

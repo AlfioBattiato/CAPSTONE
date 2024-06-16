@@ -39,7 +39,7 @@ function AllTravels() {
                     <h5 className="mt-2">Filtri di ricerca</h5>
                    <FilterTravel setTravels={setTravels} />
                 </Col>
-                <Col md={7}>
+                <Col md={6}>
                     <h5 className="my-2 pb-2">Viaggi programmati da altri utenti</h5>
                     <p className="text-primary">Pagina {currentPage} di {totalPages}</p>
                     {activeTravels && activeTravels.length > 0 ? (
@@ -65,7 +65,7 @@ function AllTravels() {
                         <Pagination.Last onClick={() => handlePageChange(totalPages)} />
                     </Pagination>
                 </Col>
-                <Col md={2} className="border-start">
+                <Col md={3} className="border-start">
                     <h5 className="mt-2">I nostri partner</h5>
                     <Sponsor />
                 </Col>

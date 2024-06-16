@@ -5,6 +5,7 @@ export const SET_CHATS = "SET_CHATS";
 export const SET_SELECTED_CHAT = "SET_SELECTED_CHAT";
 export const SET_ALLTRAVELS = "SET_ALLTRAVELS";
 export const SET_TRAVEL = "SET_TRAVEL";
+export const REMOVE_META = "REMOVE_META";
 
 // chat////////
 export const setChats = (chats) => ({
@@ -26,4 +27,9 @@ export const setActionTravels = (alltravels) => ({
 export const setCurrentTravel = (obj) => ({
   type: SET_TRAVEL,
   payload: obj,
+});
+
+export const removeMeta = (index) => ({
+  type: REMOVE_META,
+  payload: index
 });
