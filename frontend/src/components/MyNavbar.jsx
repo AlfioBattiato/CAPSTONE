@@ -59,7 +59,7 @@ function MyNavbar() {
                     id={`offcanvasNavbar-expand-${expand}`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
                     placement="end"
-                    className="bg-blue text-white"
+                    className="bg-dark text-white"
                   >
                     <Offcanvas.Header closeButton>
                       <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`} className="fs-3">
