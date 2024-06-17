@@ -85,11 +85,9 @@ Route::middleware('auth:sanctum')->group(function () {
 // funzioni per il map 
 Route::get('/proxy/nominatim', function (Request $request) {
     $query = $request->input('q');
-    $response = Http::get('https://nominatim.openstreetmap.org/search', [
+    $response = Http::get('https://photon.komoot.io/api/', [
         'q' => $query,
-        'format' => 'json',
-        'addressdetails' => 1,
-        'limit' => 10,
+     
     ]);
 
     return $response->json();

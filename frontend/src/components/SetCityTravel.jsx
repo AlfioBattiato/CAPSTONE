@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { removeMeta, setCurrentTravel } from '../redux/actions';
 import { FaSearchLocation, FaTrash } from "react-icons/fa";
 
-export default function SetTravel() {
+export default function SetCityTravel() {
     const [formData, setFormData] = useState({
         query: '',
         metaQuery: ''
@@ -51,12 +51,40 @@ export default function SetTravel() {
             ]
         };
         dispatch(setCurrentTravel(updatedTravel));
+        
         setFormData({
             ...formData,
             metaQuery: ''
         });
         setMetaSuggestions([]);
     };
+
+    // const handleSubmitCity = (e) => {
+    //     e.preventDefault();
+
+    //     if (formData.query.length > 2) {
+    //         axios.get('https://nominatim.openstreetmap.org/search', {
+    //             params: {
+    //                 q: formData.query,
+    //                 format: 'json',
+    //                 addressdetails: 1,
+    //                 limit: 100,
+    //             }
+    //         })
+    //         .then(response => {
+    //             console.log(response);
+    //             const cities = response.data.map(city => ({
+    //                 name: city.display_name,
+    //                 lat: city.lat,
+    //                 lon: city.lon
+    //             }));
+    //             setSuggestions(cities);
+    //         })
+    //         .catch(error => {
+    //             console.error("Error fetching cities: ", error);
+    //         });
+    //     }
+    // };
 
     const handleSubmitCity = (e) => {
         e.preventDefault();
@@ -68,11 +96,11 @@ export default function SetTravel() {
                 }
             })
                 .then(response => {
-                    console.log(response)
-                    const cities = response.data.map(city => ({
-                        name: city.display_name,
-                        lat: city.lat,
-                        lon: city.lon
+                    console.log(response.data)
+                    const cities = response.data.features.map(city => ({
+                        name: city.properties.name,
+                        lat: city.geometry.coordinates[1],
+                        lon: city.geometry.coordinates[0]
                     }));
                     setSuggestions(cities);
                 })
@@ -92,10 +120,10 @@ export default function SetTravel() {
                 }
             })
                 .then(response => {
-                    const cities = response.data.map(city => ({
-                        name: city.display_name,
-                        lat: city.lat,
-                        lon: city.lon
+                    const cities = response.data.features.map(city => ({
+                        name: city.properties.name,
+                        lat: city.geometry.coordinates[1],
+                        lon: city.geometry.coordinates[0]
                     }));
                     setMetaSuggestions(cities);
                 })
@@ -113,7 +141,7 @@ export default function SetTravel() {
         <div className="bg-white p-3 rounded">
             <form onSubmit={handleSubmitCity}>
                 <div className="mb-3">
-                    <p className='text-center mb-0'>Città di partenza</p>
+                    <p className='mb-1 ps-2 fw-bold '>Città di partenza:</p>
                     <div className='input-group'>
                         <input
                             type="text"
@@ -130,7 +158,7 @@ export default function SetTravel() {
                     </div>
                     {suggestions.length > 0 && (
                         <ul className="list-group  mt-1 ">
-                            {suggestions.map((suggestion, index) => (
+                            {suggestions.slice(0,5).map((suggestion, index) => (
                                 <li
                                     key={index}
                                     className="list-group-item rounded"
@@ -164,7 +192,7 @@ export default function SetTravel() {
                     </div>
                     {metaSuggestions.length > 0 && (
                         <ul className="list-group mt-1">
-                            {metaSuggestions.map((suggestion, index) => (
+                            {metaSuggestions.slice(0,5).map((suggestion, index) => (
                                 <li
                                     key={index}
                                     className="list-group-item rounded"
