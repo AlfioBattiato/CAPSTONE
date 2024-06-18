@@ -2,6 +2,7 @@ import { useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentTravel } from "../../redux/actions";
+import { BsCalendar2DateFill } from "react-icons/bs";
 
 
 export default function SetTravelSettings() {
@@ -19,8 +20,9 @@ export default function SetTravelSettings() {
     };
 
     return (
-        <div className="bg-white p-3 rounded mt-3">
+        <div className="bg-white p-3 rounded mt-3 ">
             <p className="mb-1 ps-2 fw-bold">Data partenza:</p>
+            <BsCalendar2DateFill  className="me-2 mb-1"/>
             <ReactDatePicker
                 selected={startDate}
                 onChange={handleDateChange}

@@ -121,7 +121,8 @@ export default function SetCityTravel() {
     const confirmReset = () => {
         const updatedTravel = {
             ...travel,
-            metas: []
+            metas: [],
+            map_instructions:[]
         };
         dispatch(setCurrentTravel(updatedTravel));
         setFormData({
@@ -241,7 +242,7 @@ export default function SetCityTravel() {
             )}
 
            <div className="d-flex">
-           <button className='btn btn-outline-warning mt-2 ms-auto' onClick={reset}>Azzera istruzioni</button>
+           <button className='btn btn-warning mt-2 ms-auto' onClick={reset}>Azzera istruzioni</button>
            </div>
         </div>
     );

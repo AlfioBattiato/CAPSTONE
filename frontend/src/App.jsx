@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import MyNavbar from "./components/MyNavbar";
-import Footer from "./components/Footer";
 import Welcome from "./pages/Welcome";
 import { useDispatch } from "react-redux";
 import Login from "./pages/Login";
@@ -90,7 +89,7 @@ function App() {
           {/* <Route path="/404" element={<NotFound />} />
             <Route path="*" element={<Navigate to="/404" />} /> */}
         </Routes>
-        <Footer></Footer>
+   
       </BrowserRouter>
     )
   );

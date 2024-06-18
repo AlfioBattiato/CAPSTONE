@@ -7,13 +7,14 @@ import { BiSolidLogIn } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { LOGOUT } from "../redux/actions";
-import { GiCartwheel } from "react-icons/gi";
+import { IoSettingsOutline } from "react-icons/io5";
 import { MdFirstPage } from "react-icons/md";
-import { FaHome } from "react-icons/fa";
+import { FaStreetView  } from "react-icons/fa";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { TiMessages } from "react-icons/ti";
 import { MdOutlineTravelExplore } from "react-icons/md";
 import { Button } from "react-bootstrap";
+import Footer from "./Footer";
 function MyNavbar() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -69,12 +70,12 @@ function MyNavbar() {
                     <Offcanvas.Body>
                       <Nav className="justify-content-end flex-grow-1 pe-3">
                         <Link to={`/dashboard/${user.id}`} className="nav-link fs-6">
-                          <GiCartwheel className="me-2" />
+                          <IoSettingsOutline  className="me-2" />
                           Profilo
                         </Link>
                         <Link to="/Homepage" className="nav-link fs-6">
                           {" "}
-                          <FaHome className="me-2" />Organizza il tuo viaggio
+                          <FaStreetView className="me-2" />Organizza il tuo viaggio
                         </Link>
                         <Link to="/Lobbies" className="nav-link fs-6">
                           {" "}
@@ -95,6 +96,7 @@ function MyNavbar() {
                         </Link>
                       </Nav>
                     </Offcanvas.Body>
+                    <Footer></Footer>
                   </Navbar.Offcanvas>
                 </div>
               </>

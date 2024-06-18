@@ -22,7 +22,7 @@ export default function Maps() {
     const startLocation = travel.start_location;
 
     return (
-        <div>
+        <div className=''>
             <MapContainer center={position} zoom={10} style={{ height: '30rem', width: '100%' }}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
