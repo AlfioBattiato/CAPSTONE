@@ -150,7 +150,7 @@ export default function SetCityTravel() {
     };
 
     return (
-        <div className="bg-white p-3 rounded">
+        <div className="bg-white p-3 rounded bg-dark">
             <Modal show={showResetModal} onHide={() => setShowResetModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Conferma azzeramento istruzioni</Modal.Title>

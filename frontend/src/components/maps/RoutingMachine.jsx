@@ -37,7 +37,7 @@ const createRoutineMachineLayer = ({ start_location, metas, dispatch, travel }) 
 
     instance.on('routesfound', function (e) {
         const routes = e.routes;
-        console.log(routes[0])
+        // console.log(routes[0])
         const updatedTravel = {
             ...travel,
             map_instructions: routes[0]
