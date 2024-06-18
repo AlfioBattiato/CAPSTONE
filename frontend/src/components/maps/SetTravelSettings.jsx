@@ -1,7 +1,8 @@
 import { useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentTravel } from "../redux/actions";
+import { setCurrentTravel } from "../../redux/actions";
+
 
 export default function SetTravelSettings() {
     const [startDate, setStartDate] = useState(null);

@@ -11,6 +11,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import mainReducer from "../reducers";
 import chatReducer from "../reducers/chatReducers";
 import travelsReducer from "../reducers/travelsReducers";
+import { SET_TRAVEL } from "../actions";
 
 const unifiedReducer = combineReducers({
   auth: mainReducer,
@@ -20,6 +21,10 @@ const unifiedReducer = combineReducers({
 
 const store = configureStore({
   reducer: unifiedReducer,
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export default store;

@@ -9,6 +9,7 @@ const initialState = {
       lon: 0,
     },
     metas: [],
+    map_instructions:[],
     startDate: null,
     city: "",
     cc: null,
