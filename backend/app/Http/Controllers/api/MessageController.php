@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Chat;
 use App\Models\Message;
+use App\Events\MessageSent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +41,8 @@ class MessageController extends Controller
         $message->save();
 
         $message->load('user');
+
+        broadcast(new MessageSent($message))->toOthers();
 
         return response()->json($message, 201);
     }
