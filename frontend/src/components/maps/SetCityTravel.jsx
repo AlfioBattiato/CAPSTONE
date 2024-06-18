@@ -6,39 +6,44 @@ import { FaSearchLocation, FaTrash, FaMapMarked, FaMapMarkedAlt, FaMapMarkerAlt 
 import { Modal, Button } from 'react-bootstrap';
 
 export default function SetCityTravel() {
-    const [formData, setFormData] = useState({
-        query: '',
-        metaQuery: ''
-    });
     const [suggestions, setSuggestions] = useState([]);
     const [metaSuggestions, setMetaSuggestions] = useState([]);
-    const [disable, setDisable] = useState(false);
     const [showResetModal, setShowResetModal] = useState(false); // State for showing reset confirmation modal
     const dispatch = useDispatch();
     const travel = useSelector(state => state.infotravels.setTravel);
+    const { query, metaQuery } = travel.formData;
+
 
     const handleInputChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        const { name, value } = e.target;
+        // Update formData in travel directly
+        const updatedTravel = {
+            ...travel,
+            formData: {
+                ...travel.formData,
+                [name]: value
+            },
+            inputDisable: true
+
+        };
+        dispatch(setCurrentTravel(updatedTravel))
     };
 
     const handleSuggestionClick = (suggestion) => {
-        setDisable(!disable);
+
         const updatedTravel = {
             ...travel,
             start_location: {
                 city: suggestion.name,
                 lat: parseFloat(suggestion.lat),
                 lon: parseFloat(suggestion.lon)
+            },
+            formData: {
+                ...travel.formData,
+                query: suggestion.name
             }
         };
         dispatch(setCurrentTravel(updatedTravel));
-        setFormData({
-            ...formData,
-            query: suggestion.name
-        });
         setSuggestions([]);
     };
 
@@ -52,24 +57,25 @@ export default function SetCityTravel() {
                     lat: parseFloat(suggestion.lat),
                     lon: parseFloat(suggestion.lon)
                 }
-            ]
+            ],
+            formData: {
+                ...travel.formData,
+                metaQuery: ''
+            }
         };
         dispatch(setCurrentTravel(updatedTravel));
 
-        setFormData({
-            ...formData,
-            metaQuery: ''
-        });
+
         setMetaSuggestions([]);
     };
 
     const handleSubmitCity = (e) => {
         e.preventDefault();
 
-        if (formData.query.length > 2) {
+        if (query.length > 2) {
             axios.get(`/api/proxy/nominatim`, {
                 params: {
-                    q: formData.query,
+                    q: query,
                 }
             })
                 .then(response => {
@@ -90,10 +96,10 @@ export default function SetCityTravel() {
     const handleSubmitMeta = (e) => {
         e.preventDefault();
 
-        if (formData.metaQuery.length > 2) {
+        if (metaQuery.length > 2) {
             axios.get(`/api/proxy/nominatim`, {
                 params: {
-                    q: formData.metaQuery,
+                    q: metaQuery,
                 }
             })
                 .then(response => {
@@ -125,20 +131,17 @@ export default function SetCityTravel() {
                 city: '',
                 lat: 0,
                 lon: 0,
-              },
+            },
             metas: [],
-            map_instructions:[]
+            map_instructions: [],
+            formData: {
+                query: '',
+                metaQuery: ''
+            },
+            inputDisable: false
+
         };
         dispatch(setCurrentTravel(updatedTravel));
-        setFormData({
-            query: '',
-            metaQuery: ''
-        });
-        const input=document.getElementById('city-input-setting')
-        if(input.disabled===true){
-            input.disabled=false
-        }
-        setDisable(false);
         setShowResetModal(false); // Close confirmation modal after reset
     };
 
@@ -173,12 +176,12 @@ export default function SetCityTravel() {
                         <input
                             type="text"
                             required
-                            disabled={disable}
+                            disabled={travel.inputDisable}
                             name="query"
                             className="form-control rounded-pill"
                             id='city-input-setting'
                             placeholder="Città di partenza"
-                            value={formData.query}
+                            value={query}
                             onChange={handleInputChange}
                         />
                         <button type="submit" className="bg-white border-0 ms-2">
@@ -213,7 +216,7 @@ export default function SetCityTravel() {
                             name="metaQuery"
                             className="form-control rounded-pill"
                             placeholder="Aggiungi meta"
-                            value={formData.metaQuery}
+                            value={metaQuery}
                             onChange={handleInputChange}
                         />
                         <button type="submit" className="bg-white border-0 ms-2">
@@ -251,9 +254,9 @@ export default function SetCityTravel() {
                 </>
             )}
 
-           <div className="d-flex">
-           <button className='btn btn-warning mt-2 ms-auto' onClick={reset}>Azzera istruzioni</button>
-           </div>
+            <div className="d-flex">
+                <button className='btn btn-warning mt-2 ms-auto' onClick={reset}>Azzera istruzioni</button>
+            </div>
         </div>
     );
 }

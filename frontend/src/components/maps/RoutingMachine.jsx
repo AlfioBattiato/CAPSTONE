@@ -9,6 +9,15 @@ const createRoutineMachineLayer = ({ start_location, metas, dispatch, travel }) 
         ...metas.map(meta => L.latLng(meta.lat, meta.lon))
     ];
 
+    // Temporarily suppress the warning in development
+    const originalConsoleWarn = console.warn;
+    console.warn = (message, ...optionalParams) => {
+        if (typeof message === 'string' && message.includes('OSRM')) {
+            return;
+        }
+        originalConsoleWarn(message, ...optionalParams);
+    };
+
     const instance = L.Routing.control({
         waypoints: waypoints,
         lineOptions: {

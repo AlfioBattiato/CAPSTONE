@@ -15,25 +15,25 @@ export default function Maps() {
     const [key, setKey] = useState(metas.length); // Informazioni per il popup
     const dispatch = useDispatch();
 
-    // setta il punto di partenza con il punto da te cliccato
     useEffect(() => {
         setPosition([travel.start_location.lat, travel.start_location.lon]);
         setMetas(travel.metas);
-     
-        console.log('ok')
+
+        if (!travel.start_location.city) {
+            setPopupInfo(null);
+        } else {
+            setPopupInfo({ lat: travel.start_location.lat, lng: travel.start_location.lon });
+        }
     }, [travel]);
-    
+
     useEffect(() => {
-        setKey((oldkey)=>{
-            return oldkey+1
-        })
+        setKey(oldKey => oldKey + 1);
     }, [metas]);
 
     const startLocation = travel.start_location;
 
-    // Gestore per il click sulla mappa
     const handleClickOnMap = (event) => {
-        const input=document.getElementById('city-input-setting')
+      
         const { lat, lng } = event.latlng;
         const updatedTravel = {
             ...travel,
@@ -41,25 +41,23 @@ export default function Maps() {
                 city: "Punto interattivo",
                 lat: parseFloat(lat),
                 lon: parseFloat(lng)
-            }
+            },
+            formData: {
+                query: 'Punto interattivo',
+                metaQuery: ''
+              },
+              inputDisable:true
         };
         dispatch(setCurrentTravel(updatedTravel));
 
         setPopupInfo({ lat, lng });
-        setKey((oldkey)=>{
-            return oldkey+1
-        })
+        setKey(oldKey => oldKey + 1);
 
-
-        if (input) {
-            input.value = "Punto interattivo";
-            input.disabled = true; // Disabilitare l'input
-        }
+      
     };
 
-    // Componente per gestire eventi di click sulla mappa
     function ClickableMap() {
-        const map = useMapEvents({
+        useMapEvents({
             click: handleClickOnMap,
         });
         return null; // No visual component, just handling events
@@ -72,10 +70,9 @@ export default function Maps() {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
-                {/* Aggiungiamo il componente per gestire il click sulla mappa */}
                 <ClickableMap />
 
-                {startLocation.lat && startLocation.lon && (
+                {startLocation.city && startLocation.lat && startLocation.lon && (
                     <Marker position={[startLocation.lat, startLocation.lon]}>
                         <Popup>Start Location: {startLocation.city}</Popup>
                     </Marker>
@@ -87,7 +84,6 @@ export default function Maps() {
                     </Marker>
                 ))}
 
-                {/* Mostra il popup se popupInfo è definito */}
                 {popupInfo && (
                     <Marker position={[popupInfo.lat, popupInfo.lng]}>
                         <Popup>
@@ -96,7 +92,7 @@ export default function Maps() {
                     </Marker>
                 )}
 
-                {startLocation && startLocation.lat !== 0 && metas && metas.length > 0 && (
+                {startLocation && startLocation.lat !== 0 && metas.length > 0 && (
                     <RoutingMachine
                         key={key}
                         start_location={startLocation}

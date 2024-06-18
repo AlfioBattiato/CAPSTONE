@@ -9,13 +9,18 @@ const initialState = {
       lon: 0,
     },
     metas: [],
-    map_instructions:[],
+    map_instructions: [],
     startDate: null,
     city: "",
     cc_moto: null,
     participants: null,
     days: null,
-    type_moto:null
+    type_moto: null,
+    formData: {
+      query: '',
+      metaQuery: ''
+    },
+    inputDisable:false
   },
 };
 
@@ -31,13 +36,13 @@ const travelsReducer = (state = initialState, action) => {
         ...state,
         setTravel: action.payload,
       };
-      case REMOVE_META:
+    case REMOVE_META:
       return {
-          ...state,
-          setTravel: {
-              ...state.setTravel,
-              metas: state.setTravel.metas.filter((_, index) => index !== action.payload)
-          }
+        ...state,
+        setTravel: {
+          ...state.setTravel,
+          metas: state.setTravel.metas.filter((_, index) => index !== action.payload)
+        }
       };
     default:
       return state;
