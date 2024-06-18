@@ -12,16 +12,10 @@ const initialState = {
     map_instructions:[],
     startDate: null,
     city: "",
-    cc: null,
+    cc_moto: null,
     participants: null,
     days: null,
-    types: {
-      scooter: false,
-      raceBikes: false,
-      motocross: false,
-      offRoad: false,
-      harley: false,
-    },
+    type_moto:null
   },
 };
 

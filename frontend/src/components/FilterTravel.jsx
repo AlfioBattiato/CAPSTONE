@@ -11,6 +11,7 @@ import { setActionTravels } from '../redux/actions';
 import { format } from 'date-fns';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
+
 // Hook per gestire i checkbox
 function useCheckboxes(initialState) {
     const [checkboxes, setCheckboxes] = useState(initialState);
@@ -141,6 +142,7 @@ export default function FilterTravel({ setTravels }) {
                     key === 'racebikes' ? 'Race Bikes' : key === 'offroad' ? 'Off Road' : key.charAt(0).toUpperCase() + key.slice(1);
                 return (
                     <div className="form-check ps-0" key={key}>
+
                         <Switch
                             checked={checkboxes[key]}
                             onChange={(checked) => handleCheckboxChange(key, checked)}

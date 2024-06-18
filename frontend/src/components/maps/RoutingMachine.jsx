@@ -34,7 +34,6 @@ const createRoutineMachineLayer = ({ start_location, metas, dispatch, travel }) 
             map_instructions: routes[0]
         };
         dispatch(setCurrentTravel(updatedTravel));
-        // setRoute(routes[0].instructions);
     });
 
     return instance;

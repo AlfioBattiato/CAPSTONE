@@ -121,6 +121,11 @@ export default function SetCityTravel() {
     const confirmReset = () => {
         const updatedTravel = {
             ...travel,
+            start_location: {
+                city: '',
+                lat: 0,
+                lon: 0,
+              },
             metas: [],
             map_instructions:[]
         };
@@ -129,6 +134,10 @@ export default function SetCityTravel() {
             query: '',
             metaQuery: ''
         });
+        const input=document.getElementById('city-input-setting')
+        if(input.disabled===true){
+            input.disabled=false
+        }
         setDisable(false);
         setShowResetModal(false); // Close confirmation modal after reset
     };
@@ -167,6 +176,7 @@ export default function SetCityTravel() {
                             disabled={disable}
                             name="query"
                             className="form-control rounded-pill"
+                            id='city-input-setting'
                             placeholder="Città di partenza"
                             value={formData.query}
                             onChange={handleInputChange}
