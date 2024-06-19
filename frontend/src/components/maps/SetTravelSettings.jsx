@@ -3,6 +3,8 @@ import ReactDatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentTravel } from "../../redux/actions";
 import { BsCalendar2DateFill } from "react-icons/bs";
+import MyRadio from "../myradio";
+
 
 export default function SetTravelSettings() {
     const [startDate, setStartDate] = useState(null);
@@ -57,83 +59,34 @@ export default function SetTravelSettings() {
             <hr className="my-3" />
             <p className="mb-1 ps-2 fw-bold">Categorie moto:</p>
             <div className="d-flex flex-wrap flex-column">
-                <RadioInput
-                    label="Scooter"
-                    value="scooter"
-                    checked={selectedCategory === "scooter"}
-                    onChange={handleCategoryChange}
-                />
-                <RadioInput
-                    label="Racebikes"
-                    value="racebikes"
-                    checked={selectedCategory === "racebikes"}
-                    onChange={handleCategoryChange}
-                />
-                <RadioInput
-                    label="Motocross"
-                    value="motocross"
-                    checked={selectedCategory === "motocross"}
-                    onChange={handleCategoryChange}
-                />
-                <RadioInput
-                    label="Offroad"
-                    value="offroad"
-                    checked={selectedCategory === "offroad"}
-                    onChange={handleCategoryChange}
-                />
-                <RadioInput
-                    label="Harley"
-                    value="harley"
-                    checked={selectedCategory === "harley"}
+                <MyRadio
+                    name="motoCategory"
+                    options={[
+                        { id: "scooter", label: "Scooter", value: "scooter" },
+                        { id: "racebikes", label: "Racebikes", value: "racebikes" },
+                        { id: "motocross", label: "Motocross", value: "motocross" },
+                        { id: "offroad", label: "Offroad", value: "offroad" },
+                        { id: "harley", label: "Harley", value: "harley" }
+                    ]}
+                    selectedValue={selectedCategory}
                     onChange={handleCategoryChange}
                 />
             </div>
             <hr className="my-3" />
             <p className="mb-1 ps-2 fw-bold">Cilindrata:</p>
-            <div className="d-flex  flex-column ">
-                <RadioInput
-                    label="150cc"
-                    value="150"
-                    checked={selectedCC === "150"}
-                    onChange={handleCCChange}
-                />
-                <RadioInput
-                    label="300cc"
-                    value="300"
-                    checked={selectedCC === "300"}
-                    onChange={handleCCChange}
-                />
-                <RadioInput
-                    label="600cc"
-                    value="600"
-                    checked={selectedCC === "600"}
-                    onChange={handleCCChange}
-                />
-                <RadioInput
-                    label="1200cc"
-                    value="1200"
-                    checked={selectedCC === "1200"}
+            <div className="d-flex  flex-column">
+                <MyRadio
+                    name="motoCC"
+                    options={[
+                        { id: "150", label: "150cc", value: "150" },
+                        { id: "300", label: "300cc", value: "300" },
+                        { id: "600", label: "600cc", value: "600" },
+                        { id: "1200", label: "1200cc", value: "1200" }
+                    ]}
+                    selectedValue={selectedCC}
                     onChange={handleCCChange}
                 />
             </div>
         </div>
     );
 }
-
-// Componente per l'input di tipo radio
-const RadioInput = ({ label, value, checked, onChange }) => (
-    <div className="form-check mx-2 my-1">
-        <input
-            type="radio"
-            id={value}
-            name={label}
-            value={value}
-            checked={checked}
-            onChange={onChange}
-            className="form-check-input"
-        />
-        <label htmlFor={value} className="form-check-label">
-            {label}
-        </label>
-    </div>
-);

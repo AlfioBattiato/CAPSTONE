@@ -7,6 +7,7 @@ import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import RoutingMachine from './RoutingMachine';
 import { setCurrentTravel } from '../../redux/actions';
 
+
 export default function Maps() {
     const travel = useSelector(state => state.infotravels.setTravel);
     const [position, setPosition] = useState([41.8933203, 12.4829321]); // Coordinate predefinite
@@ -102,6 +103,7 @@ export default function Maps() {
                     />
                 )}
             </MapContainer>
+         
         </div>
     );
 }
