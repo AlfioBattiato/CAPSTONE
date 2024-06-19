@@ -14,11 +14,13 @@ export default function Maps() {
     const [key, setKey] = useState(travel.metas.length); // Informazioni per il popup
     const dispatch = useDispatch();
 
+ 
+
     useEffect(() => {
         if (travel.start_location.lat && travel.start_location.lon) {
             setPosition([travel.start_location.lat, travel.start_location.lon]);
         }
-
+    
         if (travel.start_location.city) {
             setPopupInfo({ lat: travel.start_location.lat, lng: travel.start_location.lon });
         } else {
@@ -43,10 +45,8 @@ export default function Maps() {
         };
         dispatch(setFormData(formDataUpdate));
         dispatch(setCurrentTravel(updatedTravel));
-      
 
         setPopupInfo({ lat, lng });
-        setKey(oldKey => oldKey + 1);
     };
 
     function ClickableMap() {
@@ -87,11 +87,10 @@ export default function Maps() {
 
                 {travel.start_location.lat !== 0 && travel.metas.length > 0 && (
                     <RoutingMachine
-                        key={key}
+                        key={key} // Usare key per forzare il render di una nuova istanza di RoutingMachine
                         start_location={travel.start_location}
                         metas={travel.metas}
                         dispatch={dispatch}
-                       
                     />
                 )}
             </MapContainer>
