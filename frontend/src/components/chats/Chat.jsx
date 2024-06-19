@@ -1,17 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Card, ListGroup, Form, Button, Col } from "react-bootstrap";
-import Message from "./Message";
-import { MdAttachFile } from "react-icons/md";
-import AudioRecorder from "./AudioRecorder";
+import { Card } from "react-bootstrap";
 import { useChannel, useConnectionStateListener } from "ably/react";
 import { useDispatch, useSelector } from "react-redux";
-import { openChat, closeChat } from "../redux/actions";
+import { openChat, closeChat } from "../../redux/actions";
+import MessageList from "./MessageList";
+import MessageForm from "./MessageForm";
 
 const Chat = ({ chat }) => {
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [file, setFile] = useState(null);
   const messagesEndRef = useRef(null);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -22,8 +19,27 @@ const Chat = ({ chat }) => {
     const receivedMessage = message.data;
     if (message.name === "message-sent") {
       setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+
+      // Mark message as read if the chat is open and the message is from another user
+      if (receivedMessage.user_id !== user.id && openChats.includes(chat.id)) {
+        axios
+          .post("/api/messages/mark-as-read", { messageIds: [receivedMessage.id] })
+          .then(() => {
+            setMessages((prevMessages) =>
+              prevMessages.map((msg) => (msg.id === receivedMessage.id ? { ...msg, is_unread: false } : msg))
+            );
+          })
+          .catch((error) => {
+            console.error("Error marking message as read:", error);
+          });
+      }
     } else if (message.name === "message-deleted") {
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== receivedMessage.messageId));
+    } else if (message.name === "message-read") {
+      const { messageIds } = receivedMessage;
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) => (messageIds.includes(msg.id) ? { ...msg, is_unread: false } : msg))
+      );
     }
   });
 
@@ -32,11 +48,9 @@ const Chat = ({ chat }) => {
   });
 
   useEffect(() => {
-    // Open the chat when the component is mounted
     dispatch(openChat(chat.id));
 
     return () => {
-      // Close the chat when the component is unmounted
       dispatch(closeChat(chat.id));
     };
   }, [chat.id, dispatch]);
@@ -78,16 +92,7 @@ const Chat = ({ chat }) => {
     }
   }, [messages]);
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("chat_id", chat.id);
-    formData.append("message", newMessage);
-    if (file) {
-      formData.append("file", file);
-    }
-
+  const handleSendMessage = async (formData) => {
     try {
       const response = await axios.post("/api/messages", formData, {
         headers: {
@@ -96,31 +101,9 @@ const Chat = ({ chat }) => {
       });
 
       channel.publish("message-sent", response.data);
-
-      setNewMessage("");
-      setFile(null);
     } catch (error) {
       console.error("Failed to send message:", error);
     }
-  };
-
-  const handleAudioRecorded = (audioBlob) => {
-    const formData = new FormData();
-    formData.append("chat_id", chat.id);
-    formData.append("file", audioBlob, "recording.wav");
-
-    axios
-      .post("/api/messages", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        channel.publish("message-sent", response.data);
-      })
-      .catch((error) => {
-        console.error("Failed to send audio message:", error);
-      });
   };
 
   const handleDeleteMessage = async (messageId) => {
@@ -134,9 +117,17 @@ const Chat = ({ chat }) => {
   };
 
   const handleMarkAsRead = (messageId) => {
-    setMessages((prevMessages) =>
-      prevMessages.map((message) => (message.id === messageId ? { ...message, is_unread: false } : message))
-    );
+    axios
+      .post("/api/messages/mark-as-read", { messageIds: [messageId] })
+      .then(() => {
+        channel.publish("message-read", { messageIds: [messageId] });
+        setMessages((prevMessages) =>
+          prevMessages.map((message) => (message.id === messageId ? { ...message, is_unread: false } : message))
+        );
+      })
+      .catch((error) => {
+        console.error("Error marking message as read:", error);
+      });
   };
 
   const otherUser = chat.users?.find((user) => user.id !== chat.pivot.user_id);
@@ -166,47 +157,14 @@ const Chat = ({ chat }) => {
                 .join(", ")
             : "Chat with no users")}
       </Card.Header>
-      <ListGroup variant="flush" className="flex-grow-1 overflow-auto p-2 custom-scrollbar">
-        {messages.map((message) => (
-          <Message key={message.id} message={message} onDelete={handleDeleteMessage} onMarkAsRead={handleMarkAsRead} />
-        ))}
-        <div ref={messagesEndRef} />
-      </ListGroup>
+      <MessageList
+        messages={messages}
+        onDelete={handleDeleteMessage}
+        onMarkAsRead={handleMarkAsRead}
+        messagesEndRef={messagesEndRef}
+      />
       <Card.Footer className="bg-blue text-white">
-        <Form onSubmit={handleSendMessage} className="w-100">
-          <Form.Group controlId="messageInput" className="d-flex align-items-center">
-            <Col xs={8} md={9} xl={10} className="p-1">
-              <Form.Control
-                type="text"
-                placeholder="Type a message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                className="rounded-pill"
-                style={{ backgroundColor: "#FFF", color: "#000" }}
-              />
-            </Col>
-            <Col xs={4} md={3} xl={2} className="p-1 d-flex align-items-center justify-content-around">
-              <label htmlFor="fileInput" className="mb-0 d-flex align-items-center fs-3">
-                <MdAttachFile style={{ color: "#FFF", cursor: "pointer" }} />
-                <input id="fileInput" type="file" onChange={(e) => setFile(e.target.files[0])} className="d-none" />
-              </label>
-
-              <AudioRecorder onAudioRecorded={handleAudioRecorded} />
-
-              <Button
-                variant="light"
-                type="submit"
-                className="d-flex align-items-center justify-content-center"
-                style={{ backgroundColor: "#CC0000", borderColor: "#CC0000", height: "38px" }}
-                disabled={!newMessage.trim() && !file}
-              >
-                <p style={{ color: "#FFF" }} className="m-0 fs-5">
-                  Invia
-                </p>
-              </Button>
-            </Col>
-          </Form.Group>
-        </Form>
+        <MessageForm chatId={chat.id} onSendMessage={handleSendMessage} />
       </Card.Footer>
     </Card>
   );

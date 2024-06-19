@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ListGroup, Row, Col, Card } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { setChats, setSelectedChat } from "../redux/actions";
+import { setChats, setSelectedChat } from "../../redux/actions";
 import GroupList from "./GroupList";
 import ChatList from "./ChatList";
 import GroupMembers from "./GroupMembers";

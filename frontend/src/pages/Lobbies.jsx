@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Row, Col, Container } from "react-bootstrap";
-import AllChats from "../components/AllChats";
-import Chat from "../components/Chat";
+import AllChats from "../components/chats/AllChats";
+import Chat from "../components/chats/Chat";
 import { ChannelProvider } from "ably/react";
 
 const Lobbies = () => {
