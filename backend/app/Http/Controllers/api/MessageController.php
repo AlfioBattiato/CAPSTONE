@@ -7,6 +7,7 @@ use App\Models\Message;
 use App\Events\MessageRead;
 use App\Events\MessageSent;
 use Illuminate\Http\Request;
+use App\Events\MessageDeleted;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -75,14 +76,19 @@ class MessageController extends Controller
     }
 
     public function destroy(Message $message)
-    {
-        if ($message->file_path) {
-            Storage::delete($message->file_path);
-        }
+{
+    $messageId = $message->id;
+    $chatId = $message->chat_id;
 
-        $message->delete();
-        return response()->json(null, 204);
+    if ($message->file_path) {
+        Storage::delete($message->file_path);
     }
+
+    $message->delete();
+
+    broadcast(new MessageDeleted($messageId, $chatId))->toOthers();
+    return response()->json(null, 204);
+}
 
     public function markAsRead(Request $request)
 {

@@ -20,20 +20,10 @@ const Chat = ({ chat }) => {
   // Create a channel using Ably
   const { channel } = useChannel(`private-chat.${chat.id}`, (message) => {
     const receivedMessage = message.data;
-    setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-
-    // Mark message as read if the chat is open and the message is from another user
-    if (receivedMessage.user_id !== user.id && openChats.includes(chat.id)) {
-      axios
-        .post("/api/messages/mark-as-read", { messageIds: [receivedMessage.id] })
-        .then(() => {
-          setMessages((prevMessages) =>
-            prevMessages.map((msg) => (msg.id === receivedMessage.id ? { ...msg, is_unread: false } : msg))
-          );
-        })
-        .catch((error) => {
-          console.error("Error marking message as read:", error);
-        });
+    if (message.name === "message-sent") {
+      setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+    } else if (message.name === "message-deleted") {
+      setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== receivedMessage.messageId));
     }
   });
 
@@ -88,20 +78,6 @@ const Chat = ({ chat }) => {
     }
   }, [messages]);
 
-  useEffect(() => {
-    // Listen for MessageRead events
-    channel.subscribe("MessageRead", (message) => {
-      const { messageIds } = message.data;
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) => (messageIds.includes(msg.id) ? { ...msg, is_unread: false } : msg))
-      );
-    });
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, [channel]);
-
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
@@ -119,7 +95,7 @@ const Chat = ({ chat }) => {
         },
       });
 
-      channel.publish("new-message", response.data);
+      channel.publish("message-sent", response.data);
 
       setNewMessage("");
       setFile(null);
@@ -140,15 +116,21 @@ const Chat = ({ chat }) => {
         },
       })
       .then((response) => {
-        channel.publish("new-message", response.data);
+        channel.publish("message-sent", response.data);
       })
       .catch((error) => {
         console.error("Failed to send audio message:", error);
       });
   };
 
-  const handleDeleteMessage = (messageId) => {
-    setMessages(messages.filter((message) => message.id !== messageId));
+  const handleDeleteMessage = async (messageId) => {
+    try {
+      await axios.delete(`/api/messages/${messageId}`);
+      channel.publish("message-deleted", { messageId });
+      setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
+    } catch (error) {
+      console.error("Failed to delete message:", error);
+    }
   };
 
   const handleMarkAsRead = (messageId) => {
