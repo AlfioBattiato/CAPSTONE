@@ -5,6 +5,7 @@ import {
   CLOSE_CHAT,
   SET_UNREAD_COUNT,
   INCREMENT_UNREAD_COUNT,
+  DECREMENT_UNREAD_COUNT,
   RESET_UNREAD_COUNT,
   // SET_HAS_UNREAD_MESSAGES,
 } from "../actions";
@@ -54,6 +55,14 @@ const chatReducer = (state = initialState, action) => {
           [action.payload]: (state.unreadCounts[action.payload] || 0) + 1,
         },
       };
+    case DECREMENT_UNREAD_COUNT:
+      return {
+        ...state,
+        unreadCounts: {
+          ...state.unreadCounts,
+          [action.payload]: Math.max(0, (state.unreadCounts[action.payload] || 0) - 1),
+        },
+      };
     case RESET_UNREAD_COUNT:
       return {
         ...state,
@@ -62,17 +71,18 @@ const chatReducer = (state = initialState, action) => {
           [action.payload]: 0,
         },
       };
-    // case SET_HAS_UNREAD_MESSAGES:
-    //   return {
-    //     ...state,
-    //     hasUnreadMessages: {
-    //       ...state.hasUnreadMessages,
-    //       [action.payload.chatId]: action.payload.hasUnread,
-    //     },
-    //   };
     default:
       return state;
   }
 };
 
 export default chatReducer;
+
+// case SET_HAS_UNREAD_MESSAGES:
+//   return {
+//     ...state,
+//     hasUnreadMessages: {
+//       ...state.hasUnreadMessages,
+//       [action.payload.chatId]: action.payload.hasUnread,
+//     },
+//   };

@@ -75,10 +75,13 @@ class MessageController extends Controller
         return response()->json($message);
     }
 
-    public function destroy(Message $message)
+    // App\Http\Controllers\MessageController.php
+public function destroy(Message $message)
 {
-    $messageId = $message->id;
+    $wasUnread = $message->is_unread;
+    $userId = $message->user_id;
     $chatId = $message->chat_id;
+    $messageId = $message->id;
 
     if ($message->file_path) {
         Storage::delete($message->file_path);
@@ -86,9 +89,11 @@ class MessageController extends Controller
 
     $message->delete();
 
-    broadcast(new MessageDeleted($messageId, $chatId))->toOthers();
+    broadcast(new MessageDeleted($chatId, $messageId, $userId, $wasUnread))->toOthers();
+
     return response()->json(null, 204);
 }
+
 
     public function markAsRead(Request $request)
 {

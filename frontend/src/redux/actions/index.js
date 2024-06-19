@@ -12,6 +12,7 @@ export const SET_SELECTED_CHAT = "SET_SELECTED_CHAT";
 // export const SET_HAS_UNREAD_MESSAGES = "SET_HAS_UNREAD_MESSAGES";
 export const SET_UNREAD_COUNT = "SET_UNREAD_COUNT";
 export const INCREMENT_UNREAD_COUNT = "INCREMENT_UNREAD_COUNT";
+export const DECREMENT_UNREAD_COUNT = "DECREMENT_UNREAD_COUNT";
 export const RESET_UNREAD_COUNT = "RESET_UNREAD_COUNT";
 
 // Travel
@@ -57,6 +58,11 @@ export const setUnreadCount = (chatId, count) => ({
 
 export const incrementUnreadCount = (chatId) => ({
   type: INCREMENT_UNREAD_COUNT,
+  payload: chatId,
+});
+
+export const decrementUnreadCount = (chatId) => ({
+  type: DECREMENT_UNREAD_COUNT,
   payload: chatId,
 });
 

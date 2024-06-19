@@ -3,7 +3,7 @@ import axios from "axios";
 import { Card } from "react-bootstrap";
 import { useChannel, useConnectionStateListener } from "ably/react";
 import { useDispatch, useSelector } from "react-redux";
-import { openChat, closeChat, incrementUnreadCount, resetUnreadCount } from "../../redux/actions";
+import { openChat, closeChat, incrementUnreadCount, decrementUnreadCount, resetUnreadCount } from "../../redux/actions";
 import MessageList from "./MessageList";
 import MessageForm from "./MessageForm";
 
@@ -14,15 +14,19 @@ const Chat = ({ chat, globalChannel }) => {
   const user = useSelector((state) => state.auth.user);
   const openChats = useSelector((state) => state.chats.openChats);
 
-  const { channel } = useChannel(`private-chat.${chat.id}`, (message) => {
+  // Create a channel using Ably
+  const { channel: privateChannel } = useChannel(`private-chat.${chat.id}`, (message) => {
     const receivedMessage = message.data;
+
     if (message.name === "message-sent") {
       setMessages((prevMessages) => [...prevMessages, receivedMessage]);
 
+      // Increment unread count if the chat is not open and the message is from another user
       if (receivedMessage.user_id !== user.id && !openChats.includes(chat.id)) {
         dispatch(incrementUnreadCount(chat.id));
       }
 
+      // Mark message as read if the chat is open and the message is from another user
       if (receivedMessage.user_id !== user.id && openChats.includes(chat.id)) {
         axios
           .post("/api/messages/mark-as-read", { messageIds: [receivedMessage.id] })
@@ -37,7 +41,13 @@ const Chat = ({ chat, globalChannel }) => {
           });
       }
     } else if (message.name === "message-deleted") {
+      const deletedMessage = messages.find((msg) => msg.id === receivedMessage.messageId);
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== receivedMessage.messageId));
+
+      // Decrement unread count if the deleted message was unread and from another user
+      if (deletedMessage && deletedMessage.user_id !== user.id && deletedMessage.is_unread) {
+        dispatch(decrementUnreadCount(chat.id));
+      }
     } else if (message.name === "message-read") {
       const { messageIds } = receivedMessage;
       setMessages((prevMessages) =>
@@ -104,7 +114,7 @@ const Chat = ({ chat, globalChannel }) => {
         },
       });
 
-      channel.publish("message-sent", response.data);
+      privateChannel.publish("message-sent", response.data);
       globalChannel.publish("message-sent", { chatId: chat.id, userId: user.id });
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -113,8 +123,20 @@ const Chat = ({ chat, globalChannel }) => {
 
   const handleDeleteMessage = async (messageId) => {
     try {
+      const message = messages.find((msg) => msg.id === messageId);
       await axios.delete(`/api/messages/${messageId}`);
-      channel.publish("message-deleted", { messageId });
+      privateChannel.publish("message-deleted", {
+        chatId: chat.id,
+        messageId,
+        userId: message.user_id,
+        wasUnread: message.is_unread,
+      });
+      globalChannel.publish("message-deleted", {
+        chatId: chat.id,
+        messageId,
+        userId: message.user_id,
+        wasUnread: message.is_unread,
+      });
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
     } catch (error) {
       console.error("Failed to delete message:", error);
@@ -125,7 +147,7 @@ const Chat = ({ chat, globalChannel }) => {
     axios
       .post("/api/messages/mark-as-read", { messageIds: [messageId] })
       .then(() => {
-        channel.publish("message-read", { messageIds: [messageId] });
+        privateChannel.publish("message-read", { messageIds: [messageId] });
         setMessages((prevMessages) =>
           prevMessages.map((message) => (message.id === messageId ? { ...message, is_unread: false } : message))
         );

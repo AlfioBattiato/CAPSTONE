@@ -4,7 +4,7 @@ import { Row, Col, Container } from "react-bootstrap";
 import AllChats from "../components/chats/AllChats";
 import Chat from "../components/chats/Chat";
 import { ChannelProvider, useChannel } from "ably/react";
-import { setUnreadCount, incrementUnreadCount, setChats } from "../redux/actions";
+import { setUnreadCount, incrementUnreadCount, decrementUnreadCount, setChats } from "../redux/actions";
 import axios from "axios";
 
 const Lobbies = () => {
@@ -46,6 +46,11 @@ const Lobbies = () => {
       const { chatId, userId } = message.data;
       if (userId !== user.id) {
         dispatch(incrementUnreadCount(chatId));
+      }
+    } else if (message.name === "message-deleted") {
+      const { chatId, userId, wasUnread } = message.data;
+      if (wasUnread && userId !== user.id) {
+        dispatch(decrementUnreadCount(chatId));
       }
     }
   });

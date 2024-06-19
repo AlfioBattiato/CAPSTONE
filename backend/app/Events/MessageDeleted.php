@@ -1,12 +1,10 @@
 <?php
 
-// app/Events/MessageDeleted.php
-
+// App\Events\MessageDeleted.php
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -15,25 +13,28 @@ class MessageDeleted implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $messageId;
     public $chatId;
+    public $messageId;
+    public $userId;
+    public $wasUnread;
 
-    public function __construct($messageId, $chatId)
+    public function __construct($chatId, $messageId, $userId, $wasUnread)
     {
-        $this->messageId = $messageId;
         $this->chatId = $chatId;
+        $this->messageId = $messageId;
+        $this->userId = $userId;
+        $this->wasUnread = $wasUnread;
     }
 
     public function broadcastOn()
     {
-        return new PrivateChannel('chat.' . $this->chatId);
+        return new Channel('global');
     }
 
-    public function broadcastWith()
+    public function broadcastAs()
     {
-        return [
-            'messageId' => $this->messageId,
-        ];
+        return 'message-deleted';
     }
 }
+
 
