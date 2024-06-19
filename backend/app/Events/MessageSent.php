@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Events;
+
+use App\Models\Message;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+
+class MessageSent implements ShouldBroadcast
+{
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public $message;
+
+    public function __construct(Message $message)
+    {
+        $this->message = $message;
+    }
+
+    public function broadcastOn()
+    {
+        return new PrivateChannel('chat.' . $this->message->chat_id);
+    }
+
+    public function broadcastWith()
+    {
+        return [
+            'id' => $this->message->id,
+            'chat_id' => $this->message->chat_id,
+            'user_id' => $this->message->user_id,
+            'message' => $this->message->message,
+            'file_url' => $this->message->file_url,
+            'is_unread' => $this->message->is_unread,
+            'send_at' => $this->message->send_at->toDateTimeString(),
+            'user' => $this->message->user,
+        ];
+    }
+}

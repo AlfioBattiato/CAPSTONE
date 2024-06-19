@@ -4,6 +4,7 @@ import { Card, ListGroup, Form, Button, Col } from "react-bootstrap";
 import Message from "./Message";
 import { MdAttachFile } from "react-icons/md";
 import AudioRecorder from "./AudioRecorder";
+import { useChannel, useConnectionStateListener } from "ably/react";
 
 const Chat = ({ chat }) => {
   const [messages, setMessages] = useState([]);
@@ -11,15 +12,22 @@ const Chat = ({ chat }) => {
   const [file, setFile] = useState(null);
   const messagesEndRef = useRef(null);
 
+  // Create a channel using Ably
+  const { channel } = useChannel(`private-chat.${chat.id}`, (message) => {
+    setMessages((prevMessages) => [...prevMessages, message.data]);
+  });
+
+  useConnectionStateListener("connected", () => {
+    console.log("Connected to Ably!");
+  });
+
   useEffect(() => {
     axios
       .get(`/api/chats/${chat.id}/messages`)
       .then((response) => {
         const loadedMessages = response.data;
-        console.log("Loaded messages:", loadedMessages);
         setMessages(loadedMessages);
 
-        // Contrassegna i messaggi come letti se non sono dell'utente corrente
         const unreadMessageIds = loadedMessages
           .filter((message) => message.is_unread && message.user_id !== chat.pivot.user_id)
           .map((message) => message.id);
@@ -28,7 +36,6 @@ const Chat = ({ chat }) => {
           axios
             .post(`/api/messages/mark-as-read`, { messageIds: unreadMessageIds })
             .then(() => {
-              // Aggiorna lo stato dei messaggi nel frontend
               setMessages((prevMessages) =>
                 prevMessages.map((message) =>
                   unreadMessageIds.includes(message.id) ? { ...message, is_unread: false } : message
@@ -51,6 +58,20 @@ const Chat = ({ chat }) => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    // Listen for MessageRead events
+    channel.subscribe("MessageRead", (message) => {
+      const { messageIds } = message.data;
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) => (messageIds.includes(msg.id) ? { ...msg, is_unread: false } : msg))
+      );
+    });
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [channel]);
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
@@ -61,20 +82,15 @@ const Chat = ({ chat }) => {
       formData.append("file", file);
     }
 
-    console.log("Sending message:", {
-      chat_id: chat.id,
-      message: newMessage,
-      file: file ? file.name : "No file",
-    });
-
     try {
       const response = await axios.post("/api/messages", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log("Sent message:", response.data);
-      setMessages([...messages, response.data]);
+
+      channel.publish("new-message", response.data);
+
       setNewMessage("");
       setFile(null);
     } catch (error) {
@@ -94,8 +110,7 @@ const Chat = ({ chat }) => {
         },
       })
       .then((response) => {
-        console.log("Sent audio message:", response.data);
-        setMessages([...messages, response.data]);
+        channel.publish("new-message", response.data);
       })
       .catch((error) => {
         console.error("Failed to send audio message:", error);
