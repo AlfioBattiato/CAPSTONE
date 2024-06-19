@@ -5,21 +5,51 @@ import Message from "./Message";
 import { MdAttachFile } from "react-icons/md";
 import AudioRecorder from "./AudioRecorder";
 import { useChannel, useConnectionStateListener } from "ably/react";
+import { useDispatch, useSelector } from "react-redux";
+import { openChat, closeChat } from "../redux/actions";
 
 const Chat = ({ chat }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [file, setFile] = useState(null);
   const messagesEndRef = useRef(null);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const openChats = useSelector((state) => state.chats.openChats);
 
   // Create a channel using Ably
   const { channel } = useChannel(`private-chat.${chat.id}`, (message) => {
-    setMessages((prevMessages) => [...prevMessages, message.data]);
+    const receivedMessage = message.data;
+    setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+
+    // Mark message as read if the chat is open and the message is from another user
+    if (receivedMessage.user_id !== user.id && openChats.includes(chat.id)) {
+      axios
+        .post("/api/messages/mark-as-read", { messageIds: [receivedMessage.id] })
+        .then(() => {
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) => (msg.id === receivedMessage.id ? { ...msg, is_unread: false } : msg))
+          );
+        })
+        .catch((error) => {
+          console.error("Error marking message as read:", error);
+        });
+    }
   });
 
   useConnectionStateListener("connected", () => {
     console.log("Connected to Ably!");
   });
+
+  useEffect(() => {
+    // Open the chat when the component is mounted
+    dispatch(openChat(chat.id));
+
+    return () => {
+      // Close the chat when the component is unmounted
+      dispatch(closeChat(chat.id));
+    };
+  }, [chat.id, dispatch]);
 
   useEffect(() => {
     axios

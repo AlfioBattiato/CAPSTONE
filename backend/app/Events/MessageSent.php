@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Support\Facades\Log;
 
 class MessageSent implements ShouldBroadcast
 {
@@ -19,6 +20,7 @@ class MessageSent implements ShouldBroadcast
     public function __construct(Message $message)
     {
         $this->message = $message;
+        Log::info('MessageSent Event Constructed', ['message' => $message]);
     }
 
     public function broadcastOn()
@@ -28,6 +30,7 @@ class MessageSent implements ShouldBroadcast
 
     public function broadcastWith()
     {
+        Log::info('MessageSent Event Broadcasting', ['message' => $this->message]);
         return [
             'id' => $this->message->id,
             'chat_id' => $this->message->chat_id,

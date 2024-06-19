@@ -7,6 +7,7 @@ use App\Models\Message;
 use App\Events\MessageRead;
 use App\Events\MessageSent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -20,33 +21,33 @@ class MessageController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'chat_id' => 'required|exists:chats,id',
-            'message' => 'nullable|string',
-            'file' => 'nullable|file',
-        ]);
+{
+    $request->validate([
+        'chat_id' => 'required|exists:chats,id',
+        'message' => 'nullable|string',
+        'file' => 'nullable|file',
+    ]);
 
-        $message = new Message();
-        $message->chat_id = $request->input('chat_id');
-        $message->user_id = Auth::id();
-        $message->message = $request->input('message');
+    $message = new Message();
+    $message->chat_id = $request->input('chat_id');
+    $message->user_id = Auth::id();
+    $message->message = $request->input('message');
 
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $message->file = $file;
-        }
-
-        $message->is_unread = true;
-        $message->send_at = now();
-        $message->save();
-
-        $message->load('user');
-
-        broadcast(new MessageSent($message))->toOthers();
-
-        return response()->json($message, 201);
+    if ($request->hasFile('file')) {
+        $file = $request->file('file');
+        $message->file = $file;
     }
+
+    $message->is_unread = true;
+    $message->send_at = now();
+    $message->save();
+
+    $message->load('user');
+
+    broadcast(new MessageSent($message))->toOthers();
+
+    return response()->json($message, 201);
+}
 
     public function show(Message $message)
     {
@@ -102,6 +103,7 @@ class MessageController extends Controller
 
     return response()->json(['message' => 'Messages marked as read']);
 }
+
  
 
     public function getMessagesByChat(Chat $chat)
