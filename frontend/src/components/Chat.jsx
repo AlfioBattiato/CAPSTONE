@@ -58,6 +58,20 @@ const Chat = ({ chat }) => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    // Listen for MessageRead events
+    channel.subscribe("MessageRead", (message) => {
+      const { messageIds } = message.data;
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) => (messageIds.includes(msg.id) ? { ...msg, is_unread: false } : msg))
+      );
+    });
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [channel]);
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
 

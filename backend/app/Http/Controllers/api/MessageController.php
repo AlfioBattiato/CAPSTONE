@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Chat;
 use App\Models\Message;
+use App\Events\MessageRead;
 use App\Events\MessageSent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -92,6 +93,11 @@ class MessageController extends Controller
     foreach ($messages as $message) {
         $message->is_unread = false;
         $message->save();
+    }
+
+    if ($messages->isNotEmpty()) {
+        $chatId = $messages->first()->chat_id;
+        broadcast(new MessageRead($messageIds, $chatId))->toOthers();
     }
 
     return response()->json(['message' => 'Messages marked as read']);
