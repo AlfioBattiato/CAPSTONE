@@ -118,7 +118,7 @@ html::-webkit-scrollbar {
 }
 
 .react-datepicker__header {
-  background-color: #08325f !important;
+  background-color: #212529 !important;
 }
 
 .react-datepicker__current-month {
