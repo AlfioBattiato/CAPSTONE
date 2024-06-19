@@ -23,7 +23,7 @@ export default function SetCityTravel() {
                 ...travel.formData,
                 [name]: value
             },
-            inputDisable: true
+          
 
         };
         dispatch(setCurrentTravel(updatedTravel))
@@ -41,7 +41,8 @@ export default function SetCityTravel() {
             formData: {
                 ...travel.formData,
                 query: suggestion.name
-            }
+            },
+            inputDisable: true
         };
         dispatch(setCurrentTravel(updatedTravel));
         setSuggestions([]);
