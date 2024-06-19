@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { ListGroup, Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { setChats, setSelectedChat } from "../../redux/actions";
+import { setChats, setSelectedChat, resetUnreadCount } from "../../redux/actions";
 import GroupList from "./GroupList";
 import ChatList from "./ChatList";
 import GroupMembers from "./GroupMembers";
@@ -10,6 +10,7 @@ import GroupMembers from "./GroupMembers";
 const AllChats = () => {
   const chats = useSelector((state) => state.chats.chats);
   const selectedChat = useSelector((state) => state.chats.selectedChat);
+  const unreadCounts = useSelector((state) => state.chats.unreadCounts);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [isPrivateChatsSelected, setIsPrivateChatsSelected] = useState(true);
   const dispatch = useDispatch();
@@ -33,6 +34,7 @@ const AllChats = () => {
 
   const handleChatClick = (chat) => {
     dispatch(setSelectedChat(chat));
+    dispatch(resetUnreadCount(chat.id));
   };
 
   const handlePrivateChatsClick = () => {
@@ -61,7 +63,12 @@ const AllChats = () => {
           </Col>
           <Col md={9} className="p-0 h-100">
             {isPrivateChatsSelected ? (
-              <ChatList chats={privateChats} onChatClick={handleChatClick} selectedChat={selectedChat} />
+              <ChatList
+                chats={privateChats}
+                onChatClick={handleChatClick}
+                selectedChat={selectedChat}
+                unreadCounts={unreadCounts}
+              />
             ) : (
               <GroupMembers group={selectedGroup} />
             )}

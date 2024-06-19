@@ -1,7 +1,7 @@
 import React from "react";
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, Badge } from "react-bootstrap";
 
-const ChatList = ({ chats, selectedChat, onChatClick }) => {
+const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
   return (
     <ListGroup className="custom-scrollbar bg-white rounded-0" style={{ height: "80vh", maxHeight: "80vh" }}>
       {Array.isArray(chats) && chats.length > 0 ? (
@@ -42,6 +42,11 @@ const ChatList = ({ chats, selectedChat, onChatClick }) => {
                     .map((user) => user.username)
                     .join(", ")
                 : "Chat with no users")}
+            {unreadCounts[chat.id] > 0 && (
+              <Badge bg="secondary" className="ms-2">
+                {unreadCounts[chat.id]}
+              </Badge>
+            )}
           </ListGroup.Item>
         ))
       ) : (

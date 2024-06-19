@@ -16,7 +16,7 @@ import PasswordReset from "./pages/PasswordReset";
 import Register from "./pages/Register";
 import Lobbies from "./pages/Lobbies";
 import * as Ably from "ably";
-import { AblyProvider } from "ably/react";
+import { AblyProvider, ChannelProvider } from "ably/react";
 
 function App() {
   // const user = useSelector((state) => state.user);
@@ -57,7 +57,14 @@ function App() {
               <Route path="/dashboard/:id" element={<Dashboard />} />
               <Route path="/homepage/" element={<Homepage />} />
 
-              <Route path="/lobbies" element={<Lobbies />} />
+              <Route
+                path="/lobbies"
+                element={
+                  <ChannelProvider channelName="global">
+                    <Lobbies />
+                  </ChannelProvider>
+                }
+              />
 
               {/* <Route path="/corsiutente/:id" element={<CorsiUtente />} /> */}
             </Route>

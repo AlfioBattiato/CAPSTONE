@@ -3,24 +3,26 @@ import axios from "axios";
 import { Card } from "react-bootstrap";
 import { useChannel, useConnectionStateListener } from "ably/react";
 import { useDispatch, useSelector } from "react-redux";
-import { openChat, closeChat } from "../../redux/actions";
+import { openChat, closeChat, incrementUnreadCount, resetUnreadCount } from "../../redux/actions";
 import MessageList from "./MessageList";
 import MessageForm from "./MessageForm";
 
-const Chat = ({ chat }) => {
+const Chat = ({ chat, globalChannel }) => {
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const openChats = useSelector((state) => state.chats.openChats);
 
-  // Create a channel using Ably
   const { channel } = useChannel(`private-chat.${chat.id}`, (message) => {
     const receivedMessage = message.data;
     if (message.name === "message-sent") {
       setMessages((prevMessages) => [...prevMessages, receivedMessage]);
 
-      // Mark message as read if the chat is open and the message is from another user
+      if (receivedMessage.user_id !== user.id && !openChats.includes(chat.id)) {
+        dispatch(incrementUnreadCount(chat.id));
+      }
+
       if (receivedMessage.user_id !== user.id && openChats.includes(chat.id)) {
         axios
           .post("/api/messages/mark-as-read", { messageIds: [receivedMessage.id] })
@@ -28,6 +30,7 @@ const Chat = ({ chat }) => {
             setMessages((prevMessages) =>
               prevMessages.map((msg) => (msg.id === receivedMessage.id ? { ...msg, is_unread: false } : msg))
             );
+            dispatch(resetUnreadCount(chat.id));
           })
           .catch((error) => {
             console.error("Error marking message as read:", error);
@@ -75,6 +78,7 @@ const Chat = ({ chat }) => {
                   unreadMessageIds.includes(message.id) ? { ...message, is_unread: false } : message
                 )
               );
+              dispatch(resetUnreadCount(chat.id));
             })
             .catch((error) => {
               console.error("Error marking messages as read:", error);
@@ -84,7 +88,7 @@ const Chat = ({ chat }) => {
       .catch((error) => {
         console.error("Error loading messages:", error);
       });
-  }, [chat]);
+  }, [chat, dispatch]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -101,6 +105,7 @@ const Chat = ({ chat }) => {
       });
 
       channel.publish("message-sent", response.data);
+      globalChannel.publish("message-sent", { chatId: chat.id, userId: user.id });
     } catch (error) {
       console.error("Failed to send message:", error);
     }
