@@ -1,33 +1,31 @@
 <?php
 
-use App\Http\Controllers\api\TravelController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\api\TravelController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\api\InterestPlaceController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use Illuminate\Support\Facades\Http;
 
 // Authentication routes provided by Breeze
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
 Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
 
 //travel
-Route::name('api.v1.') 
-    ->prefix('v1')    
+Route::name('api.v1.')
+    ->prefix('v1')
     ->group(function () {
         Route::get('/travels', [TravelController::class, 'index'])->name('travels.index');
         // Route::get('/courses/{id}', [CourseController::class, 'show'])->name('courses.show');
-
         // Route::get('/users/{id}', [RegisteredUserController::class, 'show'])->name('users.show')->middleware(['auth:sanctum']);
-      
-  
     });
 
 
@@ -37,8 +35,8 @@ Route::name('api.v1.')
 Route::group(['middleware' => ['guest']], function () {
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
-    
-    });
+
+});
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
@@ -81,13 +79,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('messages/mark-as-read', [MessageController::class, 'markAsRead']);
     Route::put('messages/{message}', [MessageController::class, 'update']);
     Route::delete('messages/{message}', [MessageController::class, 'destroy']);
+
+
+    // Routes for InterestPlaceController
+    Route::get('interest-places', [InterestPlaceController::class, 'index']);
+    Route::post('interest-places', [InterestPlaceController::class, 'store']);
+    Route::get('interest-places/{interestPlace}', [InterestPlaceController::class, 'show']);
+    Route::put('interest-places/{interestPlace}', [InterestPlaceController::class, 'update']);
+    Route::delete('interest-places/{interestPlace}', [InterestPlaceController::class, 'destroy']);
 });
 // funzioni per il map 
 Route::get('/proxy/nominatim', function (Request $request) {
     $query = $request->input('q');
     $response = Http::get('https://photon.komoot.io/api/', [
         'q' => $query,
-     
+
     ]);
 
     return $response->json();

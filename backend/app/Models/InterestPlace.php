@@ -10,7 +10,15 @@ class InterestPlace extends Model
 {
     use HasFactory;
 
-
+    protected $fillable = [
+        'name_location',
+        'description',
+        'location_img',
+        'lat',
+        'lon',
+        'user_id',
+        'rating',
+    ];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

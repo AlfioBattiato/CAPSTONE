@@ -1,4 +1,4 @@
-import { REMOVE_META, SET_ALLTRAVELS, SET_FORMDATA, SET_INSTRUCTIONS, SET_TRAVEL } from "../actions";
+import { REMOVE_META, SET_ALLTRAVELS, SET_FORMDATA, SET_INSTRUCTIONS, SET_INTERESTPLACES, SET_TRAVEL } from "../actions";
 
 const initialState = {
   alltravels: [],
@@ -22,6 +22,7 @@ const initialState = {
     query: '',
     metaQuery: ''
   },
+  interestPlaces:[],
 };
 
 const travelsReducer = (state = initialState, action) => {
@@ -53,6 +54,11 @@ const travelsReducer = (state = initialState, action) => {
       return {
         ...state,
         formData: action.payload,
+      };
+    case SET_INTERESTPLACES:
+      return {
+        ...state,
+        interestPlaces: action.payload,
       };
     default:
       return state;

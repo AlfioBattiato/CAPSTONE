@@ -45,7 +45,6 @@ export default function Maps() {
         };
         dispatch(setFormData(formDataUpdate));
         dispatch(setCurrentTravel(updatedTravel));
-
         setPopupInfo({ lat, lng });
     };
 
