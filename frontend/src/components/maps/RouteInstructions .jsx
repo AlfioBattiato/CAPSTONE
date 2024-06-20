@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Badge, ListGroup } from 'react-bootstrap';
 
 const RouteInstructions = () => {
-    const map_instructions = useSelector(state => state.infotravels.setTravel.map_instructions);
+    const map_instructions = useSelector(state => state.infotravels.map_instructions);
 
     useEffect(() => {
     }, [map_instructions]);

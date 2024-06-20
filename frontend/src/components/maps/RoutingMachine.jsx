@@ -1,9 +1,9 @@
 import L from 'leaflet';
 import { createControlComponent } from '@react-leaflet/core';
 import 'leaflet-routing-machine';
-import { setCurrentTravel } from '../../redux/actions';
+import { setmapInstructions } from '../../redux/actions';
 
-const createRoutineMachineLayer = ({ start_location, metas, dispatch, travel }) => {
+const createRoutineMachineLayer = ({ start_location, metas, dispatch }) => {
     const waypoints = [
         L.latLng(start_location.lat, start_location.lon),
         ...metas.map(meta => L.latLng(meta.lat, meta.lon))
@@ -32,17 +32,14 @@ const createRoutineMachineLayer = ({ start_location, metas, dispatch, travel }) 
         routeWhileDragging: true,
         draggableWaypoints: true,
         fitSelectedRoutes: true,
-        showAlternatives: true // Abilita la visualizzazione dei percorsi alternativi
+        showAlternatives: false // Abilita la visualizzazione dei percorsi alternativi
     });
 
     instance.on('routesfound', function (e) {
         const routes = e.routes;
         // console.log(routes[0])
-        const updatedTravel = {
-            ...travel,
-            map_instructions: routes[0]
-        };
-        dispatch(setCurrentTravel(updatedTravel));
+      
+        dispatch(setmapInstructions(routes[0]));
     });
 
     return instance;

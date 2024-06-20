@@ -19,6 +19,8 @@ export const RESET_UNREAD_COUNT = "RESET_UNREAD_COUNT";
 export const SET_ALLTRAVELS = "SET_ALLTRAVELS";
 export const SET_TRAVEL = "SET_TRAVEL";
 export const REMOVE_META = "REMOVE_META";
+export const SET_INSTRUCTIONS = "SET_INSTRUCTIONS";
+export const SET_FORMDATA = "SET_FORMDATA";
 
 // chat////////
 
@@ -79,6 +81,14 @@ export const setActionTravels = (alltravels) => ({
 
 export const setCurrentTravel = (obj) => ({
   type: SET_TRAVEL,
+  payload: obj,
+});
+export const setmapInstructions = (obj) => ({
+  type: SET_INSTRUCTIONS,
+  payload: obj,
+});
+export const setFormData = (obj) => ({
+  type: SET_FORMDATA,
   payload: obj,
 });
 

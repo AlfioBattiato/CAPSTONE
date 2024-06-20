@@ -5,35 +5,31 @@ import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 
 import RoutingMachine from './RoutingMachine';
-import { setCurrentTravel } from '../../redux/actions';
+import { setCurrentTravel, setFormData } from '../../redux/actions';
 
 export default function Maps() {
     const travel = useSelector(state => state.infotravels.setTravel);
     const [position, setPosition] = useState([41.8933203, 12.4829321]); // Coordinate predefinite
-    const [metas, setMetas] = useState(travel.metas);
     const [popupInfo, setPopupInfo] = useState(null); // Informazioni per il popup
-    const [key, setKey] = useState(metas.length); // Informazioni per il popup
+    const [key, setKey] = useState(travel.metas.length); // Informazioni per il popup
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        setPosition([travel.start_location.lat, travel.start_location.lon]);
-        setMetas(travel.metas);
+ 
 
-        if (!travel.start_location.city) {
-            setPopupInfo(null);
-        } else {
-            setPopupInfo({ lat: travel.start_location.lat, lng: travel.start_location.lon });
+    useEffect(() => {
+        if (travel.start_location.lat && travel.start_location.lon) {
+            setPosition([travel.start_location.lat, travel.start_location.lon]);
         }
+    
+        if (travel.start_location.city) {
+            setPopupInfo({ lat: travel.start_location.lat, lng: travel.start_location.lon });
+        } else {
+            setPopupInfo(null);
+        }
+        setKey(oldKey => oldKey + 1);
     }, [travel]);
 
-    useEffect(() => {
-        setKey(oldKey => oldKey + 1);
-    }, [metas]);
-
-    const startLocation = travel.start_location;
-
     const handleClickOnMap = (event) => {
-      
         const { lat, lng } = event.latlng;
         const updatedTravel = {
             ...travel,
@@ -42,43 +38,40 @@ export default function Maps() {
                 lat: parseFloat(lat),
                 lon: parseFloat(lng)
             },
-            formData: {
-                query: 'Punto interattivo',
-                metaQuery: ''
-              },
-              inputDisable:true
         };
+        const formDataUpdate = {
+            query: 'Punto interattivo',
+            metaQuery: ''
+        };
+        dispatch(setFormData(formDataUpdate));
         dispatch(setCurrentTravel(updatedTravel));
 
         setPopupInfo({ lat, lng });
-        setKey(oldKey => oldKey + 1);
-
-      
     };
 
     function ClickableMap() {
         useMapEvents({
             click: handleClickOnMap,
         });
-        return null; // No visual component, just handling events
+        return null; // Nessun componente visivo, solo gestione eventi
     }
 
     return (
-        <div >
-            <MapContainer  center={position} zoom={10} style={{ height: '30rem', width: '100%',borderRadius:'25px' }}>
+        <div>
+            <MapContainer center={position} zoom={10} style={{ height: '40rem', width: '100%', borderRadius: '25px' }}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
                 <ClickableMap />
 
-                {startLocation.city && startLocation.lat && startLocation.lon && (
-                    <Marker position={[startLocation.lat, startLocation.lon]}>
-                        <Popup>Start Location: {startLocation.city}</Popup>
+                {travel.start_location.city && travel.start_location.lat && travel.start_location.lon && (
+                    <Marker position={[travel.start_location.lat, travel.start_location.lon]}>
+                        <Popup>Start Location: {travel.start_location.city}</Popup>
                     </Marker>
                 )}
 
-                {metas.map((meta, index) => (
+                {travel.metas.map((meta, index) => (
                     <Marker key={index} position={[meta.lat, meta.lon]}>
                         <Popup>Meta: {meta.city}</Popup>
                     </Marker>
@@ -92,13 +85,12 @@ export default function Maps() {
                     </Marker>
                 )}
 
-                {startLocation && startLocation.lat !== 0 && metas.length > 0 && (
+                {travel.start_location.lat !== 0 && travel.metas.length > 0 && (
                     <RoutingMachine
-                        key={key}
-                        start_location={startLocation}
-                        metas={metas}
+                        key={key} // Usare key per forzare il render di una nuova istanza di RoutingMachine
+                        start_location={travel.start_location}
+                        metas={travel.metas}
                         dispatch={dispatch}
-                        travel={travel}
                     />
                 )}
             </MapContainer>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeMeta, setCurrentTravel } from '../../redux/actions';
+import { removeMeta, setCurrentTravel, setFormData, setmapInstructions } from '../../redux/actions';
 import { FaSearchLocation, FaTrash, FaMapMarked, FaMapMarkedAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { Modal, Button } from 'react-bootstrap';
 
@@ -11,26 +11,20 @@ export default function SetCityTravel() {
     const [showResetModal, setShowResetModal] = useState(false); // State for showing reset confirmation modal
     const dispatch = useDispatch();
     const travel = useSelector(state => state.infotravels.setTravel);
-    const { query, metaQuery } = travel.formData;
-
+    const travel2 = useSelector(state => state.infotravels);
+    const { query, metaQuery } = travel2.formData;
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        // Update formData in travel directly
-        const updatedTravel = {
-            ...travel,
-            formData: {
-                ...travel.formData,
-                [name]: value
-            },
-          
-
+        const formDataUpdate = {
+            ...travel2.formData,
+            [name]: value,
+           
         };
-        dispatch(setCurrentTravel(updatedTravel))
+        dispatch(setFormData(formDataUpdate));
     };
 
     const handleSuggestionClick = (suggestion) => {
-
         const updatedTravel = {
             ...travel,
             start_location: {
@@ -38,13 +32,13 @@ export default function SetCityTravel() {
                 lat: parseFloat(suggestion.lat),
                 lon: parseFloat(suggestion.lon)
             },
-            formData: {
-                ...travel.formData,
-                query: suggestion.name
-            },
-            inputDisable: true
+        };
+        const formDataUpdate = {
+            query:  suggestion.name,
+            metaQuery: ''
         };
         dispatch(setCurrentTravel(updatedTravel));
+        dispatch(setFormData(formDataUpdate));
         setSuggestions([]);
     };
 
@@ -59,61 +53,54 @@ export default function SetCityTravel() {
                     lon: parseFloat(suggestion.lon)
                 }
             ],
-            formData: {
-                ...travel.formData,
-                metaQuery: ''
-            }
+        };
+        const formDataUpdate = {
+            ...travel2.formData,
+            metaQuery: '',
+           
         };
         dispatch(setCurrentTravel(updatedTravel));
-
-
+        dispatch(setFormData(formDataUpdate));
         setMetaSuggestions([]);
     };
 
     const handleSubmitCity = (e) => {
         e.preventDefault();
-
         if (query.length > 2) {
             axios.get(`/api/proxy/nominatim`, {
-                params: {
-                    q: query,
-                }
+                params: { q: query }
             })
-                .then(response => {
-                    // console.log(response.data)
-                    const cities = response.data.features.map(city => ({
-                        name: city.properties.name,
-                        lat: city.geometry.coordinates[1],
-                        lon: city.geometry.coordinates[0]
-                    }));
-                    setSuggestions(cities);
-                })
-                .catch(error => {
-                    console.error("Error fetching cities: ", error);
-                });
+            .then(response => {
+                const cities = response.data.features.map(city => ({
+                    name: city.properties.name,
+                    lat: city.geometry.coordinates[1],
+                    lon: city.geometry.coordinates[0]
+                }));
+                setSuggestions(cities);
+            })
+            .catch(error => {
+                console.error("Error fetching cities: ", error);
+            });
         }
     };
 
     const handleSubmitMeta = (e) => {
         e.preventDefault();
-
         if (metaQuery.length > 2) {
             axios.get(`/api/proxy/nominatim`, {
-                params: {
-                    q: metaQuery,
-                }
+                params: { q: metaQuery }
             })
-                .then(response => {
-                    const cities = response.data.features.map(city => ({
-                        name: city.properties.name,
-                        lat: city.geometry.coordinates[1],
-                        lon: city.geometry.coordinates[0]
-                    }));
-                    setMetaSuggestions(cities);
-                })
-                .catch(error => {
-                    console.error("Error fetching meta cities: ", error);
-                });
+            .then(response => {
+                const cities = response.data.features.map(city => ({
+                    name: city.properties.name,
+                    lat: city.geometry.coordinates[1],
+                    lon: city.geometry.coordinates[0]
+                }));
+                setMetaSuggestions(cities);
+            })
+            .catch(error => {
+                console.error("Error fetching meta cities: ", error);
+            });
         }
     };
 
@@ -140,9 +127,10 @@ export default function SetCityTravel() {
                 metaQuery: ''
             },
             inputDisable: false
-
         };
         dispatch(setCurrentTravel(updatedTravel));
+        dispatch(setmapInstructions([]));
+        dispatch(setFormData({ query: '', metaQuery: '' }));
         setShowResetModal(false); // Close confirmation modal after reset
     };
 
@@ -250,13 +238,31 @@ export default function SetCityTravel() {
                                 <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
                                     <FaTrash />
                                 </button>
-                            </li></div>
+                            </li>
+                        </div>
                     ))}
                 </>
             )}
 
-            <div className="d-flex">
-                <button className='btn btn-warning mt-2 ms-auto' onClick={reset}>Azzera istruzioni</button>
+            <div className="d-flex ">
+                <button className="Btn  mt-2 ms-auto" onClick={reset}>
+                    <div className="sign">
+                        <svg
+                            viewBox="0 0 16 16"
+                            className="bi bi-trash3-fill"
+                            fill="currentColor"
+                            height="18"
+                            width="18"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"
+                            ></path>
+                        </svg>
+                    </div>
+
+                    <div className="text">Annulla</div>
+                </button>
             </div>
         </div>
     );
