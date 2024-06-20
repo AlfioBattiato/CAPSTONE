@@ -21,20 +21,23 @@ export default function InfoPlace({ show, handleClose, place }) {
                 <Modal.Title >{place.name_location ? place.name_location : "Nome luogo sconosciuto"} </Modal.Title>
 
             </Modal.Header>
-            <Modal.Body className="bg-dark text-white">
-                <div className="d-flex justify-content-end mb-3">
-                <p className="mb-0">Questo luogo ha ricevuto</p>
-                <p className="mb-0">{place.rating}</p>
-                <FcLike />
+            <Modal.Body className="bg-dark text-white text-center">
+                <div className="d-flex justify-content-end gap-2 align-items-center mb-3">
+                    <p className="mb-0">Questo luogo ha ricevuto</p>
+                    <p className="mb-0">{place.rating}</p>
+                    <FcLike />
                 </div>
                 <img src={place.location_img} alt={place.name_location} style={{ width: '15rem' }} className="rounded" />
                 <p className="mt-4 fw-bold">Note aggiuntive:</p>
                 <p className="mt-4">{place.description ? place.description : "Nessuna nota disponibile"}</p>
                 <hr />
-                <div className="d-flex gap-2 align-items-center">
-                  
-                    <SlLike className="text-success"/>
-                    <BiSolidLike />
+                <div className="d-flex align-items-center justify-content-end gap-2 p-1 placelike" onClick={()=>console.log('ok')}>
+
+                    <SlLike />
+                    <p className="mb-0"> Lascia un like</p>
+                   
+
+
                 </div>
 
             </Modal.Body>
