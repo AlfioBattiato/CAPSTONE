@@ -13,7 +13,7 @@ const Message = ({ message, onDelete, onMarkAsRead }) => {
 
   return (
     <ListGroup.Item
-      className={`message-item px-5 py-4 d-flex border-0 ${
+      className={`message-item px-5 py-4 d-flex border-0 bg-light ${
         isOwnMessage ? "justify-content-end" : "justify-content-start"
       }`}
       onMouseEnter={() => setIsHovered(true)}
