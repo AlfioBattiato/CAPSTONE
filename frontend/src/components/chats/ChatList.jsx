@@ -3,13 +3,13 @@ import { ListGroup, Badge } from "react-bootstrap";
 
 const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
   return (
-    <ListGroup className="custom-scrollbar bg-white rounded-0" style={{ height: "80vh", maxHeight: "80vh" }}>
+    <ListGroup className="custom-scrollbar bg-white rounded-0 border-0" style={{ height: "80vh", maxHeight: "80vh" }}>
       {Array.isArray(chats) && chats.length > 0 ? (
         chats.map((chat) => (
           <ListGroup.Item
             key={chat.id}
             onClick={() => onChatClick(chat)}
-            className={`chat-item px-4 rounded-0 py-3 btn fs-4 text-start ${
+            className={`chat-item px-4 rounded-0 border-0 py-3 btn fs-4 text-start ${
               selectedChat && selectedChat.id === chat.id ? "bg-red" : "bg-blue text-white"
             }`}
             onMouseEnter={(e) => {

@@ -46,9 +46,9 @@ const AllChats = () => {
   const privateChats = chats.filter((chat) => !chat.group_chat);
 
   return (
-    <Card style={{ height: "90vh", maxHeight: "90vh" }}>
+    <Card className="h-100">
       <Card.Header
-        className={`fs-2 d-flex align-items-center border-bottom rounded-0 ${
+        className={`fs-2 d-flex align-items-center rounded-0 ${
           isPrivateChatsSelected ? "bg-red" : "bg-blue text-white"
         }`}
         onClick={handlePrivateChatsClick}

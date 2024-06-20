@@ -1,9 +1,8 @@
 body {
-  background-color: #EFF3F8 !important;
-/* background-image: url('https://wallpaper.dog/large/10811796.jpg');
+  background-color: #eff3f8 !important;
+  /* background-image: url('https://wallpaper.dog/large/10811796.jpg');
 background-repeat: no-repeat;
 background-size: cover; */
-
 }
 
 /* Nascondi la barra di scorrimento solo per WebKit */
@@ -98,7 +97,7 @@ html::-webkit-scrollbar {
   color: white !important;
 }
 
-.travelCard>* {
+.travelCard > * {
   position: relative;
   z-index: 2;
 }
@@ -163,4 +162,62 @@ html::-webkit-scrollbar {
 
 .leaflet-routing-alt {
   display: none;
+}
+
+/* LOBBIES */
+
+.lobbies {
+  border-radius: 27px;
+  background: #ededed;
+  box-shadow: 15px 15px 30px #a6a6a6, -15px -15px 30px #ffffff;
+}
+
+/* MESSAGE */
+
+.message-item {
+  border: none;
+  background: transparent;
+}
+
+.message-content {
+  max-width: 70%;
+  color: #000;
+  border-radius: 34px;
+  background: linear-gradient(145deg, #c6c4c4, #ffffff);
+  box-shadow: 5px 5px 10px #8fa8d3, -5px -5px 10px #f9f6f6;
+}
+
+.message-content.own-message {
+  box-shadow: 5px 5px 10px #d38f8f, -5px -5px 10px #f9f6f6;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.message-username {
+  font-weight: bold;
+  padding-right: 10px;
+}
+
+.message-delete-button {
+  background: transparent;
+  color: #000;
+  border: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.message-delete-button:hover {
+  color: #ff0000;
+}
+
+.message-attachment img,
+.message-attachment video,
+.message-attachment audio {
+  max-width: 400px;
+  max-height: 400px;
 }
