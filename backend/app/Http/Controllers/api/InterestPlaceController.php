@@ -6,6 +6,7 @@ use App\Models\InterestPlace;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInterestPlaceRequest;
 use App\Http\Requests\UpdateInterestPlaceRequest;
+use Illuminate\Http\Request;
 
 class InterestPlaceController extends Controller
 {
@@ -14,7 +15,8 @@ class InterestPlaceController extends Controller
      */
     public function index()
     {
-        //
+        $places = InterestPlace::all();
+        return response()->json($places);
     }
 
     /**
@@ -22,7 +24,7 @@ class InterestPlaceController extends Controller
      */
     public function create()
     {
-        //
+        // Not typically used in API controllers
     }
 
     /**
@@ -30,7 +32,9 @@ class InterestPlaceController extends Controller
      */
     public function store(StoreInterestPlaceRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $place = InterestPlace::create($validated);
+        return response()->json($place, 201); // Created
     }
 
     /**
@@ -38,7 +42,7 @@ class InterestPlaceController extends Controller
      */
     public function show(InterestPlace $interestPlace)
     {
-        //
+        return response()->json($interestPlace);
     }
 
     /**
@@ -46,7 +50,7 @@ class InterestPlaceController extends Controller
      */
     public function edit(InterestPlace $interestPlace)
     {
-        //
+        // Not typically used in API controllers
     }
 
     /**
@@ -54,7 +58,9 @@ class InterestPlaceController extends Controller
      */
     public function update(UpdateInterestPlaceRequest $request, InterestPlace $interestPlace)
     {
-        //
+        $validated = $request->validated();
+        $interestPlace->update($validated);
+        return response()->json($interestPlace);
     }
 
     /**
@@ -62,6 +68,7 @@ class InterestPlaceController extends Controller
      */
     public function destroy(InterestPlace $interestPlace)
     {
-        //
+        $interestPlace->delete();
+        return response()->json(null, 204); // No Content
     }
 }

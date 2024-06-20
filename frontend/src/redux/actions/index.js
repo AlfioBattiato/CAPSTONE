@@ -21,6 +21,7 @@ export const SET_TRAVEL = "SET_TRAVEL";
 export const REMOVE_META = "REMOVE_META";
 export const SET_INSTRUCTIONS = "SET_INSTRUCTIONS";
 export const SET_FORMDATA = "SET_FORMDATA";
+export const SET_INTERESTPLACES = "SET_INTERESTPLACES";
 
 // chat////////
 
@@ -95,4 +96,8 @@ export const setFormData = (obj) => ({
 export const removeMeta = (index) => ({
   type: REMOVE_META,
   payload: index,
+});
+export const setInterestPlaces = (places) => ({
+  type: SET_INTERESTPLACES,
+  payload: places,
 });

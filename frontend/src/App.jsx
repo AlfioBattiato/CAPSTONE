@@ -17,6 +17,9 @@ import Register from "./pages/Register";
 import Lobbies from "./pages/Lobbies";
 import * as Ably from "ably";
 import { AblyProvider, ChannelProvider } from "ably/react";
+import 'react-multi-carousel/lib/styles.css';
+import CreateInterestPlace from "./components/interest_places/CreateInterestPlace";
+
 
 function App() {
   // const user = useSelector((state) => state.user);
@@ -56,6 +59,7 @@ function App() {
               <Route path="/password-reset/:token" element={<PasswordReset />} />
               <Route path="/dashboard/:id" element={<Dashboard />} />
               <Route path="/homepage/" element={<Homepage />} />
+              <Route path="/createInterestPlace" element={<CreateInterestPlace />} />
 
               <Route
                 path="/lobbies"

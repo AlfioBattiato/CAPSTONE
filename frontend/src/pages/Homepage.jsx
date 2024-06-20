@@ -3,6 +3,7 @@ import SetTravel from '../components/maps/SetCityTravel';
 import Maps from '../components/maps/Maps';
 import SetTravelSettings from '../components/maps/SetTravelSettings';
 import RouteInstructions from '../components/maps/RouteInstructions ';
+import All_interest_places from '../components/interest_places/All_interest_places';
 
 
 function Homepage() {
@@ -20,6 +21,7 @@ function Homepage() {
                 <Col md={7}>
                     <h5 className="my-2 pb-2">maps</h5>
                     <Maps></Maps>
+                    <All_interest_places></All_interest_places>
                 </Col>
                 <Col md={2} className="border-start">
                 <RouteInstructions />
