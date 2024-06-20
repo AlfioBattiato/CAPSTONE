@@ -50,7 +50,7 @@ export default function All_interest_places() {
 
   return (
     <div className="my-2 ">
-      <p className="mb-0"> Scopri i luoghi di interesse</p>
+      <p className="my-2 fw-bold"> Scopri i luoghi di interesse</p>
       <Carousel responsive={responsive} className="">
         {reduxplaces && reduxplaces.map((place, index) => <Card_Interest_places place={place} key={index} />)}
       </Carousel>
