@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('interest_places', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->string('name_location');
-            $table->text('description');
-            $table->string('location_img')->nullable();
+            $table->string('name_location')->nullable();
+            $table->text('description')->nullable();
+            $table->string('location_img');
             $table->integer('rating')->nullable();
             $table->float('lat');
             $table->float('lon');

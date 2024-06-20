@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Marker, Popup } from 'react-leaflet';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import axios from 'axios';
 import { Col, Row } from 'react-bootstrap';
 
 export default function CreateInterestPlace() {
+    const user_id = useSelector(state => state.auth.user.id);
     const [position, setPosition] = useState([41.8933203, 12.4829321]); // Coordinate predefinite
     const [popupInfo, setPopupInfo] = useState(null);
     const [formData, setFormData] = useState({
@@ -14,7 +15,6 @@ export default function CreateInterestPlace() {
         description: '',
         location_img: ''
     });
-    const dispatch = useDispatch();
 
     function ClickableMap() {
         useMapEvents({
@@ -43,6 +43,25 @@ export default function CreateInterestPlace() {
         });
     };
 
+    // const submitForm = async (ev, formData) => {
+    //     ev.preventDefault();
+        
+    //     const body = new FormData();
+    //     body.append('name_location', formData.name_location);
+    //     body.append('description', formData.description);
+    //     body.append('location_img', formData.location_img);
+    //     body.append('lat', popupInfo.lat);
+    //     body.append('lon', popupInfo.lng);
+    //     body.append('user_id', user_id);
+    
+    //     try {
+    //         const response = await axios.post('/api/interest-places', body);
+    //         console.log(response);
+    //     } catch (error) {
+    //         console.error("Failed to send message:", error);
+    //     }
+    // };
+    
     const submitForm = (ev) => {
         ev.preventDefault();
         axios.get('/sanctum/csrf-cookie')
@@ -53,12 +72,12 @@ export default function CreateInterestPlace() {
                 body.append('location_img', formData.location_img);
                 body.append('lat', popupInfo.lat);
                 body.append('lon', popupInfo.lng);
+                body.append('user_id', user_id);
 
                 return axios.post('/api/interest-places', body);
             })
             .then((response) => {
                 console.log('Place created successfully:', response.data);
-                // Dispatch success action if needed
                 axios('/api/interest-places')
             })
             .catch((error) => {
@@ -78,6 +97,7 @@ export default function CreateInterestPlace() {
                             <li>Se conosci il nome del luogo, inseriscilo per identificarlo correttamente</li>
                             <li>Aggiungi delle brevi note aggiuntive, ad esempio dettagli particolari sul percorso, come strade non accessibili a tutti,
                                 per aiutare gli altri motociclisti a comprendere meglio il luogo.</li>
+                            <li>Devi necessariamente aggiungure un immagine.</li>
                         </ul>
 
 

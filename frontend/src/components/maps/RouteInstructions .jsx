@@ -28,7 +28,7 @@ const RouteInstructions = () => {
                     <ListGroup style={{ maxHeight: '30rem', overflowY: 'auto' }}>
                         <p className='fw-bold'>Percorso:</p>
                         {map_instructions.instructions.map((instruction, index) => (
-                            <ListGroup.Item key={index} style={{backgroundColor:'#EFF3F8'}}>{instruction.text}</ListGroup.Item>
+                            <ListGroup.Item key={index} className='bg-dark text-white'>{instruction.text}</ListGroup.Item>
                         ))}
                     </ListGroup>
                 </React.Fragment>
