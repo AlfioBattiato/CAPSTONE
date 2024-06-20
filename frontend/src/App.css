@@ -184,11 +184,14 @@ html::-webkit-scrollbar {
   color: #000;
   border-radius: 34px;
   background: linear-gradient(145deg, #c6c4c4, #ffffff);
-  box-shadow: 5px 5px 10px #8fa8d3, -5px -5px 10px #f9f6f6;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ffffff;
+  /* box-shadow: 5px 5px 10px #7a7c80, -5px -5px 10px #f9f6f6; */
 }
 
 .message-content.own-message {
-  box-shadow: 5px 5px 10px #d38f8f, -5px -5px 10px #f9f6f6;
+  /* box-shadow: 5px 5px 10px #d38f8f, -5px -5px 10px #f9f6f6; */
 }
 
 .message-header {

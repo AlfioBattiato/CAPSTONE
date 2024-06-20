@@ -19,9 +19,7 @@ const Message = ({ message, onDelete, onMarkAsRead }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div
-        className={`message-content d-inline-block px-4 py-3 border-0 rounded-4 ${isOwnMessage ? "own-message" : ""}`}
-      >
+      <div className={`message-content d-inline-block px-4 py-3 rounded-4 ${isOwnMessage ? "own-message" : ""}`}>
         <div className="message-header">
           <strong className="message-username fs-6">{message.user?.username || "Unknown User"}</strong>
           {isOwnMessage && isHovered && (

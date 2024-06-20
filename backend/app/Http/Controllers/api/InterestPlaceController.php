@@ -30,32 +30,26 @@ class InterestPlaceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreInterestPlaceRequest $request)
+    public function store(Request $request)
     {
         $request->validate([
-            'name_location' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'location_img' => ['required', 'image', 'max:1024'],
+            'name_location' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'location_img' => 'required|image|max:1024',
+            'lat' => 'required|numeric',
+            'lon' => 'required|numeric',
+            'user_id' => 'required|exists:users,id',
         ]);
-    
+
         $data = $request->only(['name_location', 'description', 'lat', 'lon', 'user_id']);
-        // Ensure lat and lon are included in your form or request payload
-    
         $file_path = $request->file('location_img')->store('interestPlaces', 'public');
-    
-        $place = new InterestPlace();
-        $place->name_location = $data['name_location'];
-        $place->description = $data['description'];
-        $place->lat = $data['lat']; // Make sure 'lat' exists in the request
-        $place->lon = $data['lon']; // Make sure 'lon' exists in the request
-        $place->user_id = $data['user_id'];      
-        $place->rating = 0;
-        $place->location_img = 'http://localhost:8000/storage/' . $file_path; // Use url() to generate URL
-        $place->save();
-    
+        $data['location_img'] = 'http://localhost:8000/storage/' . $file_path;
+        $data['rating'] = 0;
+
+        $place = InterestPlace::create($data);
         $place->load('user');
-    
-        return response()->json($place, 201); // Created
+
+        return response()->json($place, 201);
     }
     
 
