@@ -3,14 +3,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { SlLike } from "react-icons/sl";
 import { BiSolidLike } from "react-icons/bi";
 import { FcLike } from "react-icons/fc";
+import { setCurrentTravel } from "../../redux/actions";
 
 
 export default function InfoPlace({ show, handleClose, place }) {
     const dispatch = useDispatch()
-    const metas = useSelector((state) => state.infotravels.setTravel.metas);
+    const travel = useSelector((state) => state.infotravels.setTravel);
 
 
     const submit = () => {
+        const updatedTravel = {
+            ...travel,
+            metas: [
+                ...travel.metas,
+                {
+                    city: place.name_location ? place.name_location : "Punto di interesse",
+                    lat: parseFloat(place.lat),
+                    lon: parseFloat(place.lon)
+                }
+            ],
+        }
+        dispatch(setCurrentTravel(updatedTravel));
+        console.log('ottimo')
         handleClose()
 
 
@@ -31,11 +45,11 @@ export default function InfoPlace({ show, handleClose, place }) {
                 <p className="mt-4 fw-bold">Note aggiuntive:</p>
                 <p className="mt-4">{place.description ? place.description : "Nessuna nota disponibile"}</p>
                 <hr />
-                <div className="d-flex align-items-center justify-content-end gap-2 p-1 placelike" onClick={()=>console.log('ok')}>
+                <div className="d-flex align-items-center justify-content-end gap-2 p-1 placelike" onClick={() => submit}>
 
                     <SlLike />
                     <p className="mb-0"> Lascia un like</p>
-                   
+
 
 
                 </div>

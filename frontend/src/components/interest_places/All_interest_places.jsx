@@ -26,7 +26,7 @@ export default function All_interest_places() {
   }, [dispatch]);
 
   const handleCardClick = (place) => {
-    console.log(place)
+    // console.log(place)
     setSelectedPlace(place);
     setShowModal(true);
   };
