@@ -89,6 +89,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('interest-places/{interestPlace}', [InterestPlaceController::class, 'show']);
     Route::put('interest-places/{interestPlace}', [InterestPlaceController::class, 'update']);
     Route::delete('interest-places/{interestPlace}', [InterestPlaceController::class, 'destroy']);
+
+    // Routes for TravelController
+    Route::post('travel', [TravelController::class, 'store']);
+    Route::get('travel/{travel}', [TravelController::class, 'show']);
+    Route::put('travel/{travel}', [TravelController::class, 'update']);
+    Route::delete('travel/{travel}', [TravelController::class, 'destroy']);
 });
 // funzioni per il map 
 Route::get('/proxy/nominatim', function (Request $request) {

@@ -13,6 +13,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Travel extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'start_location',
+        'lat',
+        'lon',
+        'type_moto',
+        'cc_moto',
+        'departure_date',
+        'expiration_date',
+        'days',
+    ];
+    protected $attributes = [
+        'active' => true,
+    ];
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'travel_user');
@@ -31,7 +45,6 @@ class Travel extends Model
     protected static function booted()
     {
         static::created(function ($travel) {
-            Log::info('Travel created: ' . $travel->id); // Log per debugging
 
             $chat = Chat::create([
                 'name' => 'Chat for travel ' . $travel->id,
@@ -39,14 +52,11 @@ class Travel extends Model
                 'active' => true,
             ]);
 
-            Log::info('Chat created: ' . $chat->id); // Log per debugging
-
             $chat->addUsersFromTravel($travel);
         });
 
         static::updated(function ($travel) {
             if ($travel->isDirty('users')) {
-                Log::info('Travel updated: ' . $travel->id); // Log per debugging
                 $chat = $travel->chats()->first();
                 $chat->addUsersFromTravel($travel);
             }

@@ -68,10 +68,35 @@ class TravelController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTravelRequest $request)
-    {
-        //
-    }
+    public function store(Request $request)
+{
+    $request->validate([
+        'start_location' => 'required|string|max:255',
+        'lat' => 'required|numeric',
+        'lon' => 'required|numeric',
+        'type_moto' => 'required|string|max:255',
+        'cc_moto' => 'required|string',
+        'departure_date' => 'required|date',
+        'expiration_date' => 'required|date',
+        'days' => 'required|integer',
+    ]);
+
+    $data = $request->only([
+        'start_location',
+        'lat',
+        'lon',
+        'type_moto',
+        'cc_moto',
+        'departure_date',
+        'expiration_date',
+        'days',
+    ]);
+
+    $travel = Travel::create($data);
+    $travel->load('users'); // Aggiusta in base alla relazione effettiva
+
+    return response()->json($travel, 201);
+}
 
     /**
      * Display the specified resource.

@@ -1,31 +1,39 @@
-import { REMOVE_META, SET_ALLTRAVELS, SET_EXPIRATION, SET_FORMDATA, SET_INSTRUCTIONS, SET_INTERESTPLACES, SET_METAS, SET_TRAVEL } from "../actions";
+import {
+  REMOVE_META,
+  SET_ALLTRAVELS,
+  SET_EXPIRATION,
+  SET_FORMDATA,
+  SET_INSTRUCTIONS,
+  SET_INTERESTPLACES,
+  SET_METAS,
+  SET_TRAVEL,
+} from "../actions";
 
 const initialState = {
   alltravels: [],
   setTravel: {
     start_location: {
-      city: '',
+      city: "",
       lat: 0,
       lon: 0,
     },
     startDate: null,
-    city: "",
     cc_moto: null,
     participants: null,
     type_moto: null,
-    inputDisable: false
+    inputDisable: false,
   },
   map_instructions: [],
   formData: {
-    query: '',
-    metaQuery: ''
+    query: "",
+    metaQuery: "",
   },
   interestPlaces: [],
   metas: [],
   details: {
     days: null,
     expiration_date: null,
-  }
+  },
 };
 
 const travelsReducer = (state = initialState, action) => {

@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('travel', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
             $table->string('start_location');
             $table->float('lat');
             $table->float('lon');
             $table->string('type_moto');
-            $table->integer('cc_moto');
-            $table->date('departure_date')->nullable();
-            $table->date('expiration_date')->nullable();
-            $table->boolean('active');
+            $table->string('cc_moto');
+            $table->date('departure_date');
+            $table->date('expiration_date');
+            $table->integer('days');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
