@@ -1,29 +1,23 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Row, Col, Spinner, Button, Card } from "react-bootstrap";
-import { useSelector, useDispatch } from "react-redux";
+import { Container, Row, Col, Spinner, Button, Card, Modal } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { LOGIN } from "../redux/actions";
+import Dashboard from "./Dashboard";
 
 const UserProfile = () => {
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.auth.user);
-  const dispatch = useDispatch();
   const [profileUser, setProfileUser] = useState(null);
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState(null);
-  const [error, setError] = useState(null);
-  const [spinner, setSpinner] = useState(false);
   const [travels, setTravels] = useState([]);
   const [loadingTravels, setLoadingTravels] = useState(true);
-  const fileInputRef = useRef(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     axios
       .get(`/api/users/${id}`)
       .then((response) => {
         setProfileUser(response.data);
-        setEmail(response.data.email);
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
@@ -41,48 +35,8 @@ const UserProfile = () => {
       });
   }, [id]);
 
-  const handleResetPassword = () => {
-    setSpinner(true);
-    axios
-      .post("/api/forgot-password", { email })
-      .then((res) => {
-        setMessage(res.data.status);
-        setSpinner(false);
-        setError(null);
-      })
-      .catch((err) => {
-        console.log(err);
-        setMessage(null);
-        setError(err.response.data.message);
-        setSpinner(false);
-      });
-  };
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("profile_img", file);
-
-      axios
-        .post(`/api/users/${profileUser.id}/update-profile-image`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          setProfileUser(response.data);
-          if (profileUser.id === loggedInUser.id) {
-            dispatch({
-              type: LOGIN,
-              payload: response.data,
-            });
-          }
-        })
-        .catch((error) => {
-          console.error("Error updating profile image:", error);
-        });
-    }
+  const handleProfileImageUpdate = (updatedUser) => {
+    setProfileUser(updatedUser);
   };
 
   if (!profileUser) {
@@ -90,7 +44,7 @@ const UserProfile = () => {
   }
 
   const isOwner = loggedInUser && profileUser.id === loggedInUser.id;
-  const currentDate = new Date().toISOString().split("T")[0]; // Data corrente in formato YYYY-MM-DD
+  const currentDate = new Date().toISOString().split("T")[0];
 
   const activeTravels = travels.filter((travel) => travel.active && travel.expiration_date >= currentDate);
   const inactiveTravels = travels.filter((travel) => !travel.active || travel.expiration_date < currentDate);
@@ -99,66 +53,24 @@ const UserProfile = () => {
     <Container className="mt-5">
       <Row className="align-items-center">
         <Col md={3} className="text-center">
-          {profileUser.profile_img && (
+          <div
+            className="border rounded-circle overflow-hidden"
+            style={{ width: "200px", height: "200px", margin: "0 auto" }}
+          >
             <img
               src={profileUser.profile_img}
-              alt="Profile"
-              className="img-fluid rounded-circle border object-fit-sm-contain"
-              style={{ width: "150px", height: "150px", cursor: isOwner ? "pointer" : "default" }}
-              onClick={isOwner ? () => fileInputRef.current.click() : null}
+              alt="profile_img"
+              className="w-100 h-100"
+              style={{ objectFit: "cover" }}
             />
-          )}
-          {isOwner && <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleImageChange} />}
+          </div>
         </Col>
         <Col md={9}>
-          {isOwner ? (
-            <Row>
-              <Col xs={6}>
-                <p className="fw-bold">
-                  User: <span className="text-dark">{profileUser.username}</span>
-                </p>
-              </Col>
-              <Col xs={6}>
-                <Button variant="link" className="fw-bold text-primary p-0">
-                  Change
-                </Button>
-              </Col>
-              <hr />
-              <Col xs={6}>
-                <p className="fw-bold">
-                  Email: <span className="text-dark">{profileUser.email}</span>
-                </p>
-              </Col>
-              <Col xs={6}>
-                <Button variant="link" className="fw-bold text-primary p-0">
-                  Change
-                </Button>
-              </Col>
-              <hr />
-              <Col xs={6}>
-                <p className="fw-bold">
-                  Password: <span className="text-dark">************</span>
-                </p>
-              </Col>
-              <Col xs={6}>
-                {spinner ? (
-                  <Spinner animation="grow" size="sm" />
-                ) : (
-                  <Button variant="link" className="fw-bold text-primary p-0" onClick={handleResetPassword}>
-                    Change
-                  </Button>
-                )}
-              </Col>
-              <hr />
-              <Col xs={6}>
-                <p className="fw-bold">
-                  Created at: <span className="text-dark">{profileUser.created_at.slice(0, 10)}</span>
-                </p>
-              </Col>
-              <hr />
-            </Row>
-          ) : (
-            <h3>{profileUser.username}</h3>
+          <h3>{profileUser.username}</h3>
+          {isOwner && (
+            <Button variant="primary" onClick={() => setShowModal(true)}>
+              Edit Profile
+            </Button>
           )}
         </Col>
       </Row>
@@ -216,6 +128,20 @@ const UserProfile = () => {
           )}
         </Col>
       </Row>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Modifica Profilo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Dashboard onProfileImageUpdate={handleProfileImageUpdate} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Chiudi
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };

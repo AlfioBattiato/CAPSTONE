@@ -1,15 +1,17 @@
-import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useState, useRef } from "react";
 import axios from "axios";
-import Alert from "react-bootstrap/Alert";
-import Spinner from "react-bootstrap/Spinner";
+import { Container, Row, Col, Alert, Spinner, Button } from "react-bootstrap";
+import { LOGIN } from "../redux/actions";
 
-function Dashboard() {
+function Dashboard({ onProfileImageUpdate }) {
   const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   const [email, setEmail] = useState(user.email);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [spinner, setSpinner] = useState(false);
+  const fileInputRef = useRef(null);
 
   const handleResetPassword = () => {
     setSpinner(true);
@@ -18,73 +20,111 @@ function Dashboard() {
       .then((res) => {
         setMessage(res.data.status);
         setSpinner(false);
-
         setError(null);
       })
       .catch((err) => {
         console.log(err);
-
         setMessage(null);
         setError(err.response.data.message);
         setSpinner(false);
       });
   };
 
-  useEffect(() => {}, [message, error]);
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("profile_img", file);
+
+      axios
+        .post(`/api/users/${user.id}/update-profile-image`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          dispatch({
+            type: LOGIN,
+            payload: response.data,
+          });
+          if (onProfileImageUpdate) {
+            onProfileImageUpdate(response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating profile image:", error);
+        });
+    }
+  };
 
   return (
-    <div className="container pt-5">
+    <Container className="pt-5">
       {message && <Alert variant="success">{message}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
-      <div className="row p-5 w-100">
-        <div className="col-12 col-md-4">
-          <img src={user.profile_img} alt="profile_img" className="img_profile2" />
-        </div>
-        <div className="col-12 col-md-8">
-          <div className="row">
-            <div className="col-6">
+      <Row className="p-5 w-100">
+        <Col xs={12} md={4} className="text-center">
+          <div
+            className="border rounded-circle overflow-hidden"
+            style={{ width: "200px", height: "200px", margin: "0 auto" }}
+            onClick={() => fileInputRef.current.click()}
+          >
+            <img
+              src={user.profile_img}
+              alt="profile_img"
+              className="w-100 h-100"
+              style={{ objectFit: "cover", cursor: "pointer" }}
+            />
+          </div>
+          <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleImageChange} />
+        </Col>
+        <Col xs={12} md={8}>
+          <Row>
+            <Col xs={6}>
               <p className="fw-bold">
                 User: <span className="text-dark">{user.username}</span>
               </p>
-            </div>
-            <div className="col-6">
-              <p className="fw-bold text-primary btn">Change</p>
-            </div>
-            <hr />
-            <div className="col-6">
+            </Col>
+            <Col xs={6} className="text-end">
+              <Button variant="link" className="fw-bold text-primary p-0">
+                Change
+              </Button>
+            </Col>
+            <hr className="w-100" />
+            <Col xs={6}>
               <p className="fw-bold">
                 Email: <span className="text-dark">{user.email}</span>
               </p>
-            </div>
-            <div className="col-6">
-              <p className="fw-bold text-primary btn">Change</p>
-            </div>
-            <hr />
-            <div className="col-6">
+            </Col>
+            <Col xs={6} className="text-end">
+              <Button variant="link" className="fw-bold text-primary p-0">
+                Change
+              </Button>
+            </Col>
+            <hr className="w-100" />
+            <Col xs={6}>
               <p className="fw-bold">
                 Password: <span className="text-dark">************</span>
               </p>
-            </div>
-            <div className="col-6">
+            </Col>
+            <Col xs={6} className="text-end">
               {spinner ? (
                 <Spinner animation="grow" size="sm" />
               ) : (
-                <p className="fw-bold text-primary btn" onClick={handleResetPassword}>
+                <Button variant="link" className="fw-bold text-primary p-0" onClick={handleResetPassword}>
                   Change
-                </p>
+                </Button>
               )}
-            </div>
-            <hr />
-            <div className="col-6">
+            </Col>
+            <hr className="w-100" />
+            <Col xs={12}>
               <p className="fw-bold">
                 Created at: <span className="text-dark">{user.created_at.slice(0, 10)}</span>
               </p>
-            </div>
-            <hr />
-          </div>
-        </div>
-      </div>
-    </div>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
