@@ -1,4 +1,4 @@
-import { Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import SetTravel from '../components/maps/SetCityTravel';
 import Maps from '../components/maps/Maps';
 import SetTravelSettings from '../components/maps/SetTravelSettings';
@@ -6,12 +6,25 @@ import RouteInstructions from '../components/maps/RouteInstructions ';
 import All_interest_places from '../components/interest_places/All_interest_places';
 import Meteo from '../components/meteo';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import Modal from 'react-bootstrap/Modal';
+import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
+import { removeMeta } from '../redux/actions';
+
 
 function Homepage() {
+
+    const [show, setShow] = useState(false);
+    const dispatch = useDispatch();
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+
     const travel = useSelector((state) => state.infotravels.setTravel);
     const [weatherData, setWeatherData] = useState([]);
-
+    const handleRemoveMeta = (index) => {
+        dispatch(removeMeta(index));
+    };
     useEffect(() => {
         if (travel.start_location.lat && travel.start_location.lon) {
             const fetchData = async () => {
@@ -69,6 +82,58 @@ function Homepage() {
                     ) : (
                         <p className='text-center'> Imposta prima la città di partenza</p>
                     )}
+                    <hr />
+                    <div className='mt-5 d-flex justify-content-end'>
+
+                        <Button variant="success" onClick={handleShow}>
+                            Crea Viaggio
+                        </Button>
+                        <Modal show={show} onHide={handleClose}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Riepilogo</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <p>Citta partenza: {travel.start_location.city ? travel.start_location.city : <span className='text-danger'>Non impostata</span>}</p>
+                                <p>Data partenza: {travel.start_date ? travel.start_date.toLocaleDateString() : <span className='text-danger'>Inserisci una data</span>}</p>
+                                <span>Mete:</span>
+                                    
+                                    {travel.metas.length > 0 ? (
+                                    <ul className="list-group mt-1">
+                                        {travel.metas.map((meta, index) => (
+                                            <div key={index} className="d-flex mt-1 align-items-center ps-0 gap-2">
+                                                <FaMapMarkerAlt className='text-danger' />
+                                                <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
+                                                    {meta.city}
+                                                    <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
+                                                        <FaTrash />
+                                                    </button>
+                                                </li>
+                                            </div>
+                                        ))}
+                                    </ul>
+
+
+                                ) : ( <span className='text-danger ms-1'>Inserisci almeno una meta</span>)
+
+
+                                }
+
+
+                            </Modal.Body>
+
+
+
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose}>
+                                    Close
+                                </Button>
+                                <Button variant="primary" onClick={handleClose}>
+                                    Completa creazione
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+                    </div>
+
                 </Col>
                 <Col md={2} className="border-start">
                     <RouteInstructions />
