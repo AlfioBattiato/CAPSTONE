@@ -11,7 +11,7 @@ import { LOGIN } from "./redux/actions";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import Homepage from "./pages/Homepage";
 import AllTravels from "./pages/AllTravels";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./components/userProfile/Dashboard";
 import PasswordReset from "./pages/PasswordReset";
 import Register from "./pages/Register";
 import Lobbies from "./pages/Lobbies";

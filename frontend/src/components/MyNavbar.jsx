@@ -70,7 +70,7 @@ function MyNavbar() {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                       <Nav className="justify-content-end flex-grow-1 pe-3">
-                        <Link to={`/dashboard/${user.id}`} className="nav-link fs-6">
+                        <Link to={`/profile/${user.id}`} className="nav-link fs-6">
                           <IoSettingsOutline className="me-2" />
                           Profilo
                         </Link>

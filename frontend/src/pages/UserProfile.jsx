@@ -3,7 +3,7 @@ import axios from "axios";
 import { Container, Row, Col, Spinner, Button, Card, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import Dashboard from "./Dashboard";
+import Dashboard from "../components/userProfile/Dashboard";
 
 const UserProfile = () => {
   const { id } = useParams();

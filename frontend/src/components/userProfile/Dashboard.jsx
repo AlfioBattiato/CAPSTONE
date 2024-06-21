@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useRef } from "react";
 import axios from "axios";
 import { Container, Row, Col, Alert, Spinner, Button } from "react-bootstrap";
-import { LOGIN } from "../redux/actions";
+import { LOGIN } from "../../redux/actions";
 
 function Dashboard({ onProfileImageUpdate }) {
   const user = useSelector((state) => state.auth.user);
