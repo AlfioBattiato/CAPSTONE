@@ -69,4 +69,12 @@
   .Btn:active {
     transform: translate(2px, 2px);
   }
+  .placelike:hover{
+    color: green;
+  }
+  .sticky{
+    position: sticky;
+    top: 0px;
+    z-index: 9999;
+  }
   

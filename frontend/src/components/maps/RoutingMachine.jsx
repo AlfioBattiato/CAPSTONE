@@ -32,12 +32,12 @@ const createRoutineMachineLayer = ({ start_location, metas, dispatch }) => {
         routeWhileDragging: true,
         draggableWaypoints: true,
         fitSelectedRoutes: true,
-        showAlternatives: false // Abilita la visualizzazione dei percorsi alternativi
+        showAlternatives: true // Abilita la visualizzazione dei percorsi alternativi
     });
 
     instance.on('routesfound', function (e) {
         const routes = e.routes;
-        console.log(routes[0])
+        // console.log(routes[0])
       
         dispatch(setmapInstructions(routes[0]));
     });
