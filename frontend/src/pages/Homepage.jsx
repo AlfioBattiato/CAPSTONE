@@ -60,9 +60,15 @@ function Homepage() {
                     <All_interest_places />
                     <hr />
                     <p className='fw-bold text-center'>Ecco le informazioni meteo previste tra oggi e i prossimi 5 giorni</p>
-                    <div className='my-3 d-flex gap-2 flex-wrap align-items-center justify-content-center'>
-                        {weatherData.slice(0, 33).filter((_, index) => index % 8 === 0).map(renderMeteo)}
-                    </div>
+                    {weatherData.length > 0 ? (
+
+                        <Row className='row-cols-2 row-cols-md-3 row-cols-xl-5 gy-4'>
+                            {weatherData.slice(0, 33).filter((_, index) => index % 8 === 0).map(renderMeteo)}
+                        </Row>
+
+                    ) : (
+                        <p className='text-center'> Imposta prima la città di partenza</p>
+                    )}
                 </Col>
                 <Col md={2} className="border-start">
                     <RouteInstructions />

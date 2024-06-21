@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('travel', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->string('start_location');
             $table->float('lat');
             $table->float('lon');

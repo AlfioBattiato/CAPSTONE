@@ -1,34 +1,49 @@
 import React from 'react'
 import './Meteo.css'
 import { useSelector } from 'react-redux';
+import { Card, Col } from 'react-bootstrap';
 
 export default function Meteo({ name, date, temp, min, max, img }) {
 
 
     return (
-        <div className="cardContainer">
-            <div className="card1">
-                <p className="city mb-0">{name ? name : "Nessuna città impostata"}</p>
+        <Col>
 
-                <p className="weather">{date ? date : "Nessuna data impostata"}</p>
-                <img
-                    src={`http://openweathermap.org/img/wn/${img}.png`}
-                    style={{ width: "2.5rem" }}
-                    alt="weather icon"
-                    className="weatherIcon"
-                />
-                <p className="temp">{temp}°</p>
+            <Card className=" p-1 text-center text-white meteocard">
+                <p className="city">{name ? name : "Nessuna città impostata"}</p>
+                <p className="date mb-0">{date ? date : "Nessuna data impostata"}&#8451;</p>
+                <div className="d-flex justify-content-center">
+                    <Card.Img
+                        variant="top"
+                        src={`http://openweathermap.org/img/wn/${img}.png`}
+                        style={{ width: "3rem" }}
+                    />
+                </div>
+
+                <Card.Text className="temp">
+                    {temp}°
+                </Card.Text>
+
                 <div className="minmaxContainer">
-                    <div className="min">
-                        <p className="minHeading">Min</p>
-                        <p className="minTemp">{min}°</p>
+                    <div>
+                        <p className='mb-0'>Min</p>
+                        <Card.Text className="min">
+                            {min}°
+                        </Card.Text>
+
                     </div>
-                    <div className="max">
-                        <p className="maxHeading">Max</p>
-                        <p className="maxTemp">{max}°</p>
+                    <div>
+                        <p className='mb-0'>Max</p>
+                        <Card.Text className="max">
+                            {max}°
+                        </Card.Text>
+
                     </div>
                 </div>
-            </div>
-        </div>
+
+
+
+            </Card>
+        </Col>
     )
 }
