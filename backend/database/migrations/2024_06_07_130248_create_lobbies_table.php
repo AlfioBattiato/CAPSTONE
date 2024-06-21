@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('lobby', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('chat_id')->constrained();
-            $table->timestamps();
-
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('chat_id')->constrained()->onDelete('cascade');
             $table->unique(['user_id', 'chat_id']);
+            $table->timestamps();
         });
     }
 

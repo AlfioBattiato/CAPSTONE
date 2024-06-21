@@ -170,8 +170,8 @@ const UserProfile = () => {
             <Spinner animation="border" />
           ) : activeTravels.length > 0 ? (
             <Row>
-              {activeTravels.map((travel) => (
-                <Col md={4} key={travel.id} className="mb-4">
+              {activeTravels.map((travel, index) => (
+                <Col md={4} key={`active-travel-${travel.id}-${index}`} className="mb-4">
                   <Card>
                     <Card.Img variant="top" src="path/to/default-image.jpg" alt={travel.start_location} />
                     <Card.Body>
@@ -197,8 +197,8 @@ const UserProfile = () => {
             <Spinner animation="border" />
           ) : inactiveTravels.length > 0 ? (
             <Row>
-              {inactiveTravels.map((travel) => (
-                <Col md={4} key={travel.id} className="mb-4">
+              {inactiveTravels.map((travel, index) => (
+                <Col md={4} key={`inactive-travel-${travel.id}-${index}`} className="mb-4">
                   <Card>
                     <Card.Img variant="top" src="path/to/default-image.jpg" alt={travel.start_location} />
                     <Card.Body>
