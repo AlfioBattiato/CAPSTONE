@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-bootstrap/Modal";
 import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
 import { removeMeta } from "../redux/actions";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Homepage() {
   const [show, setShow] = useState(false);
@@ -19,6 +21,9 @@ function Homepage() {
 
   const travel = useSelector((state) => state.infotravels.setTravel);
   const metas = useSelector((state) => state.infotravels.metas);
+  const infotravels = useSelector((state) => state.infotravels);
+  const locate = useNavigate()
+
   const [weatherData, setWeatherData] = useState([]);
   const handleRemoveMeta = (index) => {
     dispatch(removeMeta(index));
@@ -76,17 +81,11 @@ function Homepage() {
       })
       .then((response) => {
         console.log("Place created successfully:", response.data);
-        setError(null);
+      
         locate("/homepage/");
       })
-      .catch((err) => {
-        if (popupInfo === null) {
-          setError("Inserire un punto sulla mappa");
-        } else if (err.response.data.message === "The location img field is required.") {
-          setError("Inserire un immagine");
-        } else {
-          setError(error);
-        }
+      .catch((error) => {
+       
         console.error(error);
       });
   };
