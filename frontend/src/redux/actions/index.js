@@ -1,3 +1,5 @@
+import { eachQuarterOfInterval } from "date-fns";
+
 // Auth
 export const LOGIN = "login";
 export const LOGOUT = "logout";
@@ -22,6 +24,8 @@ export const REMOVE_META = "REMOVE_META";
 export const SET_INSTRUCTIONS = "SET_INSTRUCTIONS";
 export const SET_FORMDATA = "SET_FORMDATA";
 export const SET_INTERESTPLACES = "SET_INTERESTPLACES";
+export const SET_METAS = "SET_METAS";
+export const SET_EXPIRATION = "SET_EXPIRATION";
 
 // chat////////
 
@@ -100,4 +104,12 @@ export const removeMeta = (index) => ({
 export const setInterestPlaces = (places) => ({
   type: SET_INTERESTPLACES,
   payload: places,
+});
+export const setMetas = (meta) => ({
+  type: SET_METAS,
+  payload: meta,
+});
+export const setExpiration = (obj) => ({
+  type: SET_EXPIRATION,
+  payload: obj,
 });

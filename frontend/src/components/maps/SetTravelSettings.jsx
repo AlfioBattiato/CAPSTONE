@@ -5,7 +5,6 @@ import { setCurrentTravel } from "../../redux/actions";
 import { BsCalendar2DateFill } from "react-icons/bs";
 import MyRadio from "../myradio";
 
-
 export default function SetTravelSettings() {
     const [startDate, setStartDate] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -15,10 +14,11 @@ export default function SetTravelSettings() {
     const dispatch = useDispatch();
 
     const handleDateChange = (date) => {
-        setStartDate(date);
+        const adjustedDate = date ? new Date(date.setHours(12, 0, 0, 0)) : null;
+        setStartDate(adjustedDate);
         const updatedTravel = {
             ...travel,
-            startDate: date ? date.toISOString() : null,
+            startDate: adjustedDate ? adjustedDate.toISOString() : null,
         };
         dispatch(setCurrentTravel(updatedTravel));
     };
@@ -74,7 +74,7 @@ export default function SetTravelSettings() {
             </div>
             <hr className="my-3" />
             <p className="mb-1 ps-2 fw-bold">Cilindrata:</p>
-            <div className="d-flex  flex-column">
+            <div className="d-flex flex-column">
                 <MyRadio
                     name="motoCC"
                     options={[

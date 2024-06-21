@@ -1,4 +1,4 @@
-import { REMOVE_META, SET_ALLTRAVELS, SET_FORMDATA, SET_INSTRUCTIONS, SET_INTERESTPLACES, SET_TRAVEL } from "../actions";
+import { REMOVE_META, SET_ALLTRAVELS, SET_EXPIRATION, SET_FORMDATA, SET_INSTRUCTIONS, SET_INTERESTPLACES, SET_METAS, SET_TRAVEL } from "../actions";
 
 const initialState = {
   alltravels: [],
@@ -8,12 +8,10 @@ const initialState = {
       lat: 0,
       lon: 0,
     },
-    metas: [],
     startDate: null,
     city: "",
     cc_moto: null,
     participants: null,
-    days: null,
     type_moto: null,
     inputDisable: false
   },
@@ -22,7 +20,12 @@ const initialState = {
     query: '',
     metaQuery: ''
   },
-  interestPlaces:[],
+  interestPlaces: [],
+  metas: [],
+  details: {
+    days: null,
+    expiration_date: null,
+  }
 };
 
 const travelsReducer = (state = initialState, action) => {
@@ -37,13 +40,15 @@ const travelsReducer = (state = initialState, action) => {
         ...state,
         setTravel: action.payload,
       };
+    case SET_METAS:
+      return {
+        ...state,
+        metas: action.payload,
+      };
     case REMOVE_META:
       return {
         ...state,
-        setTravel: {
-          ...state.setTravel,
-          metas: state.setTravel.metas.filter((_, index) => index !== action.payload)
-        }
+        metas: state.metas.filter((_, index) => index !== action.payload),
       };
     case SET_INSTRUCTIONS:
       return {
@@ -59,6 +64,11 @@ const travelsReducer = (state = initialState, action) => {
       return {
         ...state,
         interestPlaces: action.payload,
+      };
+    case SET_EXPIRATION:
+      return {
+        ...state,
+        details: action.payload,
       };
     default:
       return state;

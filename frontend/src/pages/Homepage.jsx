@@ -21,6 +21,7 @@ function Homepage() {
 
 
     const travel = useSelector((state) => state.infotravels.setTravel);
+    const metas = useSelector((state) => state.infotravels.metas);
     const [weatherData, setWeatherData] = useState([]);
     const handleRemoveMeta = (index) => {
         dispatch(removeMeta(index));
@@ -75,7 +76,7 @@ function Homepage() {
                     <p className='fw-bold text-center'>Ecco le informazioni meteo previste tra oggi e i prossimi 5 giorni</p>
                     {weatherData.length > 0 ? (
 
-                        <Row className='row-cols-2 row-cols-md-3 row-cols-xl-5 gy-4'>
+                        <Row className='row-cols-2 row-cols-md-3 row-cols-xxl-5 gy-4'>
                             {weatherData.slice(0, 33).filter((_, index) => index % 8 === 0).map(renderMeteo)}
                         </Row>
 
@@ -93,13 +94,13 @@ function Homepage() {
                                 <Modal.Title>Riepilogo</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                <p>Citta partenza: {travel.start_location.city ? travel.start_location.city : <span className='text-danger'>Non impostata</span>}</p>
-                                <p>Data partenza: {travel.start_date ? travel.start_date.toLocaleDateString() : <span className='text-danger'>Inserisci una data</span>}</p>
+                                <p>Citta partenza: {travel.start_location.city ? <span className='fw-bold'>{travel.start_location.city}</span> : <span className='text-danger'>Non impostata</span>}</p>
+                                <p>Data partenza: {travel.startDate ? <span className='fw-bold'>{travel.startDate.split('T')[0].split(':')}</span> : <span className='text-danger'>Inserisci una data</span>}</p>
                                 <span>Mete:</span>
-                                    
-                                    {travel.metas.length > 0 ? (
+
+                                {metas.length > 0 ? (
                                     <ul className="list-group mt-1">
-                                        {travel.metas.map((meta, index) => (
+                                        {metas.map((meta, index) => (
                                             <div key={index} className="d-flex mt-1 align-items-center ps-0 gap-2">
                                                 <FaMapMarkerAlt className='text-danger' />
                                                 <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
@@ -111,12 +112,12 @@ function Homepage() {
                                             </div>
                                         ))}
                                     </ul>
-
-
-                                ) : ( <span className='text-danger ms-1'>Inserisci almeno una meta</span>)
-
-
+                                ) : (<span className='text-danger ms-1'>Inserisci almeno una meta</span>)
                                 }
+                                <p className='mt-2'>Tipo moto: {travel.type_moto ? <span className='fw-bold'>{travel.type_moto}</span>
+                                    : <span className='text-danger'>Moto non impostata</span>}</p>
+                                <p>Cilindrata: {travel.cc_moto ? <span className='fw-bold'>{travel.cc_moto}</span>
+                                    : <span className='text-danger'>Moto non impostata</span>}</p>
 
 
                             </Modal.Body>

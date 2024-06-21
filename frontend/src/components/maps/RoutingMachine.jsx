@@ -3,7 +3,8 @@ import { createControlComponent } from '@react-leaflet/core';
 import 'leaflet-routing-machine';
 import { setmapInstructions } from '../../redux/actions';
 
-const createRoutineMachineLayer = ({ start_location, metas, dispatch }) => {
+const createRoutineMachineLayer = ({start_location, metas, dispatch}) => {
+
     const waypoints = [
         L.latLng(start_location.lat, start_location.lon),
         ...metas.map(meta => L.latLng(meta.lat, meta.lon))
@@ -37,8 +38,6 @@ const createRoutineMachineLayer = ({ start_location, metas, dispatch }) => {
 
     instance.on('routesfound', function (e) {
         const routes = e.routes;
-        // console.log(routes[0])
-      
         dispatch(setmapInstructions(routes[0]));
     });
 

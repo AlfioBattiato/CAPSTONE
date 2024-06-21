@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeMeta, setCurrentTravel, setFormData, setmapInstructions } from '../../redux/actions';
+import { removeMeta, setCurrentTravel, setFormData, setmapInstructions, setMetas } from '../../redux/actions';
 import { FaSearchLocation, FaTrash, FaMapMarked, FaMapMarkedAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { Modal, Button } from 'react-bootstrap';
 
@@ -11,15 +11,14 @@ export default function SetCityTravel() {
     const [showResetModal, setShowResetModal] = useState(false); // State for showing reset confirmation modal
     const dispatch = useDispatch();
     const travel = useSelector(state => state.infotravels.setTravel);
-    const travel2 = useSelector(state => state.infotravels);
-    const { query, metaQuery } = travel2.formData;
+    const infotravels = useSelector(state => state.infotravels);
+    const { query, metaQuery } = infotravels.formData;
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         const formDataUpdate = {
-            ...travel2.formData,
+            ...infotravels.formData,
             [name]: value,
-           
         };
         dispatch(setFormData(formDataUpdate));
     };
@@ -34,7 +33,7 @@ export default function SetCityTravel() {
             },
         };
         const formDataUpdate = {
-            query:  suggestion.name,
+            query: suggestion.name,
             metaQuery: ''
         };
         dispatch(setCurrentTravel(updatedTravel));
@@ -43,23 +42,19 @@ export default function SetCityTravel() {
     };
 
     const handleMetaSuggestionClick = (suggestion) => {
-        const updatedTravel = {
-            ...travel,
-            metas: [
-                ...travel.metas,
-                {
-                    city: suggestion.name,
-                    lat: parseFloat(suggestion.lat),
-                    lon: parseFloat(suggestion.lon)
-                }
-            ],
-        };
+        const updatedMetas = [
+            ...infotravels.metas,
+            {
+                city: suggestion.name,
+                lat: parseFloat(suggestion.lat),
+                lon: parseFloat(suggestion.lon)
+            }
+        ];
         const formDataUpdate = {
-            ...travel2.formData,
+            ...infotravels.formData,
             metaQuery: '',
-           
         };
-        dispatch(setCurrentTravel(updatedTravel));
+        dispatch(setMetas(updatedMetas));
         dispatch(setFormData(formDataUpdate));
         setMetaSuggestions([]);
     };
@@ -70,17 +65,17 @@ export default function SetCityTravel() {
             axios.get(`/api/proxy/nominatim`, {
                 params: { q: query }
             })
-            .then(response => {
-                const cities = response.data.features.map(city => ({
-                    name: city.properties.name,
-                    lat: city.geometry.coordinates[1],
-                    lon: city.geometry.coordinates[0]
-                }));
-                setSuggestions(cities);
-            })
-            .catch(error => {
-                console.error("Error fetching cities: ", error);
-            });
+                .then(response => {
+                    const cities = response.data.features.map(city => ({
+                        name: city.properties.name,
+                        lat: city.geometry.coordinates[1],
+                        lon: city.geometry.coordinates[0]
+                    }));
+                    setSuggestions(cities);
+                })
+                .catch(error => {
+                    console.error("Error fetching cities: ", error);
+                });
         }
     };
 
@@ -90,17 +85,17 @@ export default function SetCityTravel() {
             axios.get(`/api/proxy/nominatim`, {
                 params: { q: metaQuery }
             })
-            .then(response => {
-                const cities = response.data.features.map(city => ({
-                    name: city.properties.name,
-                    lat: city.geometry.coordinates[1],
-                    lon: city.geometry.coordinates[0]
-                }));
-                setMetaSuggestions(cities);
-            })
-            .catch(error => {
-                console.error("Error fetching meta cities: ", error);
-            });
+                .then(response => {
+                    const cities = response.data.features.map(city => ({
+                        name: city.properties.name,
+                        lat: city.geometry.coordinates[1],
+                        lon: city.geometry.coordinates[0]
+                    }));
+                    setMetaSuggestions(cities);
+                })
+                .catch(error => {
+                    console.error("Error fetching meta cities: ", error);
+                });
         }
     };
 
@@ -120,17 +115,19 @@ export default function SetCityTravel() {
                 lat: 0,
                 lon: 0,
             },
-            metas: [],
             map_instructions: [],
             formData: {
                 query: '',
                 metaQuery: ''
             },
+           
             inputDisable: false
         };
         dispatch(setCurrentTravel(updatedTravel));
         dispatch(setmapInstructions([]));
         dispatch(setFormData({ query: '', metaQuery: '' }));
+        dispatch(setMetas([]));
+
         setShowResetModal(false); // Close confirmation modal after reset
     };
 
@@ -228,9 +225,9 @@ export default function SetCityTravel() {
                 </div>
             </form>
 
-            {travel.metas.length > 0 && (
+            {infotravels.metas && infotravels.metas.length > 0 && (
                 <>
-                    {travel.metas.map((meta, index) => (
+                    {infotravels.metas.map((meta, index) => (
                         <div key={index} className="d-flex mt-1 align-items-center ps-0 gap-2">
                             <FaMapMarkerAlt className='text-danger' />
                             <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">

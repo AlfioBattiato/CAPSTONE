@@ -9,10 +9,11 @@ import { setCurrentTravel, setFormData } from '../../redux/actions';
 
 export default function Maps() {
     const travel = useSelector(state => state.infotravels.setTravel);
+    const metas = useSelector(state => state.infotravels.metas);
+    const dispatch = useDispatch();
     const [position, setPosition] = useState([41.8933203, 12.4829321]); // Coordinate predefinite
     const [popupInfo, setPopupInfo] = useState(null); // Informazioni per il popup
-    const [key, setKey] = useState(travel.metas.length); // Informazioni per il popup
-    const dispatch = useDispatch();
+    const [key, setKey] = useState(metas.length); // Informazioni per il popup
 
  
 
@@ -27,7 +28,7 @@ export default function Maps() {
             setPopupInfo(null);
         }
         setKey(oldKey => oldKey + 1);
-    }, [travel]);
+    }, [travel,metas]);
 
     const handleClickOnMap = (event) => {
         const { lat, lng } = event.latlng;
@@ -70,7 +71,7 @@ export default function Maps() {
                     </Marker>
                 )}
 
-                {travel.metas.map((meta, index) => (
+                {metas.map((meta, index) => (
                     <Marker key={index} position={[meta.lat, meta.lon]}>
                         <Popup>Meta: {meta.city}</Popup>
                     </Marker>
@@ -84,12 +85,13 @@ export default function Maps() {
                     </Marker>
                 )}
 
-                {travel.start_location.lat !== 0 && travel.metas.length > 0 && (
+                {travel.start_location.lat !== 0 && metas.length > 0 && (
                     <RoutingMachine
                         key={key} // Usare key per forzare il render di una nuova istanza di RoutingMachine
                         start_location={travel.start_location}
-                        metas={travel.metas}
+                        metas={metas}
                         dispatch={dispatch}
+                      
                     />
                 )}
             </MapContainer>
