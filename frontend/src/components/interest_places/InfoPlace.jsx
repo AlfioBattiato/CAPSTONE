@@ -8,10 +8,7 @@ import { setCurrentTravel, setMetas } from "../../redux/actions";
 
 export default function InfoPlace({ show, handleClose, place }) {
     const dispatch = useDispatch()
-    const travel = useSelector((state) => state.infotravels.setTravel);
     const infotravels = useSelector((state) => state.infotravels);
-
-
     const submit = () => {
         const updatedMetas = [
             ...infotravels.metas,
