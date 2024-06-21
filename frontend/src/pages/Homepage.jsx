@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-bootstrap/Modal";
 import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
-import { removeMeta } from "../redux/actions";
+import { removeMeta, setActionTravels } from "../redux/actions";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -81,7 +81,15 @@ function Homepage() {
       })
       .then((response) => {
         console.log("Place created successfully:", response.data);
-        // locate("/Alltavels/");
+        // axios('api/v1/travels')
+        // .then((res) => {
+        //     dispatch(setActionTravels(res.data));
+        //     setTravels(res.data);
+        // })
+        // .catch((error) => {
+        //     console.error('Error fetching travels:', error);
+        // });
+        // locate("/AllTravels/");
       })
       .catch((error) => {
        
