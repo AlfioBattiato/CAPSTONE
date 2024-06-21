@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Travel;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -42,7 +43,8 @@ class Chat extends Model
 
     public function addUsersFromTravel(Travel $travel)
     {
-        $users = $travel->users()->pluck('user_id')->toArray();
+        $users = $travel->users()->pluck('users.id')->toArray();
+        Log::info('Users being added to chat: ', $users); // Log per debugging
         $this->users()->syncWithoutDetaching($users);
         $this->updateGroupChatStatus();
     }

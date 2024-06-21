@@ -182,12 +182,8 @@ html::-webkit-scrollbar {
 .message-content {
   max-width: 70%;
   color: #000;
-  border-radius: 34px;
-  background: linear-gradient(145deg, #c6c4c4, #ffffff);
-  border-width: 1px;
-  border-style: solid;
-  border-color: #ffffff;
-  /* box-shadow: 5px 5px 10px #7a7c80, -5px -5px 10px #f9f6f6; */
+  background: #fafafa;
+  box-shadow: 5px 5px 13px #d5d5d5, -5px -5px 13px #ffffff, inset 5px 5px 13px #d5d5d5, inset -5px -5px 13px #ffffff;
 }
 
 .message-content.own-message {

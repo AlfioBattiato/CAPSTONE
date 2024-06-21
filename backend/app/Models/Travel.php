@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Chat;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -30,18 +31,23 @@ class Travel extends Model
     protected static function booted()
     {
         static::created(function ($travel) {
+            Log::info('Travel created: ' . $travel->id); // Log per debugging
+
             $chat = Chat::create([
                 'name' => 'Chat for travel ' . $travel->id,
                 'travel_id' => $travel->id,
                 'active' => true,
             ]);
 
+            Log::info('Chat created: ' . $chat->id); // Log per debugging
+
             $chat->addUsersFromTravel($travel);
         });
 
         static::updated(function ($travel) {
             if ($travel->isDirty('users')) {
-                $chat = $travel->chat;
+                Log::info('Travel updated: ' . $travel->id); // Log per debugging
+                $chat = $travel->chats()->first();
                 $chat->addUsersFromTravel($travel);
             }
         });

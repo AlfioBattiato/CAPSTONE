@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -75,6 +77,45 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    public function getUserTravels($id)
+    {
+        $user = User::findOrFail($id);
+
+        $travels = $user->travels;
+
+        return response()->json($travels);
+    }
+
+    public function updateProfileImage(Request $request, $id)
+    {
+        $request->validate([
+            'profile_img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        if ($request->hasFile('profile_img')) {
+            // Elimina l'immagine esistente se presente
+            if ($user->profile_img) {
+                Storage::delete(str_replace('/storage', 'public', $user->profile_img));
+            }
+
+            // Carica la nuova immagine
+            $path = $request->file('profile_img')->store('public/profile_images');
+
+            // Ottieni l'URL completo
+            $url = Storage::url($path);
+
+            // Aggiorna il percorso dell'immagine nel modello utente
+            $user->profile_img = url($url);
+            $user->save();
+
+            return response()->json($user);
+        } else {
+            Log::error('Profile image not found in request.');
+            return response()->json(['error' => 'Profile image not found'], 422);
+        }
+    }
     /**
      * Remove the specified user from storage.
      */

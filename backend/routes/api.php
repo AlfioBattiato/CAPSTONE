@@ -55,6 +55,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/{user}', [UserController::class, 'show']);
     Route::put('users/{user}', [UserController::class, 'update']);
     Route::delete('users/{user}', [UserController::class, 'destroy']);
+    Route::get('users/{id}/travels', [UserController::class, 'getUserTravels']);
+    Route::post('users/{id}/update-profile-image', [UserController::class, 'updateProfileImage']);
 
     // ***************************************CHAT***************************************
 
