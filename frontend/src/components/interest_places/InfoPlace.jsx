@@ -3,31 +3,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { SlLike } from "react-icons/sl";
 import { BiSolidLike } from "react-icons/bi";
 import { FcLike } from "react-icons/fc";
-import { setCurrentTravel } from "../../redux/actions";
+import { setCurrentTravel, setMetas } from "../../redux/actions";
 
 
 export default function InfoPlace({ show, handleClose, place }) {
     const dispatch = useDispatch()
     const travel = useSelector((state) => state.infotravels.setTravel);
+    const infotravels = useSelector((state) => state.infotravels);
 
 
     const submit = () => {
-        const updatedTravel = {
-            ...travel,
-            metas: [
-                ...travel.metas,
-                {
-                    city: place.name_location ? place.name_location : "Punto di interesse",
-                    lat: parseFloat(place.lat),
-                    lon: parseFloat(place.lon)
-                }
-            ],
-        }
-        dispatch(setCurrentTravel(updatedTravel));
-        console.log('ottimo')
-        handleClose()
-
-
+        const updatedMetas = [
+            ...infotravels.metas,
+            {
+                city: place.name_location ? place.name_location : "Punto di interesse",
+                lat: parseFloat(place.lat),
+                lon: parseFloat(place.lon)
+            }
+        ];
+        dispatch(setMetas(updatedMetas));
+    
+        console.log('ottimo');
+        handleClose();
     }
     return (
         <Modal show={show} onHide={handleClose} className="infoPlace" >
