@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 
 function Homepage() {
     const travel = useSelector((state) => state.infotravels.setTravel);
-    const [city1, setCity1] = useState({});
+    const [weatherData, setWeatherData] = useState([]);
 
     useEffect(() => {
         if (travel.start_location.lat && travel.start_location.lon) {
@@ -21,8 +21,7 @@ function Homepage() {
                     );
                     if (response.ok) {
                         const data = await response.json();
-                        console.log(data.list);
-                        setCity1(data.list);
+                        setWeatherData(data.list);
                     } else {
                         throw new Error("Problema nella chiamata API");
                     }
@@ -35,35 +34,34 @@ function Homepage() {
         }
     }, [travel]);
 
-    // Extract date and time from the startDate
-    const extractDateAndTime = (dateTimeString) => {
-        const date = dateTimeString.split('T')[0];
-        const time = dateTimeString.split('T')[1].split(':').slice(0, 2).join(':');
-        return { date, time };
-    };
-
-    const { date, time } = travel.startDate ? extractDateAndTime(travel.startDate) : { date: '', time: '' };
+    const renderMeteo = (data, index) => (
+        <Meteo
+            key={index}
+            date={data.dt_txt}
+            img={data.weather[0].icon}
+            name={travel.start_location.city}
+            min={(data.main.temp_min - 273.15).toFixed(1)}
+            max={(data.main.temp_max - 273.15).toFixed(1)}
+            temp={(data.main.temp - 273.15).toFixed(1)}
+        />
+    );
 
     return (
         <div className="container-fluid">
             <Row className='mt-3 pb-5'>
                 <Col md={3} className="border-end">
                     <h5 className="mt-2">Organizza il percorso per il tuo viaggio</h5>
-                    <SetTravel></SetTravel>
-                    <SetTravelSettings></SetTravelSettings>
+                    <SetTravel />
+                    <SetTravelSettings />
                 </Col>
                 <Col md={7}>
                     <h5 className="my-2 pb-2">maps</h5>
-                    <Maps></Maps>
-                    <All_interest_places></All_interest_places>
+                    <Maps />
+                    <All_interest_places />
                     <hr />
-                    <p className='fw-bold text-center'>Ecco le informazioni meteo previste per la tua partenza</p>
+                    <p className='fw-bold text-center'>Ecco le informazioni meteo previste tra oggi e i prossimi 5 giorni</p>
                     <div className='my-3 d-flex gap-2 flex-wrap align-items-center justify-content-center'>
-                        <Meteo 
-                            date={date} 
-                            time={time} 
-                            name={travel.start_location.city}>
-                        </Meteo>
+                        {weatherData.slice(0, 33).filter((_, index) => index % 8 === 0).map(renderMeteo)}
                     </div>
                 </Col>
                 <Col md={2} className="border-start">
