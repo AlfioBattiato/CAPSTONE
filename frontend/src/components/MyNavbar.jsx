@@ -30,7 +30,7 @@ function MyNavbar() {
   return (
     <>
       {[false].map((expand) => (
-        <Navbar key={expand} expand={expand} className=" bg-dark pt-3" data-bs-theme="dark">
+        <Navbar key={expand} expand={expand} className=" bg-dark pt-3 sticky" data-bs-theme="dark">
           <Container >
 
             <Link to="/" className="navbar-brand text-white ">
