@@ -161,7 +161,7 @@ const Chat = ({ chat, globalChannel }) => {
   const otherUser = chat.users?.find((user) => user.id !== chat.pivot.user_id);
 
   return (
-    <Card className="d-flex flex-column h-100" style={{ color: "#000" }}>
+    <Card className="d-flex flex-column h-100 bg-light" style={{ color: "#000" }}>
       <Card.Header className="bg-blue text-white fs-2 d-flex align-items-center border-bottom rounded-0">
         <img
           src={chat.image || otherUser?.profile_img}

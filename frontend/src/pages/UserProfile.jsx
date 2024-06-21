@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Container, Row, Col, Spinner, Button, Card, Modal } from "react-bootstrap";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import Dashboard from "../components/userProfile/Dashboard";
+import { setSelectedChat } from "../redux/actions";
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -12,6 +13,8 @@ const UserProfile = () => {
   const [travels, setTravels] = useState([]);
   const [loadingTravels, setLoadingTravels] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -37,6 +40,47 @@ const UserProfile = () => {
 
   const handleProfileImageUpdate = (updatedUser) => {
     setProfileUser(updatedUser);
+  };
+
+  const createOrOpenChat = async () => {
+    try {
+      // Controlla se una chat esiste già
+      const response = await axios.get("/api/chats");
+      const existingChat = response.data.find(
+        (chat) =>
+          !chat.group_chat &&
+          chat.users.some((user) => user.id === profileUser.id) &&
+          chat.users.some((user) => user.id === loggedInUser.id)
+      );
+
+      if (existingChat) {
+        // Se esiste, seleziona quella chat
+        dispatch(setSelectedChat(existingChat));
+        navigate("/lobbies");
+      } else {
+        // Altrimenti, crea una nuova chat
+        const newChatResponse = await axios.post("/api/chats", {
+          name: null,
+          active: true,
+          travel_id: null,
+          image: null,
+          group_chat: false, // Indica che non è una chat di gruppo
+        });
+        const newChat = newChatResponse.data;
+        await axios.post(`/api/chats/${newChat.id}/add-user`, { user_id: profileUser.id });
+        await axios.post(`/api/chats/${newChat.id}/add-user`, { user_id: loggedInUser.id });
+
+        // Aggiorna la lista delle chat
+        const updatedChatsResponse = await axios.get("/api/chats");
+        dispatch(setChats(updatedChatsResponse.data));
+
+        // Seleziona la nuova chat e naviga
+        dispatch(setSelectedChat(newChat));
+        navigate("/lobbies");
+      }
+    } catch (error) {
+      console.error("Error creating or opening chat:", error);
+    }
   };
 
   if (!profileUser) {
@@ -70,6 +114,11 @@ const UserProfile = () => {
           {isOwner && (
             <Button variant="primary" onClick={() => setShowModal(true)}>
               Edit Profile
+            </Button>
+          )}
+          {!isOwner && (
+            <Button variant="success" onClick={createOrOpenChat}>
+              Inizia Chat
             </Button>
           )}
         </Col>

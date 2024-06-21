@@ -6,7 +6,6 @@ import Chat from "../components/chats/Chat";
 import { ChannelProvider, useChannel } from "ably/react";
 import { setUnreadCount, incrementUnreadCount, decrementUnreadCount, setChats } from "../redux/actions";
 import axios from "axios";
-import { height } from "@fortawesome/free-brands-svg-icons/fa42Group";
 
 const Lobbies = () => {
   const selectedChat = useSelector((state) => state.chats.selectedChat);

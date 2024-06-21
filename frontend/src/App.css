@@ -182,8 +182,8 @@ html::-webkit-scrollbar {
 .message-content {
   max-width: 70%;
   color: #000;
-  background: #fafafa;
-  box-shadow: 5px 5px 13px #d5d5d5, -5px -5px 13px #ffffff, inset 5px 5px 13px #d5d5d5, inset -5px -5px 13px #ffffff;
+  background: #f8f9fa;
+  box-shadow: inset 5px 5px 13px #d5d5d5, inset -5px -5px 13px #f8f9fa;
 }
 
 .message-content.own-message {
