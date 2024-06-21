@@ -62,27 +62,26 @@ function Homepage() {
     />
   );
 
-  const submitForm = (ev) => {
+  const submit = (ev) => {
     ev.preventDefault();
     axios
       .get("/sanctum/csrf-cookie")
       .then(() => {
         const body = new FormData();
-        body.append("start_location", formData.start_location);
-        body.append("type_moto", formData.type_moto);
-        body.append("cc_moto", formData.cc_moto);
-        body.append("lat", popupInfo.lat);
-        body.append("lon", popupInfo.lng);
-        body.append("departure_date", formData.departure_date);
-        body.append("expiration_date", formData.expiration_date);
-        body.append("days", formData.days);
+        body.append("start_location", infotravels.setTravel.start_location.city);
+        body.append("type_moto", infotravels.setTravel.type_moto);
+        body.append("cc_moto", infotravels.setTravel.cc_moto);
+        body.append("lat",infotravels.setTravel.start_location.lat);
+        body.append("lon", infotravels.setTravel.start_location.lon);
+        body.append("departure_date", infotravels.setTravel.startDate);
+        body.append("expiration_date", infotravels.details.expiration_date);
+        body.append("days", infotravels.details.days);
 
-        return axios.post("/api/interest-places", body);
+        return axios.post("/api/travel", body);
       })
       .then((response) => {
         console.log("Place created successfully:", response.data);
-      
-        locate("/homepage/");
+        // locate("/Alltavels/");
       })
       .catch((error) => {
        
@@ -181,7 +180,7 @@ function Homepage() {
                 <Button variant="secondary" onClick={handleClose}>
                   Close
                 </Button>
-                <Button variant="primary" onClick={handleClose}>
+                <Button variant="primary" onClick={submit}>
                   Completa creazione
                 </Button>
               </Modal.Footer>
