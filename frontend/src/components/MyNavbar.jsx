@@ -9,7 +9,7 @@ import axios from "axios";
 import { LOGOUT } from "../redux/actions";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdFirstPage } from "react-icons/md";
-import { FaStreetView  } from "react-icons/fa";
+import { FaStreetView } from "react-icons/fa";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { TiMessages } from "react-icons/ti";
 import { MdOutlineTravelExplore } from "react-icons/md";
@@ -31,8 +31,7 @@ function MyNavbar() {
     <>
       {[false].map((expand) => (
         <Navbar key={expand} expand={expand} className=" bg-dark pt-3 sticky" data-bs-theme="dark">
-          <Container >
-
+          <Container>
             <Link to="/" className="navbar-brand text-white ">
               TrailBlazers
             </Link>
@@ -46,12 +45,14 @@ function MyNavbar() {
             ) : (
               <>
                 <div className="d-flex align-items-center">
-                  <div className="position-relative">
-                    <img src={user.profile_img} alt="Profile" className="img_profile" />
-                    <span className="position-absolute translate-middle badge border online rounded-circle bg-success">
-                      <span className="visually-hidden">unread messages</span>
-                    </span>
-                  </div>
+                  <Link to={`/profile/${user.id}`} className="nav-link fs-6">
+                    <div className="position-relative">
+                      <img src={user.profile_img} alt="Profile" className="img_profile" />
+                      <span className="position-absolute translate-middle badge border online rounded-circle bg-success">
+                        <span className="visually-hidden">unread messages</span>
+                      </span>
+                    </div>
+                  </Link>
                   <Navbar.Toggle
                     aria-controls={`offcanvasNavbar-expand-${expand}`}
                     className="border-0 shadow-0 ms-3"
@@ -70,20 +71,23 @@ function MyNavbar() {
                     <Offcanvas.Body>
                       <Nav className="justify-content-end flex-grow-1 pe-3">
                         <Link to={`/dashboard/${user.id}`} className="nav-link fs-6">
-                          <IoSettingsOutline  className="me-2" />
+                          <IoSettingsOutline className="me-2" />
                           Profilo
                         </Link>
                         <Link to="/Homepage" className="nav-link fs-6">
                           {" "}
-                          <FaStreetView className="me-2" />Organizza il tuo viaggio
+                          <FaStreetView className="me-2" />
+                          Organizza il tuo viaggio
                         </Link>
                         <Link to="/Lobbies" className="nav-link fs-6">
                           {" "}
-                          <TiMessages className="me-2" />Messaggi
+                          <TiMessages className="me-2" />
+                          Messaggi
                         </Link>
                         <Link to="/AllTravels" className="nav-link fs-6">
                           {" "}
-                          <MdOutlineTravelExplore className="me-2" />Viaggi utenti
+                          <MdOutlineTravelExplore className="me-2" />
+                          Viaggi utenti
                         </Link>
                         <Link to="/" className="nav-link fs-6">
                           <MdFirstPage className="me-2" />

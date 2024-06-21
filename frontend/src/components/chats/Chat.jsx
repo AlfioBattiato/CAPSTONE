@@ -3,6 +3,7 @@ import axios from "axios";
 import { Card } from "react-bootstrap";
 import { useChannel, useConnectionStateListener } from "ably/react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { openChat, closeChat, incrementUnreadCount, decrementUnreadCount, resetUnreadCount } from "../../redux/actions";
 import MessageList from "./MessageList";
 import MessageForm from "./MessageForm";
@@ -176,8 +177,12 @@ const Chat = ({ chat, globalChannel }) => {
             : chat.users
             ? chat.users
                 .filter((user) => user.id !== chat.pivot.user_id)
-                .map((user) => user.username)
-                .join(", ")
+                .map((user) => (
+                  <Link key={user.id} to={`/profile/${user.id}`} className="text-white">
+                    {user.username}
+                  </Link>
+                ))
+                .reduce((prev, curr) => [prev, ", ", curr])
             : "Chat with no users")}
       </Card.Header>
       <MessageList
