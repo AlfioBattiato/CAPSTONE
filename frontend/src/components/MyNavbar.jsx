@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -13,12 +14,16 @@ import { FaStreetView } from "react-icons/fa";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { TiMessages } from "react-icons/ti";
 import { MdOutlineTravelExplore } from "react-icons/md";
-import { Button } from "react-bootstrap";
+import { Button, Form, FormControl, ListGroup } from "react-bootstrap";
 import Footer from "./Footer";
+
 function MyNavbar() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [allUsers, setAllUsers] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const logout = () => {
     axios.post("/api/logout").then(() => {
@@ -28,12 +33,43 @@ function MyNavbar() {
     });
   };
 
+  const handleFormClick = () => {
+    if (allUsers.length === 0) {
+      axios
+        .get(`/api/users`)
+        .then((response) => {
+          setAllUsers(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching users:", error);
+        });
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.length > 2) {
+      const filteredUsers = allUsers.filter((user) => user.username.toLowerCase().includes(query.toLowerCase()));
+      setSearchResults(filteredUsers);
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleUserSelect = (userId) => {
+    setSearchQuery("");
+    setSearchResults([]);
+    navigate(`/profile/${userId}`);
+  };
+
   return (
     <>
       {[false].map((expand) => (
-        <Navbar key={expand} expand={expand} className=" bg-dark pt-3 sticky" data-bs-theme="dark">
+        <Navbar key={expand} expand={expand} className="bg-dark pt-3 sticky" data-bs-theme="dark">
           <Container>
-            <Link to="/" className="navbar-brand text-white ">
+            <Link to="/" className="navbar-brand text-white">
               TrailBlazers
             </Link>
 
@@ -54,6 +90,28 @@ function MyNavbar() {
                       </span>
                     </div>
                   </Link>
+                  <Form
+                    className="d-flex mx-3 position-relative"
+                    onSubmit={(e) => e.preventDefault()}
+                    onClick={handleFormClick}
+                  >
+                    <FormControl
+                      type="search"
+                      placeholder="Search users"
+                      className="me-2"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                    />
+                    {searchResults.length > 0 && (
+                      <ListGroup className="position-absolute w-100">
+                        {searchResults.map((result) => (
+                          <ListGroup.Item key={result.id} action onClick={() => handleUserSelect(result.id)}>
+                            {result.username}
+                          </ListGroup.Item>
+                        ))}
+                      </ListGroup>
+                    )}
+                  </Form>
                   <Navbar.Toggle
                     aria-controls={`offcanvasNavbar-expand-${expand}`}
                     className="border-0 shadow-0 ms-3"
@@ -76,17 +134,14 @@ function MyNavbar() {
                           Profilo
                         </Link>
                         <Link to="/Homepage" className="nav-link fs-6">
-                          {" "}
                           <FaStreetView className="me-2" />
                           Organizza il tuo viaggio
                         </Link>
                         <Link to="/Lobbies" className="nav-link fs-6">
-                          {" "}
                           <TiMessages className="me-2" />
                           Messaggi
                         </Link>
                         <Link to="/AllTravels" className="nav-link fs-6">
-                          {" "}
                           <MdOutlineTravelExplore className="me-2" />
                           Viaggi utenti
                         </Link>
@@ -101,7 +156,7 @@ function MyNavbar() {
                         </Link>
                       </Nav>
                     </Offcanvas.Body>
-                    <Footer></Footer>
+                    <Footer />
                   </Navbar.Offcanvas>
                 </div>
               </>

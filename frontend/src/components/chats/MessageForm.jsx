@@ -1,20 +1,16 @@
 import React, { useState } from "react";
-import { Form, Button, Col } from "react-bootstrap";
+import { Form, Button, Col, Image } from "react-bootstrap";
 import { MdAttachFile } from "react-icons/md";
 import AudioRecorder from "./AudioRecorder";
 
 const MessageForm = ({ chatId, onSendMessage }) => {
   const [newMessage, setNewMessage] = useState("");
   const [file, setFile] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [filePreview, setFilePreview] = useState(null);
+  const [isAudioPreview, setIsAudioPreview] = useState(false);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-
-    if (file && file.size > 10 * 1024 * 1024) {
-      setErrorMessage("File size should be less than 10MB");
-      return;
-    }
 
     const formData = new FormData();
     formData.append("chat_id", chatId);
@@ -27,30 +23,49 @@ const MessageForm = ({ chatId, onSendMessage }) => {
 
     setNewMessage("");
     setFile(null);
-    setErrorMessage("");
+    setFilePreview(null);
+    setIsAudioPreview(false);
   };
 
   const handleAudioRecorded = (audioBlob) => {
-    if (audioBlob.size > 10 * 1024 * 1024) {
-      setErrorMessage("Audio size should be less than 10MB");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("chat_id", chatId);
-    formData.append("file", audioBlob, "recording.wav");
-
-    onSendMessage(formData);
+    setFile(audioBlob);
+    setFilePreview(URL.createObjectURL(audioBlob));
+    setIsAudioPreview(true);
   };
 
-  const handleCancel = () => {
-    setNewMessage("");
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    setFilePreview(URL.createObjectURL(selectedFile));
+    setIsAudioPreview(false);
+  };
+
+  const handleCancelFile = () => {
     setFile(null);
-    setErrorMessage("");
+    setFilePreview(null);
+    setIsAudioPreview(false);
   };
 
   return (
     <Form onSubmit={handleSendMessage} className="w-100">
+      {filePreview && (
+        <div className="mb-3 position-relative">
+          {file.type.startsWith("image/") && <Image src={filePreview} fluid />}
+          {file.type.startsWith("video/") && (
+            <video controls width="100%">
+              <source src={filePreview} type={file.type} />
+            </video>
+          )}
+          {isAudioPreview && (
+            <audio controls>
+              <source src={filePreview} type="audio/wav" />
+            </audio>
+          )}
+          <Button variant="danger" className="position-absolute top-0 end-0" onClick={handleCancelFile}>
+            Annulla
+          </Button>
+        </div>
+      )}
       <Form.Group controlId="messageInput" className="d-flex align-items-center">
         <Col xs={8} md={9} xl={10} className="p-1">
           <Form.Control
@@ -65,15 +80,11 @@ const MessageForm = ({ chatId, onSendMessage }) => {
         <Col xs={4} md={3} xl={2} className="p-1 d-flex align-items-center justify-content-around">
           <label htmlFor="fileInput" className="mb-0 d-flex align-items-center fs-3">
             <MdAttachFile style={{ color: "#FFF", cursor: "pointer" }} />
-            <input
-              id="fileInput"
-              type="file"
-              onChange={(e) => setFile(e.target.files[0])}
-              className="d-none"
-              accept="image/*,video/*,audio/*"
-            />
+            <input id="fileInput" type="file" onChange={handleFileChange} className="d-none" />
           </label>
+
           <AudioRecorder onAudioRecorded={handleAudioRecorded} />
+
           <Button
             variant="light"
             type="submit"
@@ -85,19 +96,8 @@ const MessageForm = ({ chatId, onSendMessage }) => {
               Invia
             </p>
           </Button>
-          <Button
-            variant="secondary"
-            onClick={handleCancel}
-            className="d-flex align-items-center justify-content-center"
-            style={{ height: "38px" }}
-          >
-            <p style={{ color: "#FFF" }} className="m-0 fs-5">
-              Annulla
-            </p>
-          </Button>
         </Col>
       </Form.Group>
-      {errorMessage && <p className="text-danger mt-2">{errorMessage}</p>}
     </Form>
   );
 };
