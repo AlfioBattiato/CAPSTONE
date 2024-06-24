@@ -29,7 +29,7 @@ class Travel extends Model
     ];
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'travel_user');
+        return $this->belongsToMany(User::class, 'travel_user')->withPivot('role');
     }
 
     public function metas(): HasMany
@@ -60,5 +60,9 @@ class Travel extends Model
                 $chat->addUsersFromTravel($travel);
             }
         });
+
+
     }
+
+
 }

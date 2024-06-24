@@ -51,7 +51,7 @@ class User extends Authenticatable
     // inserire le relazioni molti a molti e uno a molti per i viaggi
     public function travels(): BelongsToMany
     {
-        return $this->belongsToMany(Travel::class, 'travel_user');
+        return $this->belongsToMany(Travel::class, 'travel_user')->withPivot('role');
     }
     public function interestplaces(): HasMany
     {
