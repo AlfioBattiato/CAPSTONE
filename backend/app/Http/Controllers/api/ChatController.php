@@ -11,11 +11,13 @@ use App\Models\User;
 class ChatController extends Controller
 {
     public function index()
-    {
-        $user = Auth::user();
-        $chats = $user->chats()->with('users')->get();
-        return response()->json($chats);
-    }
+{
+    $user = Auth::user();
+    $chats = $user->chats()->with(['users' => function ($query) {
+        $query->withPivot('type');
+    }])->get();
+    return response()->json($chats);
+}
 
     public function show(Chat $chat)
     {
@@ -23,19 +25,25 @@ class ChatController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'nullable|string|max:255',
-            'active' => 'boolean',
-            'travel_id' => 'nullable|exists:travels,id',
-            'image' => 'nullable|string|max:255',
-        ]);
+{
+    $request->validate([
+        'name' => 'nullable|string|max:255',
+        'active' => 'boolean',
+        'travel_id' => 'nullable|exists:travels,id',
+        'image' => 'nullable|string|max:255',
+    ]);
 
+    try {
+        // Log::info('Creating chat with data: ', $request->all());
         $chat = Chat::create($request->all());
-        $chat->updateGroupChatStatus();
+        // Log::info('Chat created successfully: ', $chat->toArray());
 
         return response()->json($chat, 201);
+    } catch (\Exception $e) {
+        // Log::error('Error creating chat: ', ['error' => $e->getMessage()]); 
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
 
     public function update(Request $request, Chat $chat)
     {
@@ -69,7 +77,6 @@ class ChatController extends Controller
 
         $user = User::findOrFail($request->input('user_id'));
         $chat->users()->attach($user);
-        $chat->updateGroupChatStatus();
 
         return response()->json(['message' => 'User added to chat successfully'], 200);
     }

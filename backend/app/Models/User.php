@@ -69,7 +69,7 @@ class User extends Authenticatable
      */
     public function chats(): BelongsToMany
     {
-        return $this->belongsToMany(Chat::class, 'lobby');
+        return $this->belongsToMany(Chat::class, 'lobby')->withPivot('type');
     }
 
     /**

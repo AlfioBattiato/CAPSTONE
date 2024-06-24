@@ -4,7 +4,7 @@ import { Container, Row, Col, Spinner, Button, Card, Modal } from "react-bootstr
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import Dashboard from "../components/userProfile/Dashboard";
-import { setSelectedChat } from "../redux/actions";
+import { setSelectedChat, setChats } from "../redux/actions";
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -48,9 +48,9 @@ const UserProfile = () => {
       const response = await axios.get("/api/chats");
       const existingChat = response.data.find(
         (chat) =>
-          chat.pivot.type === "private" &&
           chat.users.some((user) => user.id === profileUser.id) &&
-          chat.users.some((user) => user.id === loggedInUser.id)
+          chat.users.some((user) => user.id === loggedInUser.id) &&
+          chat.users.some((user) => user.pivot && user.pivot.type === "private")
       );
 
       if (existingChat) {
@@ -73,8 +73,11 @@ const UserProfile = () => {
         const updatedChatsResponse = await axios.get("/api/chats");
         dispatch(setChats(updatedChatsResponse.data));
 
+        // Recupera la nuova chat aggiornata
+        const updatedChat = updatedChatsResponse.data.find((chat) => chat.id === newChat.id);
+
         // Seleziona la nuova chat e naviga
-        dispatch(setSelectedChat(newChat));
+        dispatch(setSelectedChat(updatedChat));
         navigate("/lobbies");
       }
     } catch (error) {
