@@ -22,7 +22,7 @@ function Homepage() {
   const travel = useSelector((state) => state.infotravels.setTravel);
   const metas = useSelector((state) => state.infotravels.metas);
   const infotravels = useSelector((state) => state.infotravels);
-  const locate = useNavigate()
+  const navigate = useNavigate()
 
   const [weatherData, setWeatherData] = useState([]);
   const handleRemoveMeta = (index) => {
@@ -81,15 +81,15 @@ function Homepage() {
       })
       .then((response) => {
         console.log("Place created successfully:", response.data);
-        // axios('api/v1/travels')
-        // .then((res) => {
-        //     dispatch(setActionTravels(res.data));
-        //     setTravels(res.data);
-        // })
-        // .catch((error) => {
-        //     console.error('Error fetching travels:', error);
-        // });
-        // locate("/AllTravels/");
+        axios('/api/v1/travels')
+        .then((res) => {
+            dispatch(setActionTravels(res.data));
+            // setTravels(res.data);
+            navigate("/AllTravels/");
+        })
+        .catch((error) => {
+            console.error('Error fetching travels:', error);
+        });
       })
       .catch((error) => {
        
