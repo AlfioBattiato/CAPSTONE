@@ -98,6 +98,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('travel/{travel}', [TravelController::class, 'destroy']);
     // questo mi serve per aggiungere guest al viaggio
     Route::post('/travels/{travel}/add-guest', [TravelController::class, 'addGuest']);
+    Route::post('/travels/{travel}/approve-guest/{user}', [TravelController::class, 'approveGuest']);
+    Route::post('/travels/{travel}/reject-guest/{user}', [TravelController::class, 'rejectGuest']);
     
     // Routes for MetaController
     Route::get('meta', [MetaController::class, 'index']);

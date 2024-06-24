@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->unique(['travel_id', 'user_id']);
             $table->string('role')->default('guest');
+            $table->boolean('active')->default(false); 
             $table->timestamps();
         });
     }

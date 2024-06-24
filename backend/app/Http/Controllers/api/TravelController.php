@@ -153,10 +153,41 @@ class TravelController extends Controller
                 'user_id' => 'required|exists:users,id',
             ]);
 
-            // Aggiungi l'utente specificato come guest
-            $travel->users()->attach($request->input('user_id'), ['role' => 'guest']);
+            // Aggiungi l'utente specificato come guest con active impostato a false
+            $travel->users()->attach($request->input('user_id'), ['role' => 'guest', 'active' => false]);
             
             return response()->json(['message' => 'User added as guest successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+    }
+    public function approveGuest(Request $request, $travelId, $userId)
+    {
+        // Verifica che l'utente autenticato sia il creatore del viaggio
+        $travel = Travel::findOrFail($travelId);
+        $creatorId = Auth::id();
+        
+        if ($travel->users()->where('user_id', $creatorId)->where('role', 'creator_travel')->exists()) {
+            // Imposta active su true per l'utente specificato
+            $travel->users()->updateExistingPivot($userId, ['active' => true]);
+            
+            return response()->json(['message' => 'User approved successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+    }
+
+    public function rejectGuest(Request $request, $travelId, $userId)
+    {
+        // Verifica che l'utente autenticato sia il creatore del viaggio
+        $travel = Travel::findOrFail($travelId);
+        $creatorId = Auth::id();
+        
+        if ($travel->users()->where('user_id', $creatorId)->where('role', 'creator_travel')->exists()) {
+            // Rimuovi l'utente specificato dalla tabella pivot
+            $travel->users()->detach($userId);
+            
+            return response()->json(['message' => 'User rejected successfully'], 200);
         } else {
             return response()->json(['message' => 'Unauthorized'], 403);
         }

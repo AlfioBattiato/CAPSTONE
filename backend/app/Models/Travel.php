@@ -29,7 +29,7 @@ class Travel extends Model
     ];
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'travel_user')->withPivot('role');
+        return $this->belongsToMany(User::class, 'travel_user')->withPivot('role','active');
     }
 
     public function metas(): HasMany
