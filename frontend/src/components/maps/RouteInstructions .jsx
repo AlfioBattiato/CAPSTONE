@@ -33,7 +33,7 @@ const RouteInstructions = () => {
 
       const updatedTravel = {
         days: days,
-        expiration_date: expirationDate,
+        expiration_date: expirationDate.toISOString().split('T')[0],
       };
 
       // Dispatch the updated travel information

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->float('lon');
             $table->string('type_moto');
             $table->string('cc_moto');
-            $table->date('departure_date');
-            $table->date('expiration_date');
+            $table->string('departure_date');
+            $table->string('expiration_date');
             $table->integer('days');
             $table->boolean('active')->default(true);
             $table->timestamps();

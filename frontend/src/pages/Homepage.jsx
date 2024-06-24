@@ -9,7 +9,9 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-bootstrap/Modal";
 import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
-import { removeMeta } from "../redux/actions";
+import { removeMeta, setActionTravels } from "../redux/actions";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Homepage() {
   const [show, setShow] = useState(false);
@@ -19,6 +21,9 @@ function Homepage() {
 
   const travel = useSelector((state) => state.infotravels.setTravel);
   const metas = useSelector((state) => state.infotravels.metas);
+  const infotravels = useSelector((state) => state.infotravels);
+  const locate = useNavigate()
+
   const [weatherData, setWeatherData] = useState([]);
   const handleRemoveMeta = (index) => {
     dispatch(removeMeta(index));
@@ -57,36 +62,37 @@ function Homepage() {
     />
   );
 
-  const submitForm = (ev) => {
+  const submit = (ev) => {
     ev.preventDefault();
     axios
       .get("/sanctum/csrf-cookie")
       .then(() => {
         const body = new FormData();
-        body.append("start_location", formData.start_location);
-        body.append("type_moto", formData.type_moto);
-        body.append("cc_moto", formData.cc_moto);
-        body.append("lat", popupInfo.lat);
-        body.append("lon", popupInfo.lng);
-        body.append("departure_date", formData.departure_date);
-        body.append("expiration_date", formData.expiration_date);
-        body.append("days", formData.days);
+        body.append("start_location", infotravels.setTravel.start_location.city);
+        body.append("type_moto", infotravels.setTravel.type_moto);
+        body.append("cc_moto", infotravels.setTravel.cc_moto);
+        body.append("lat",infotravels.setTravel.start_location.lat);
+        body.append("lon", infotravels.setTravel.start_location.lon);
+        body.append("departure_date", infotravels.setTravel.startDate);
+        body.append("expiration_date", infotravels.details.expiration_date);
+        body.append("days", infotravels.details.days);
 
-        return axios.post("/api/interest-places", body);
+        return axios.post("/api/travel", body);
       })
       .then((response) => {
         console.log("Place created successfully:", response.data);
-        setError(null);
-        locate("/homepage/");
+        // axios('api/v1/travels')
+        // .then((res) => {
+        //     dispatch(setActionTravels(res.data));
+        //     setTravels(res.data);
+        // })
+        // .catch((error) => {
+        //     console.error('Error fetching travels:', error);
+        // });
+        // locate("/AllTravels/");
       })
-      .catch((err) => {
-        if (popupInfo === null) {
-          setError("Inserire un punto sulla mappa");
-        } else if (err.response.data.message === "The location img field is required.") {
-          setError("Inserire un immagine");
-        } else {
-          setError(error);
-        }
+      .catch((error) => {
+       
         console.error(error);
       });
   };
@@ -182,7 +188,7 @@ function Homepage() {
                 <Button variant="secondary" onClick={handleClose}>
                   Close
                 </Button>
-                <Button variant="primary" onClick={handleClose}>
+                <Button variant="primary" onClick={submit}>
                   Completa creazione
                 </Button>
               </Modal.Footer>
