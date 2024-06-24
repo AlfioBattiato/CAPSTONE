@@ -64,6 +64,7 @@ class ChatController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
+            'type' => 'required|string|in:private,group',
         ]);
 
         $user = User::findOrFail($request->input('user_id'));

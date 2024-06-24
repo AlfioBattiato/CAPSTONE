@@ -42,8 +42,8 @@ const AllChats = () => {
     setIsPrivateChatsSelected(true);
   };
 
-  const groupChats = chats.filter((chat) => chat.group_chat);
-  const privateChats = chats.filter((chat) => !chat.group_chat);
+  const groupChats = chats.filter((chat) => chat.pivot.type === "group");
+  const privateChats = chats.filter((chat) => chat.pivot.type === "private");
 
   return (
     <Card className="h-100">

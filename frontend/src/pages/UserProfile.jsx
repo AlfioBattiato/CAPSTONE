@@ -48,7 +48,7 @@ const UserProfile = () => {
       const response = await axios.get("/api/chats");
       const existingChat = response.data.find(
         (chat) =>
-          !chat.group_chat &&
+          chat.pivot.type === "private" &&
           chat.users.some((user) => user.id === profileUser.id) &&
           chat.users.some((user) => user.id === loggedInUser.id)
       );
@@ -67,8 +67,8 @@ const UserProfile = () => {
           group_chat: false, // Indica che non è una chat di gruppo
         });
         const newChat = newChatResponse.data;
-        await axios.post(`/api/chats/${newChat.id}/add-user`, { user_id: profileUser.id });
-        await axios.post(`/api/chats/${newChat.id}/add-user`, { user_id: loggedInUser.id });
+        await axios.post(`/api/chats/${newChat.id}/add-user`, { user_id: profileUser.id, type: "private" });
+        await axios.post(`/api/chats/${newChat.id}/add-user`, { user_id: loggedInUser.id, type: "private" });
 
         // Aggiorna la lista delle chat
         const updatedChatsResponse = await axios.get("/api/chats");

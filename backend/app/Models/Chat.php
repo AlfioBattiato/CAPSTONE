@@ -25,7 +25,7 @@ class Chat extends Model
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'lobby');
+        return $this->belongsToMany(User::class, 'lobby')->withPivot('type');
     }
 
     /**
@@ -44,7 +44,7 @@ class Chat extends Model
     public function addUsersFromTravel(Travel $travel)
     {
         $users = $travel->users()->pluck('users.id')->toArray();
-        Log::info('Users being added to chat: ', $users); // Log per debugging
+        // Log::info('Users being added to chat: ', $users); // Log per debugging
         $this->users()->syncWithoutDetaching($users);
         $this->updateGroupChatStatus();
     }
@@ -72,7 +72,7 @@ class Chat extends Model
             if ($chat->travel_id) {
                 $travel = Travel::find($chat->travel_id);
                 if ($travel) {
-                    $chat->users()->attach($travel->users->pluck('id')->toArray());
+                    $chat->users()->attach($travel->users->pluck('id')->toArray(), ['type' => 'group']);
                 }
                 $chat->updateGroupChatStatus();
             }
