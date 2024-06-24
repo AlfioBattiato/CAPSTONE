@@ -33,7 +33,7 @@ export default function FilterTravel({ setTravels }) {
     useEffect(() => {
         axios('/api/v1/travels')
             .then((res) => {
-                console.log('filter',res.data)
+                // console.log('filter',res.data)
                 dispatch(setActionTravels(res.data));
                 setTravels(res.data);
             })

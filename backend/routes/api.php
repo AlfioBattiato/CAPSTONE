@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\MetaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -95,6 +96,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('travel/{travel}', [TravelController::class, 'show']);
     Route::put('travel/{travel}', [TravelController::class, 'update']);
     Route::delete('travel/{travel}', [TravelController::class, 'destroy']);
+    
+    // Routes for MetaController
+    Route::get('meta', [MetaController::class, 'index']);
+    Route::post('meta', [MetaController::class, 'store']);
+    Route::get('meta/{meta}', [MetaController::class, 'show']);
+    Route::put('meta/{meta}', [MetaController::class, 'update']);
+    Route::delete('meta/{meta}', [MetaController::class, 'destroy']);
 });
 // funzioni per il map 
 Route::get('/proxy/nominatim', function (Request $request) {
