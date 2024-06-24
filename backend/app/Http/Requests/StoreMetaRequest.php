@@ -11,7 +11,8 @@ class StoreMetaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        // Autorizza tutti gli utenti autenticati a fare questa richiesta
+        return true; // Cambia a true per autorizzare la richiesta
     }
 
     /**
@@ -22,7 +23,11 @@ class StoreMetaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'travel_id' => 'required|exists:travels,id',
+            'name_location' => 'required|string|max:255',
+            'lat' => 'required|numeric',
+            'lon' => 'required|numeric',
         ];
     }
 }
+

@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { Button, Col, Row } from "react-bootstrap";
 import SetTravel from "../components/maps/SetCityTravel";
 import Maps from "../components/maps/Maps";
@@ -5,13 +9,10 @@ import SetTravelSettings from "../components/maps/SetTravelSettings";
 import RouteInstructions from "../components/maps/RouteInstructions";
 import All_interest_places from "../components/interest_places/All_interest_places";
 import Meteo from "../components/meteo";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-bootstrap/Modal";
 import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
 import { removeMeta } from "../redux/actions";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { LOGIN } from "../redux/actions";
 
 function Homepage() {
   const [show, setShow] = useState(false);
@@ -25,9 +26,25 @@ function Homepage() {
   const navigate = useNavigate();
 
   const [weatherData, setWeatherData] = useState([]);
-  const handleRemoveMeta = (index) => {
-    dispatch(removeMeta(index));
-  };
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    axios.get("/sanctum/csrf-cookie").then(() => {
+      axios
+        .get("/api/user")
+        .then((res) => {
+          console.log("User authenticated:", res.data);
+          dispatch({
+            type: LOGIN,
+            payload: res.data,
+          });
+          setIsAuthenticated(true);
+        })
+        .catch((err) => {
+          console.error("Authentication error:", err);
+        });
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     if (travel.start_location.lat && travel.start_location.lon) {
@@ -51,6 +68,10 @@ function Homepage() {
     }
   }, [travel]);
 
+  const handleRemoveMeta = (index) => {
+    dispatch(removeMeta(index));
+  };
+
   const renderMeteo = (data, index) => (
     <Meteo
       key={index}
@@ -65,43 +86,46 @@ function Homepage() {
 
   const submit = async (ev) => {
     ev.preventDefault();
+    if (!isAuthenticated) {
+      console.error("User is not authenticated");
+      return;
+    }
+    console.log("Submit called with travel data:", infotravels);
+
     try {
-      // Ottieni il CSRF token
-      await axios.get("/sanctum/csrf-cookie");
+      const body = {
+        start_location: infotravels.setTravel.start_location.city,
+        type_moto: infotravels.setTravel.type_moto,
+        cc_moto: infotravels.setTravel.cc_moto,
+        lat: infotravels.setTravel.start_location.lat,
+        lon: infotravels.setTravel.start_location.lon,
+        departure_date: infotravels.setTravel.startDate,
+        expiration_date: infotravels.details.expiration_date,
+        days: infotravels.details.days,
+      };
 
-      const body = new FormData();
-      body.append("start_location", infotravels.setTravel.start_location.city);
-      body.append("type_moto", infotravels.setTravel.type_moto);
-      body.append("cc_moto", infotravels.setTravel.cc_moto);
-      body.append("lat", infotravels.setTravel.start_location.lat);
-      body.append("lon", infotravels.setTravel.start_location.lon);
-      body.append("departure_date", infotravels.setTravel.startDate);
-      body.append("expiration_date", infotravels.details.expiration_date);
-      body.append("days", infotravels.details.days);
-
-      // Effettua la richiesta POST per creare il viaggio
+      console.log("Sending travel data to backend:", body);
       const travelResponse = await axios.post("/api/travel", body);
-      console.log("Place created successfully:", travelResponse.data);
+      console.log("Travel created successfully:", travelResponse.data);
 
-      // Ottieni di nuovo il CSRF token dopo la creazione del viaggio (se necessario)
-      await axios.get("/sanctum/csrf-cookie");
-
-      // Effettua la richiesta POST per ogni meta
       for (const meta of infotravels.metas) {
-        const metaBody = new FormData();
-        metaBody.append("travel_id", travelResponse.data.id);
-        metaBody.append("name_location", meta.city);
-        metaBody.append("lat", meta.lat);
-        metaBody.append("lon", meta.lon);
+        const metaBody = {
+          travel_id: travelResponse.data.id,
+          name_location: meta.city,
+          lat: meta.lat,
+          lon: meta.lon,
+        };
+        console.log("Sending meta data to backend:", metaBody);
         await axios.post("/api/meta", metaBody);
       }
 
-      // Naviga alla pagina di tutti i viaggi dopo il completamento
       navigate("/AllTravels/");
     } catch (error) {
       console.error("There was an error!", error);
-      if (error.response && error.response.status === 403) {
-        alert("You are not authorized to perform this action.");
+      if (error.response) {
+        console.error("Error response data:", error.response.data);
+        console.error("Error response status:", error.response.status);
+        console.error("Error response headers:", error.response.headers);
       }
     }
   };

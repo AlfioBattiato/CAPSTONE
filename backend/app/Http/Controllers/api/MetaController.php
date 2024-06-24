@@ -22,10 +22,15 @@ class MetaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMetaRequest $request)
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
+    public function store(Request $request)
     {
         $request->validate([
-            'travel_id' => 'required|exists:travels,id',
+            'travel_id' => 'required|exists:travel,id',
             'name_location' => 'required|string|max:255',
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',
@@ -39,7 +44,6 @@ class MetaController extends Controller
         ]);
 
         $meta = Meta::create($data);
-        $meta->load('travel');
         return response()->json($meta, 201);
     }
 
@@ -65,7 +69,7 @@ class MetaController extends Controller
     public function update(UpdateMetaRequest $request, Meta $meta)
     {
         $request->validate([
-            'travel_id' => 'required|integer|exists:travels,id',
+            'travel_id' => 'required|integer|exists:travel,id',
             'name_location' => 'required|string|max:255',
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',
