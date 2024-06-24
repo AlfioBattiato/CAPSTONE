@@ -20,7 +20,6 @@ const AudioRecorder = ({ onAudioRecorded }) => {
       const audioUrl = URL.createObjectURL(audioBlob);
       setAudioURL(audioUrl);
       audioChunks.current = [];
-      onAudioRecorded(audioBlob);
     };
 
     mediaRecorder.current.start();
@@ -30,6 +29,17 @@ const AudioRecorder = ({ onAudioRecorded }) => {
   const stopRecording = () => {
     mediaRecorder.current.stop();
     setIsRecording(false);
+  };
+
+  const sendAudio = () => {
+    const audioBlob = new Blob(audioChunks.current, { type: "audio/wav" });
+    onAudioRecorded(audioBlob);
+    setAudioURL("");
+  };
+
+  const cancelAudio = () => {
+    setAudioURL("");
+    audioChunks.current = [];
   };
 
   return (
@@ -55,6 +65,17 @@ const AudioRecorder = ({ onAudioRecorded }) => {
           <HiMicrophone className="text-white fs-3" />
         )}
       </button>
+      {audioURL && (
+        <div className="mt-2">
+          <audio controls src={audioURL} />
+          <button onClick={sendAudio} className="btn btn-success mx-2">
+            Send
+          </button>
+          <button onClick={cancelAudio} className="btn btn-danger">
+            Cancel
+          </button>
+        </div>
+      )}
     </div>
   );
 };

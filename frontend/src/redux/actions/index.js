@@ -10,6 +10,7 @@ export const CLOSE_CHAT = "CLOSE_CHAT";
 
 export const SET_CHATS = "SET_CHATS";
 export const SET_SELECTED_CHAT = "SET_SELECTED_CHAT";
+export const RESET_CHATS = "RESET_CHATS";
 
 // export const SET_HAS_UNREAD_MESSAGES = "SET_HAS_UNREAD_MESSAGES";
 export const SET_UNREAD_COUNT = "SET_UNREAD_COUNT";
@@ -49,6 +50,10 @@ export const setChats = (chats) => ({
 export const setSelectedChat = (chat) => ({
   type: SET_SELECTED_CHAT,
   payload: chat,
+});
+
+export const resetChats = () => ({
+  type: RESET_CHATS,
 });
 
 // NOTIFICATION
