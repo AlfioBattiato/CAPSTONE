@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\api;
 
 use App\Models\Meta;
+use App\Models\Travel;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMetaRequest;
 use App\Http\Requests\UpdateMetaRequest;
@@ -14,15 +16,7 @@ class MetaController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        // Logica per mostrare una lista di risorse
     }
 
     /**
@@ -30,7 +24,23 @@ class MetaController extends Controller
      */
     public function store(StoreMetaRequest $request)
     {
-        //
+        $request->validate([
+            'travel_id' => 'required|exists:travels,id',
+            'name_location' => 'required|string|max:255',
+            'lat' => 'required|numeric',
+            'lon' => 'required|numeric',
+        ]);
+
+        $data = $request->only([
+            'travel_id',
+            'name_location',
+            'lat',
+            'lon',
+        ]);
+
+        $meta = Meta::create($data);
+        $meta->load('travel');
+        return response()->json($meta, 201);
     }
 
     /**
@@ -38,7 +48,7 @@ class MetaController extends Controller
      */
     public function show(Meta $meta)
     {
-        //
+        // Logica per mostrare una risorsa specifica
     }
 
     /**
@@ -46,7 +56,7 @@ class MetaController extends Controller
      */
     public function edit(Meta $meta)
     {
-        //
+        // Logica per mostrare il form di modifica (se necessario)
     }
 
     /**
@@ -54,7 +64,21 @@ class MetaController extends Controller
      */
     public function update(UpdateMetaRequest $request, Meta $meta)
     {
-        //
+        $request->validate([
+            'travel_id' => 'required|integer|exists:travels,id',
+            'name_location' => 'required|string|max:255',
+            'lat' => 'required|numeric',
+            'lon' => 'required|numeric',
+        ]);
+
+        $meta->update($request->only([
+            'travel_id',
+            'name_location',
+            'lat',
+            'lon',
+        ]));
+
+        return response()->json($meta, 200);
     }
 
     /**
@@ -62,6 +86,8 @@ class MetaController extends Controller
      */
     public function destroy(Meta $meta)
     {
-        //
+        $meta->delete();
+
+        return response()->json(null, 204);
     }
 }

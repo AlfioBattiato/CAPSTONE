@@ -2,14 +2,14 @@ import { Button, Col, Row } from "react-bootstrap";
 import SetTravel from "../components/maps/SetCityTravel";
 import Maps from "../components/maps/Maps";
 import SetTravelSettings from "../components/maps/SetTravelSettings";
-import RouteInstructions from "../components/maps/RouteInstructions ";
+import RouteInstructions from "../components/maps/RouteInstructions";
 import All_interest_places from "../components/interest_places/All_interest_places";
 import Meteo from "../components/meteo";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-bootstrap/Modal";
 import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
-import { removeMeta, setActionTravels } from "../redux/actions";
+import { removeMeta } from "../redux/actions";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -22,12 +22,13 @@ function Homepage() {
   const travel = useSelector((state) => state.infotravels.setTravel);
   const metas = useSelector((state) => state.infotravels.metas);
   const infotravels = useSelector((state) => state.infotravels);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [weatherData, setWeatherData] = useState([]);
   const handleRemoveMeta = (index) => {
     dispatch(removeMeta(index));
   };
+
   useEffect(() => {
     if (travel.start_location.lat && travel.start_location.lon) {
       const fetchData = async () => {
@@ -62,39 +63,47 @@ function Homepage() {
     />
   );
 
-  const submit = (ev) => {
+  const submit = async (ev) => {
     ev.preventDefault();
-    axios
-      .get("/sanctum/csrf-cookie")
-      .then(() => {
-        const body = new FormData();
-        body.append("start_location", infotravels.setTravel.start_location.city);
-        body.append("type_moto", infotravels.setTravel.type_moto);
-        body.append("cc_moto", infotravels.setTravel.cc_moto);
-        body.append("lat",infotravels.setTravel.start_location.lat);
-        body.append("lon", infotravels.setTravel.start_location.lon);
-        body.append("departure_date", infotravels.setTravel.startDate);
-        body.append("expiration_date", infotravels.details.expiration_date);
-        body.append("days", infotravels.details.days);
+    try {
+      // Ottieni il CSRF token
+      await axios.get("/sanctum/csrf-cookie");
 
-        return axios.post("/api/travel", body);
-      })
-      .then((response) => {
-        console.log("Place created successfully:", response.data);
-        axios('/api/v1/travels')
-        .then((res) => {
-            dispatch(setActionTravels(res.data));
-            // setTravels(res.data);
-            navigate("/AllTravels/");
-        })
-        .catch((error) => {
-            console.error('Error fetching travels:', error);
-        });
-      })
-      .catch((error) => {
-       
-        console.error(error);
-      });
+      const body = new FormData();
+      body.append("start_location", infotravels.setTravel.start_location.city);
+      body.append("type_moto", infotravels.setTravel.type_moto);
+      body.append("cc_moto", infotravels.setTravel.cc_moto);
+      body.append("lat", infotravels.setTravel.start_location.lat);
+      body.append("lon", infotravels.setTravel.start_location.lon);
+      body.append("departure_date", infotravels.setTravel.startDate);
+      body.append("expiration_date", infotravels.details.expiration_date);
+      body.append("days", infotravels.details.days);
+
+      // Effettua la richiesta POST per creare il viaggio
+      const travelResponse = await axios.post("/api/travel", body);
+      console.log("Place created successfully:", travelResponse.data);
+
+      // Ottieni di nuovo il CSRF token dopo la creazione del viaggio (se necessario)
+      await axios.get("/sanctum/csrf-cookie");
+
+      // Effettua la richiesta POST per ogni meta
+      for (const meta of infotravels.metas) {
+        const metaBody = new FormData();
+        metaBody.append("travel_id", travelResponse.data.id);
+        metaBody.append("name_location", meta.city);
+        metaBody.append("lat", meta.lat);
+        metaBody.append("lon", meta.lon);
+        await axios.post("/api/meta", metaBody);
+      }
+
+      // Naviga alla pagina di tutti i viaggi dopo il completamento
+      navigate("/AllTravels/");
+    } catch (error) {
+      console.error("There was an error!", error);
+      if (error.response && error.response.status === 403) {
+        alert("You are not authorized to perform this action.");
+      }
+    }
   };
 
   return (
