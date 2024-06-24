@@ -1,6 +1,3 @@
-import React from "react";
-import { ListGroup, Badge } from "react-bootstrap";
-
 const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
   return (
     <ListGroup className="custom-scrollbar bg-white rounded-0 border-0" style={{ height: "80vh", maxHeight: "80vh" }}>

@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         
         $travels = Travel::all();
         $users = User::all();
-        
+
         foreach ($travels as $travel) {
             $randomUsers = $users->random(rand(1, $users->count()));
             $userIds = $randomUsers->pluck('id')->toArray();
@@ -34,7 +34,6 @@ class DatabaseSeeder extends Seeder
 
             if ($travel->chat) {
                 $travel->chat->addUsersFromTravel($travel);
-                $travel->chat->updateGroupChatStatus();
             }
         }
     }

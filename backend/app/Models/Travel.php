@@ -45,7 +45,6 @@ class Travel extends Model
     protected static function booted()
     {
         static::created(function ($travel) {
-
             $chat = Chat::create([
                 'name' => 'Chat for travel ' . $travel->id,
                 'travel_id' => $travel->id,
@@ -57,7 +56,7 @@ class Travel extends Model
 
         static::updated(function ($travel) {
             if ($travel->isDirty('users')) {
-                $chat = $travel->chats()->first();
+                $chat = $travel->chat()->first();
                 $chat->addUsersFromTravel($travel);
             }
         });

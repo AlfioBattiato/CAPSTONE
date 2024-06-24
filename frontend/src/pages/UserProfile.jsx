@@ -64,7 +64,6 @@ const UserProfile = () => {
           active: true,
           travel_id: null,
           image: null,
-          group_chat: false, // Indica che non è una chat di gruppo
         });
         const newChat = newChatResponse.data;
         await axios.post(`/api/chats/${newChat.id}/add-user`, { user_id: profileUser.id, type: "private" });
