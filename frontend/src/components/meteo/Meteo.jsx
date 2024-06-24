@@ -21,21 +21,21 @@ export default function Meteo({ name, date, temp, min, max, img }) {
                 </div>
 
                 <Card.Text className="temp">
-                    {temp}°
+                    {name?temp:'?'}°
                 </Card.Text>
 
                 <div className="minmaxContainer">
                     <div>
                         <p className='mb-0'>Min</p>
                         <Card.Text className="min">
-                            {min}°
+                            {name?min:'?'}°
                         </Card.Text>
 
                     </div>
                     <div>
                         <p className='mb-0'>Max</p>
                         <Card.Text className="max">
-                            {max}°
+                            {name?max:'?'}°
                         </Card.Text>
 
                     </div>
