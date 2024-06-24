@@ -114,9 +114,23 @@ class TravelController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Travel $travel)
+    public function show($id)
     {
-        //
+        // Trova il viaggio specificato con le relazioni caricate
+        $travel = Travel::with('users', 'metas')->findOrFail($id);
+    
+        // Ottieni l'utente autenticato
+        $authUser = Auth::user();
+    
+        // Trova il ruolo dell'utente autenticato nel viaggio
+        $role = $travel->users()->where('user_id', $authUser->id)->first()->pivot->role ?? null;
+    
+        // Aggiungi il ruolo ai dati del viaggio
+        $travelData = $travel->toArray();
+        $travelData['auth_user_role'] = $role;
+    
+        // Restituisci i dettagli del viaggio come risposta JSON
+        return response()->json($travelData);
     }
 
     /**
@@ -144,22 +158,19 @@ class TravelController extends Controller
     }
     public function addGuest(Request $request, $travelId)
     {
-        // Verifica che l'utente autenticato sia il creatore del viaggio
+        // Trova il viaggio specificato
         $travel = Travel::findOrFail($travelId);
-        $creatorId = Auth::id();
-        
-        if ($travel->users()->where('user_id', $creatorId)->where('role', 'creator_travel')->exists()) {
-            $request->validate([
-                'user_id' => 'required|exists:users,id',
-            ]);
-
-            // Aggiungi l'utente specificato come guest con active impostato a false
-            $travel->users()->attach($request->input('user_id'), ['role' => 'guest', 'active' => false]);
-            
-            return response()->json(['message' => 'User added as guest successfully'], 200);
-        } else {
-            return response()->json(['message' => 'Unauthorized'], 403);
+    
+        // Verifica che l'utente non sia già stato aggiunto come guest
+        $userId = Auth::id();
+        if ($travel->users()->where('user_id', $userId)->exists()) {
+            return response()->json(['message' => 'User is already a guest or creator of this travel'], 400);
         }
+    
+        // Aggiungi l'utente autenticato come guest con active impostato a false
+        $travel->users()->attach($userId, ['role' => 'guest', 'active' => false]);
+    
+        return response()->json(['message' => 'Request to join travel as guest submitted successfully'], 200);
     }
     public function approveGuest(Request $request, $travelId, $userId)
     {

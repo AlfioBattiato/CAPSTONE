@@ -15,6 +15,7 @@ import { TiMessages } from "react-icons/ti";
 import { MdOutlineTravelExplore } from "react-icons/md";
 import { Button } from "react-bootstrap";
 import Footer from "./Footer";
+
 function MyNavbar() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -28,25 +29,31 @@ function MyNavbar() {
     });
   };
 
+  const handleclick = () => {
+    const navbarbtn = document.getElementsByClassName('navbar-toggler')[0];
+    navbarbtn.click();
+    window.scroll(0, 0)
+  }
+
   return (
     <>
       {[false].map((expand) => (
-        <Navbar key={expand} expand={expand} className=" bg-dark pt-3 sticky" data-bs-theme="dark">
+        <Navbar key={expand} expand={expand} className="bg-dark pt-3 sticky" data-bs-theme="dark">
           <Container>
-            <Link to="/" className="navbar-brand text-white ">
+            <Link to="/" className="navbar-brand text-white">
               TrailBlazers
             </Link>
 
             {!user ? (
               <Button variant="outline-light">
-                <Link to="/login" className="fs-6 nav-link fs-5">
+                <Link to="/login" className="fs-6 nav-link fs-5" onClick={handleclick}>
                   <BiSolidLogIn /> Entra
                 </Link>
               </Button>
             ) : (
               <>
                 <div className="d-flex align-items-center">
-                  <Link to={`/profile/${user.id}`} className="nav-link fs-6">
+                  <Link to={`/profile/${user.id}`} className="nav-link fs-6" onClick={handleclick}>
                     <div className="position-relative">
                       <img src={user.profile_img} alt="Profile" className="img_profile" />
                       <span className="position-absolute translate-middle badge border online rounded-circle bg-success">
@@ -54,10 +61,7 @@ function MyNavbar() {
                       </span>
                     </div>
                   </Link>
-                  <Navbar.Toggle
-                    aria-controls={`offcanvasNavbar-expand-${expand}`}
-                    className="border-0 shadow-0 ms-3"
-                  ></Navbar.Toggle>
+                  <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} className="border-0 shadow-0 ms-3" />
                   <Navbar.Offcanvas
                     id={`offcanvasNavbar-expand-${expand}`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
@@ -71,37 +75,34 @@ function MyNavbar() {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                       <Nav className="justify-content-end flex-grow-1 pe-3">
-                        <Link to={`/profile/${user.id}`} className="nav-link fs-6">
+                        <Link to={`/profile/${user.id}`} className="nav-link fs-6" onClick={handleclick}>
                           <IoSettingsOutline className="me-2" />
                           Profilo
                         </Link>
-                        <Link to="/Homepage" className="nav-link fs-6">
-                          {" "}
+                        <Link to="/Homepage" className="nav-link fs-6" onClick={handleclick}>
                           <FaStreetView className="me-2" />
                           Organizza il tuo viaggio
                         </Link>
-                        <Link to="/Lobbies" className="nav-link fs-6">
-                          {" "}
+                        <Link to="/Lobbies" className="nav-link fs-6" onClick={handleclick}>
                           <TiMessages className="me-2" />
                           Messaggi
                         </Link>
-                        <Link to="/AllTravels" className="nav-link fs-6">
-                          {" "}
+                        <Link to="/AllTravels" className="nav-link fs-6" onClick={handleclick}>
                           <MdOutlineTravelExplore className="me-2" />
                           Viaggi utenti
                         </Link>
-                        <Link to="/" className="nav-link fs-6">
+                        <Link to="/" className="nav-link fs-6" onClick={handleclick}>
                           <MdFirstPage className="me-2" />
                           Benvenuto
                         </Link>
                         <hr />
-                        <Link onClick={logout} className="nav-link fs-6">
+                        <Link onClick={() => { logout(); handleclick(); }} className="nav-link fs-6">
                           <RiLogoutBoxFill className="me-2" />
                           Esci
                         </Link>
                       </Nav>
                     </Offcanvas.Body>
-                    <Footer></Footer>
+                    <Footer />
                   </Navbar.Offcanvas>
                 </div>
               </>

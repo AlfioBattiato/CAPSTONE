@@ -8,6 +8,7 @@ import { PiMotorcycleFill } from "react-icons/pi";
 import { BsCalendarDate } from "react-icons/bs";
 import { Button } from 'react-bootstrap';
 import { FaArrowRight } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 
 export default function TravelCard(props) {
     const getImageSource = (vehicleType) => {
@@ -43,7 +44,7 @@ export default function TravelCard(props) {
                                             <p className='fs-12 fw-bold me-2 mb-0'>
                                                 {props.travel.departure_date}
                                             </p>
- 
+
 
                                             <span className='line'></span>
                                             <PiMotorcycleFill className='ms-2' />
@@ -56,7 +57,7 @@ export default function TravelCard(props) {
 
                                     </Col>
                                     <Col md={4}>
-                                        <img src={getImageSource(props.travel.type_moto)} alt="mototype" className='img-fluid d-block' style={{ width: "48px" ,height:'48px',objectFit:"contain"}} />
+                                        <img src={getImageSource(props.travel.type_moto)} alt="mototype" className='img-fluid d-block' style={{ width: "48px", height: '48px', objectFit: "contain" }} />
 
                                         <span className='me-1 fs-12'>Tipologia moto:</span>
                                         <Badge bg="light" text="dark">
@@ -79,7 +80,10 @@ export default function TravelCard(props) {
                                         </Badge>
                                     </Col>
                                     <Col xs={6} className='d-flex justify-content-center  align-items-center'>
-                                   <Button className='btn-blue-dark fw-bold border-0 ms-auto' >Vedi viaggio <FaArrowRight /></Button>
+                                        <Link to={`/infoTravel/${props.travel.id}`} className="nav-link fs-6">
+                                            <Button className='btn-blue-dark fw-bold border-0 ms-auto' >Vedi viaggio <FaArrowRight /></Button>
+                                        </Link>
+
                                     </Col>
                                 </Row>
                             </Col>

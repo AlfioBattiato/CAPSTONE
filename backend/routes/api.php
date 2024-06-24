@@ -93,7 +93,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Routes for TravelController
     Route::post('travel', [TravelController::class, 'store']);
-    Route::get('travel/{travel}', [TravelController::class, 'show']);
+    Route::get('travel/{id}', [TravelController::class, 'show']);
     Route::put('travel/{travel}', [TravelController::class, 'update']);
     Route::delete('travel/{travel}', [TravelController::class, 'destroy']);
     // questo mi serve per aggiungere guest al viaggio

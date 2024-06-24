@@ -88,7 +88,8 @@ export default function Maps() {
                 {travel.start_location.lat !== 0 && metas.length > 0 && (
                     <RoutingMachine
                         key={key} // Usare key per forzare il render di una nuova istanza di RoutingMachine
-                        start_location={travel.start_location}
+                        lat={travel.start_location.lat}
+                        lon={travel.start_location.lon}
                         metas={metas}
                         dispatch={dispatch}
                       

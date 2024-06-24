@@ -46,16 +46,19 @@ export default function SetTravelSettings() {
     return (
         <div className="bg-white p-3 rounded mt-3">
             <p className="mb-1 ps-2 fw-bold">Data partenza:</p>
-            <BsCalendar2DateFill className="me-2 mb-1" />
-            <ReactDatePicker
-                selected={startDate}
-                onChange={handleDateChange}
-                className="form-control rounded-pill"
-                minDate={new Date()}
-                dateFormat="dd/MM/yyyy"
-                isClearable
-                placeholderText="Data di partenza"
-            />
+            <div className="d-flex gap-1 align-items-center">
+
+                <BsCalendar2DateFill className=" " />
+                <ReactDatePicker
+                    selected={startDate}
+                    onChange={handleDateChange}
+                    className="form-control rounded-pill"
+                    minDate={new Date()}
+                    dateFormat="dd/MM/yyyy"
+                    isClearable
+                    placeholderText="Data di partenza"
+                />
+            </div>
             <hr className="my-3" />
             <p className="mb-1 ps-2 fw-bold">Categorie moto:</p>
             <div className="d-flex flex-wrap flex-column">

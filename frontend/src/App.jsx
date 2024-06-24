@@ -15,6 +15,7 @@ import Dashboard from "./components/userProfile/Dashboard";
 import PasswordReset from "./pages/PasswordReset";
 import Register from "./pages/Register";
 import Lobbies from "./pages/Lobbies";
+import Infotravel from "./pages/Infotravel";
 import * as Ably from "ably";
 import { AblyProvider, ChannelProvider } from "ably/react";
 import "react-multi-carousel/lib/styles.css";
@@ -61,6 +62,7 @@ function App() {
               <Route path="/homepage/" element={<Homepage />} />
               <Route path="/createInterestPlace" element={<CreateInterestPlace />} />
               <Route path="/profile/:id" element={<UserProfile />} />
+              <Route path="/infoTravel/:id" element={<Infotravel/>} />
 
               <Route
                 path="/lobbies"
