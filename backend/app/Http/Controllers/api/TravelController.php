@@ -96,13 +96,13 @@ class TravelController extends Controller
         $travel = Travel::create($data);
     
         // Aggiungi l'utente creatore con il ruolo corretto
-        $travel->users()->attach(auth()->user()->id, ['role' => 'creator_travel']);
+        $travel->users()->attach(auth()->user()->id, ['role' => 'creator_travel','active' => true]);
     
         // Aggiungi altri utenti con ruolo guest se specificati nel request
         if ($request->has('selected_users')) {
             $selectedUsers = $request->input('selected_users');
             foreach ($selectedUsers as $userId) {
-                $travel->users()->attach($userId, ['role' => 'guest']);
+                $travel->users()->attach($userId, ['role' => 'guest','active' => true]);
             }
         }
     
