@@ -81,7 +81,7 @@ class TravelController extends Controller
             'expiration_date' => 'required|date',
             'days' => 'required|integer',
         ]);
-    
+
         $data = $request->only([
             'start_location',
             'lat',
@@ -92,22 +92,22 @@ class TravelController extends Controller
             'expiration_date',
             'days',
         ]);
-    
+
         $travel = Travel::create($data);
-    
+
         // Aggiungi l'utente creatore con il ruolo corretto
-        $travel->users()->attach(auth()->user()->id, ['role' => 'creator_travel','active' => true]);
-    
+        $travel->users()->attach(auth()->user()->id, ['role' => 'creator_travel', 'active' => true]);
+
         // Aggiungi altri utenti con ruolo guest se specificati nel request
         if ($request->has('selected_users')) {
             $selectedUsers = $request->input('selected_users');
             foreach ($selectedUsers as $userId) {
-                $travel->users()->attach($userId, ['role' => 'guest','active' => true]);
+                $travel->users()->attach($userId, ['role' => 'guest', 'active' => true]);
             }
         }
-    
+
         $travel->load('users'); // Assicurati di caricare correttamente la relazione
-    
+
         return response()->json($travel, 201);
     }
 
@@ -118,17 +118,17 @@ class TravelController extends Controller
     {
         // Trova il viaggio specificato con le relazioni caricate
         $travel = Travel::with('users', 'metas')->findOrFail($id);
-    
+
         // Ottieni l'utente autenticato
         $authUser = Auth::user();
-    
+
         // Trova il ruolo dell'utente autenticato nel viaggio
         $role = $travel->users()->where('user_id', $authUser->id)->first()->pivot->role ?? null;
-    
+
         // Aggiungi il ruolo ai dati del viaggio
         $travelData = $travel->toArray();
         $travelData['auth_user_role'] = $role;
-    
+
         // Restituisci i dettagli del viaggio come risposta JSON
         return response()->json($travelData);
     }
@@ -146,7 +146,19 @@ class TravelController extends Controller
      */
     public function update(UpdateTravelRequest $request, Travel $travel)
     {
-        //
+        // Verifica che l'utente autenticato sia il creatore del viaggio
+        $authUser = Auth::user();
+        $role = $travel->users()->where('user_id', $authUser->id)->first()->pivot->role ?? null;
+
+        if ($role !== 'creator_travel') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Aggiorna i dettagli del viaggio
+        $travel->update($request->validated());
+
+        // Restituisci i dettagli aggiornati del viaggio
+        return response()->json($travel);
     }
 
     /**
@@ -154,22 +166,40 @@ class TravelController extends Controller
      */
     public function destroy(Travel $travel)
     {
-        //
+        // Verifica che l'utente autenticato sia il creatore del viaggio
+        $authUser = Auth::user();
+        $user = $travel->users()->where('user_id', $authUser->id)->first();
+        
+        if ($user) {
+            $role = $user->pivot->role;
+        } else {
+            $role = null;
+        }
+    
+        if ($role !== 'creator_travel') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+    
+        // Elimina il viaggio
+        $travel->delete();
+    
+        // Restituisci una risposta di successo
+        return response()->json(['message' => 'Travel deleted successfully']);
     }
     public function addGuest(Request $request, $travelId)
     {
         // Trova il viaggio specificato
         $travel = Travel::findOrFail($travelId);
-    
+
         // Verifica che l'utente non sia già stato aggiunto come guest
         $userId = Auth::id();
         if ($travel->users()->where('user_id', $userId)->exists()) {
             return response()->json(['message' => 'User is already a guest or creator of this travel'], 400);
         }
-    
+
         // Aggiungi l'utente autenticato come guest con active impostato a false
         $travel->users()->attach($userId, ['role' => 'guest', 'active' => false]);
-    
+
         return response()->json(['message' => 'Request to join travel as guest submitted successfully'], 200);
     }
     public function approveGuest(Request $request, $travelId, $userId)
@@ -177,11 +207,11 @@ class TravelController extends Controller
         // Verifica che l'utente autenticato sia il creatore del viaggio
         $travel = Travel::findOrFail($travelId);
         $creatorId = Auth::id();
-        
+
         if ($travel->users()->where('user_id', $creatorId)->where('role', 'creator_travel')->exists()) {
             // Imposta active su true per l'utente specificato
             $travel->users()->updateExistingPivot($userId, ['active' => true]);
-            
+
             return response()->json(['message' => 'User approved successfully'], 200);
         } else {
             return response()->json(['message' => 'Unauthorized'], 403);
@@ -193,11 +223,11 @@ class TravelController extends Controller
         // Verifica che l'utente autenticato sia il creatore del viaggio
         $travel = Travel::findOrFail($travelId);
         $creatorId = Auth::id();
-        
+
         if ($travel->users()->where('user_id', $creatorId)->where('role', 'creator_travel')->exists()) {
             // Rimuovi l'utente specificato dalla tabella pivot
             $travel->users()->detach($userId);
-            
+
             return response()->json(['message' => 'User rejected successfully'], 200);
         } else {
             return response()->json(['message' => 'Unauthorized'], 403);
