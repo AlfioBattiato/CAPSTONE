@@ -44,16 +44,12 @@ function Infotravel() {
       .catch((error) => {
         console.error("Error fetching travel:", error);
       });
-
-
   }, [id]);
-
   const addGuest = () => {
     // console.log(travel);
 
     // Controlla se l'utente loggato è già nell'array travel.users
     const userExists = travel.users.some((user) => user.email === utenteLoggato && user.pivot.active === 0);
-
     if (!userExists) {
       axios
         .get("/sanctum/csrf-cookie")
