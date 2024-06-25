@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Col, Row } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
@@ -21,7 +21,7 @@ function Infotravel() {
   const [activeParticipants, setActiveParticipants] = useState([])
   // const activeParticipants = travel ? travel.users.filter(user => user.pivot.active === 1).length : 0;
 
-
+const navigate=useNavigate()
 
   useEffect(() => {
     axios
@@ -67,7 +67,20 @@ function Infotravel() {
       console.log("User is already a guest or request already sent.");
     }
   };
-
+  const destroy = () => {
+    axios
+    .get("/sanctum/csrf-cookie")
+    .then(() => {
+      return axios.delete(`/api/travel/${travel.id}`);
+    })
+    .then((response) => {
+      console.log("Travel deleted:", response.data);
+    navigate('/AllTravels/')
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  };
 
 
 
@@ -123,7 +136,7 @@ function Infotravel() {
                 </>
               ) : (
                 <>
-                  <Button variant="danger me-2">Elimina viaggio</Button>
+                  <Button variant="danger me-2" onClick={destroy}>Elimina viaggio</Button>
                   <Button variant="warning">Modifica</Button>
                   <p className="mt-5 fw-bold">Richieste di partecipazione:</p>
 
