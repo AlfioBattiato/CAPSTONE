@@ -164,7 +164,7 @@ const Chat = ({ chat, globalChannel }) => {
     <Card className="d-flex flex-column h-100 bg-light" style={{ color: "#000" }}>
       <Card.Header className="bg-blue text-white fs-2 d-flex align-items-center border-bottom rounded-0">
         <img
-          src={chat.image || otherUser?.profile_img}
+          src={chat.group_chat ? chat.image : otherUser?.profile_img || "default-profile-image-url"}
           alt="Chat"
           className="rounded-circle me-3"
           style={{ width: "40px", height: "40px" }}
