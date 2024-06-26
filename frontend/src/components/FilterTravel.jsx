@@ -70,7 +70,8 @@ export default function FilterTravel({ setTravels }) {
         }
 
         if (startDate) {
-            const formattedDate = format(startDate, 'yyyy-MM-dd');
+            const formattedDate = format(startDate, 'dd/MM/yyyy');
+            // console.log(formattedDate)
             filteredTravels = filteredTravels.filter((travel) => travel.departure_date === formattedDate);
         }
 

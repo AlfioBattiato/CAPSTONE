@@ -77,8 +77,8 @@ class TravelController extends Controller
             'lon' => 'required|numeric',
             'type_moto' => 'required|string|max:255',
             'cc_moto' => 'required|string',
-            'departure_date' => 'required|date',
-            'expiration_date' => 'required|date',
+            'departure_date' => 'required|string',
+            'expiration_date' => 'required|string',
             'days' => 'required|integer',
         ]);
 
@@ -204,31 +204,34 @@ class TravelController extends Controller
     }
     public function approveGuest(Request $request, $travelId, $userId)
     {
-        // Verifica che l'utente autenticato sia il creatore del viaggio
         $travel = Travel::findOrFail($travelId);
-        $creatorId = Auth::id();
+        $creatorId = $travel->users()->wherePivot('role', 'creator_travel')->first()->id;
 
-        if ($travel->users()->where('user_id', $creatorId)->where('role', 'creator_travel')->exists()) {
-            // Imposta active su true per l'utente specificato
-            $travel->users()->updateExistingPivot($userId, ['active' => true]);
-
-            return response()->json(['message' => 'User approved successfully'], 200);
+        if (Auth::id() === $creatorId) {
+            $user = $travel->users()->where('user_id', $userId)->first();
+            if ($user) {
+                $travel->users()->updateExistingPivot($userId, ['active' => 1]);
+                return response()->json(['message' => 'Guest approved successfully', 'user' => $user]);
+            } else {
+                return response()->json(['message' => 'User not found in travel participants'], 404);
+            }
         } else {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
     }
-
     public function rejectGuest(Request $request, $travelId, $userId)
     {
-        // Verifica che l'utente autenticato sia il creatore del viaggio
         $travel = Travel::findOrFail($travelId);
-        $creatorId = Auth::id();
+        $creatorId = $travel->users()->wherePivot('role', 'creator_travel')->first()->id;
 
-        if ($travel->users()->where('user_id', $creatorId)->where('role', 'creator_travel')->exists()) {
-            // Rimuovi l'utente specificato dalla tabella pivot
-            $travel->users()->detach($userId);
-
-            return response()->json(['message' => 'User rejected successfully'], 200);
+        if (Auth::id() === $creatorId) {
+            $user = $travel->users()->where('user_id', $userId)->first();
+            if ($user) {
+                $travel->users()->detach($userId);
+                return response()->json(['message' => 'Guest rejected successfully']);
+            } else {
+                return response()->json(['message' => 'User not found in travel participants'], 404);
+            }
         } else {
             return response()->json(['message' => 'Unauthorized'], 403);
         }

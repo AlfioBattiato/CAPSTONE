@@ -91,6 +91,11 @@ function Homepage() {
       return;
     }
     console.log("Submit called with travel data:", infotravels);
+    const formatDate = (isoDateString) => {
+      const date = new Date(isoDateString);
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      return date.toLocaleDateString('it-IT', options);
+    };
 
     try {
       const body = {
@@ -99,8 +104,8 @@ function Homepage() {
         cc_moto: infotravels.setTravel.cc_moto,
         lat: infotravels.setTravel.start_location.lat,
         lon: infotravels.setTravel.start_location.lon,
-        departure_date: infotravels.setTravel.startDate,
-        expiration_date: infotravels.details.expiration_date,
+        departure_date: formatDate(infotravels.setTravel.startDate),
+        expiration_date: formatDate(infotravels.details.expiration_date),
         days: infotravels.details.days,
       };
 
