@@ -4,8 +4,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
-
+import { MapContainer, TileLayer } from 'react-leaflet';
 import RoutingMachine from '../components/maps/RoutingMachine';
 import { useDispatch, useSelector } from "react-redux";
 
@@ -13,15 +12,14 @@ function Infotravel() {
   const { id } = useParams();
   const [travel, setTravel] = useState(null);
   const [authUserRole, setAuthUserRole] = useState(null);
-  const [position, setPosition] = useState([0, 0])
-  const dispatch = useDispatch()
-  const [key, setKey] = useState(0); // Informazioni per il popup
-  const [disable, setDisable] = useState(false)
-  const utenteLoggato = useSelector((state) => state.auth.user.email)
-  const [activeParticipants, setActiveParticipants] = useState([])
-  // const activeParticipants = travel ? travel.users.filter(user => user.pivot.active === 1).length : 0;
-
-const navigate=useNavigate()
+  const [position, setPosition] = useState([0, 0]);
+  const dispatch = useDispatch();
+  const [key, setKey] = useState(0);
+  const [disable, setDisable] = useState(false);
+  const utenteLoggato = useSelector((state) => state.auth.user.email);
+  const [activeParticipants, setActiveParticipants] = useState([]);
+  const [participantsPending, setParticipantsPending] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -29,26 +27,24 @@ const navigate=useNavigate()
       .then((response) => {
         console.log(response.data);
         setTravel(response.data);
-        setPosition([response.data.lat, response.data.lon])
+        setPosition([response.data.lat, response.data.lon]);
         setAuthUserRole(response.data.auth_user_role);
-        setKey(oldKey => oldKey + 1);
-        setActiveParticipants(response.data.users.filter(user => user.pivot.active === 1))
+        setKey((oldKey) => oldKey + 1);
+        setActiveParticipants(response.data.users.filter(user => user.pivot.active === 1));
+        setParticipantsPending(response.data.users.filter(user => user.pivot.active === 0));
 
-        // questo mi serve per disattivare la richiesta se è stata già inviata
-        response.data.users.map((e) => {
+        response.data.users.forEach((e) => {
           if (e.email === utenteLoggato) {
-            setDisable(true)
+            setDisable(true);
           }
-        })
+        });
       })
       .catch((error) => {
         console.error("Error fetching travel:", error);
       });
-  }, [id]);
-  const addGuest = () => {
-    // console.log(travel);
+  }, [id, utenteLoggato]);
 
-    // Controlla se l'utente loggato è già nell'array travel.users
+  const addGuest = () => {
     const userExists = travel.users.some((user) => user.email === utenteLoggato && user.pivot.active === 0);
     if (!userExists) {
       axios
@@ -58,7 +54,7 @@ const navigate=useNavigate()
         })
         .then((response) => {
           setDisable(true);
-          console.log("Request sended:", response.data);
+          console.log("Request sent:", response.data);
         })
         .catch((err) => {
           console.error(err);
@@ -67,22 +63,53 @@ const navigate=useNavigate()
       console.log("User is already a guest or request already sent.");
     }
   };
+
   const destroy = () => {
     axios
-    .get("/sanctum/csrf-cookie")
-    .then(() => {
-      return axios.delete(`/api/travel/${travel.id}`);
-    })
-    .then((response) => {
-      console.log("Travel deleted:", response.data);
-    navigate('/AllTravels/')
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+      .get("/sanctum/csrf-cookie")
+      .then(() => {
+        return axios.delete(`/api/travel/${travel.id}`);
+      })
+      .then((response) => {
+        console.log("Travel deleted:", response.data);
+        alert('Viaggio eliminato con successo')
+        navigate('/AllTravels/');
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
+  const approveGuest = (user_id) => {
+    axios
+      .get("/sanctum/csrf-cookie")
+      .then(() => {
+        return axios.post(`/api/travels/${travel.id}/approve-guest/${user_id}`);
+      })
+      .then((response) => {
+        console.log("Approved:", response.data);
+        setParticipantsPending((prev) => prev.filter(user => user.id !== user_id));
+        setActiveParticipants((prev) => [...prev, response.data.user]);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
+  const rejectGuest = (user_id) => {
+    axios
+      .get("/sanctum/csrf-cookie")
+      .then(() => {
+        return axios.post(`/api/travels/${travel.id}/reject-guest/${user_id}`);
+      })
+      .then((response) => {
+        console.log("Rejected:", response.data);
+        setParticipantsPending((prev) => prev.filter(user => user.id !== user_id));
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   return (
     <div className="container">
@@ -95,30 +122,25 @@ const navigate=useNavigate()
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
-
-
                 {travel.start_location && travel.lat && travel.lon && (
                   <Marker position={[travel.lat, travel.lon]}>
                     <Popup>Start Location: {travel.start_location.city}</Popup>
                   </Marker>
                 )}
-
                 {travel.metas.map((meta, index) => (
                   <Marker key={index} position={[meta.lat, meta.lon]}>
                     <Popup>Meta: {meta.city}</Popup>
                   </Marker>
                 ))}
-                {
-                  travel.lon && (
-                    <RoutingMachine
-                      lat={travel.lat}
-                      lon={travel.lon}
-                      metas={travel.metas}
-                      key={key}
-                      dispatch={dispatch}
-                    />
-                  )
-                }
+                {travel.lon && (
+                  <RoutingMachine
+                    lat={travel.lat}
+                    lon={travel.lon}
+                    metas={travel.metas}
+                    key={key}
+                    dispatch={dispatch}
+                  />
+                )}
               </MapContainer>
             </Col>
             <Col md={6}>
@@ -128,42 +150,54 @@ const navigate=useNavigate()
               <p>Type of Moto: {travel.type_moto}</p>
               <p>CC of Moto: {travel.cc_moto}</p>
               <p>Days: {travel.days}</p>
-              <p>Partecipanti attuali: {activeParticipants.length}</p>
+              <p>Participanti: {activeParticipants.length}</p>
+
+              {activeParticipants && activeParticipants.length > 0 && (
+                <div className="my-2 gap-2 border rounded p-1 bg-white">
+                  {activeParticipants.map((user, index) => (
+
+                  
+                      <li key={index} className="list-group-item py-2 w-100 gap-2 overflow-hidden border-bottom d-flex align-items-center">
+                        <img src={user.profile_img} alt="Profile" className="img_profile" />
+                        <span>{user.username}</span>
+                        <span>{user.pivot.role === 'creator_travel' ? '(Administrator)' : ' (Participant)'}</span>
+                      </li>
+                   
+                 
+                  ))}
+                </div>
+              )}
+
+              {authUserRole === 'creator_travel' && participantsPending.length > 0 && (
+                <>
+                  <p className="fw-bold mb-0 mt-3">Pending Participation Requests:</p>
+                  {participantsPending.map((user, index) => (
+                    <div key={index} className="d-flex mt-1 align-items-center my-2 gap-2 border rounded p-1">
+                      <li className="list-group-item rounded w-100 gap-2 overflow-hidden d-flex align-items-center">
+                        <img src={user.profile_img} alt="Profile" className="img_profile" />
+                        <span>{user.email}</span>
+                        <span>{user.pivot.role === 'creator_travel' ? '(Administrator)' : ' (Participant)'}</span>
+                        <span className="text-success" onClick={() => approveGuest(user.id)}>Accetta</span>
+                        <span className="text-danger" onClick={() => rejectGuest(user.id)}>Rifiuta</span>
+                      </li>
+                    </div>
+                  ))}
+                </>
+              )}
+
               {authUserRole !== 'creator_travel' ? (
                 <>
-                  <Button disabled={disable} variant="success" onClick={addGuest}>Chiedi all&apos;organizzatore di partecipare</Button>
-                  {disable && (<p className="text-success">Richiesta inviata con successo</p>)}
+                  <Button disabled={disable} variant="success" onClick={addGuest}>Chiedi di partecipare</Button>
+                  {disable && (<p className="text-success">Richiesta inviata!Attendi di essere accettato dall&apos;amministratore del viaggio</p>)}
                 </>
               ) : (
                 <>
                   <Button variant="danger me-2" onClick={destroy}>Elimina viaggio</Button>
-                  <Button variant="warning">Modifica</Button>
-                  <p className="mt-5 fw-bold">Richieste di partecipazione:</p>
-
+                  <Button variant="warning"onClick={()=>navigate(`/updateTravel/${travel.id}`)}>Modifica</Button>
                 </>
               )}
             </Col>
           </Row>
-
-
-
-
-
-
-
-
-
-
-
-
-
-          {authUserRole === 'creator_travel' && (
-            <div>
-              {/* Altre opzioni extra */}
-
-
-            </div>
-          )}
         </>
       ) : (
         <p>Loading travel details...</p>

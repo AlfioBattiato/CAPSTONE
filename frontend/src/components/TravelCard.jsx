@@ -13,13 +13,13 @@ import { Link } from 'react-router-dom';
 export default function TravelCard(props) {
     const getImageSource = (vehicleType) => {
         switch (vehicleType) {
-            case 'race bikes':
+            case 'racebikes':
                 return '/assets/moto2.png';
             case 'motocross':
                 return '/assets/motocross1.png';
             case 'scooter':
                 return '/assets/vespa.png';
-            case 'off road':
+            case 'offroad':
                 return '/assets/motocross1.png';
             case 'harley':
                 return '/assets/harley2.png';

@@ -18,7 +18,7 @@ export default function SetTravelSettings() {
         setStartDate(adjustedDate);
         const updatedTravel = {
             ...travel,
-            startDate: adjustedDate ? adjustedDate.toISOString() : null,
+            departure_date: adjustedDate ? adjustedDate.toISOString() : null,
         };
         dispatch(setCurrentTravel(updatedTravel));
     };
