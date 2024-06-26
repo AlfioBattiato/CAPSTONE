@@ -15,25 +15,22 @@ const Chat = ({ chat, globalChannel }) => {
   const user = useSelector((state) => state.auth.user);
   const openChats = useSelector((state) => state.chats.openChats);
 
-  // Create a channel using Ably
   const { channel: privateChannel } = useChannel(`private-chat.${chat.id}`, (message) => {
     const receivedMessage = message.data;
 
     if (message.name === "message-sent") {
       setMessages((prevMessages) => [...prevMessages, receivedMessage]);
 
-      // Increment unread count if the chat is not open and the message is from another user
-      if (receivedMessage.user_id !== user.id && !openChats.includes(chat.id)) {
+      if (receivedMessage.sender_id !== user.id && !openChats.includes(chat.id)) {
         dispatch(incrementUnreadCount(chat.id));
       }
 
-      // Mark message as read if the chat is open and the message is from another user
-      if (receivedMessage.user_id !== user.id && openChats.includes(chat.id)) {
+      if (receivedMessage.sender_id !== user.id && openChats.includes(chat.id)) {
         axios
           .post("/api/messages/mark-as-read", { messageIds: [receivedMessage.id] })
           .then(() => {
             setMessages((prevMessages) =>
-              prevMessages.map((msg) => (msg.id === receivedMessage.id ? { ...msg, is_unread: false } : msg))
+              prevMessages.map((msg) => (msg.id === receivedMessage.id ? { ...msg, is_read: true } : msg))
             );
             dispatch(resetUnreadCount(chat.id));
           })
@@ -45,15 +42,16 @@ const Chat = ({ chat, globalChannel }) => {
       const deletedMessage = messages.find((msg) => msg.id === receivedMessage.messageId);
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== receivedMessage.messageId));
 
-      // Decrement unread count if the deleted message was unread and from another user
-      if (deletedMessage && deletedMessage.user_id !== user.id && deletedMessage.is_unread) {
+      if (deletedMessage && deletedMessage.sender_id !== user.id && !deletedMessage.is_read) {
         dispatch(decrementUnreadCount(chat.id));
       }
     } else if (message.name === "message-read") {
-      const { messageIds } = receivedMessage;
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) => (messageIds.includes(msg.id) ? { ...msg, is_unread: false } : msg))
-      );
+      const { messageIds, userId } = receivedMessage;
+      if (userId !== user.id) {
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) => (messageIds.includes(msg.id) ? { ...msg, is_read: true } : msg))
+        );
+      }
     }
   });
 
@@ -77,7 +75,10 @@ const Chat = ({ chat, globalChannel }) => {
         setMessages(loadedMessages);
 
         const unreadMessageIds = loadedMessages
-          .filter((message) => message.is_unread && message.user_id !== chat.pivot.user_id)
+          .filter((message) => {
+            const userPivot = message.users.find((u) => u.id === user.id)?.pivot;
+            return userPivot && !userPivot.is_read && !userPivot.sender;
+          })
           .map((message) => message.id);
 
         if (unreadMessageIds.length > 0) {
@@ -86,7 +87,7 @@ const Chat = ({ chat, globalChannel }) => {
             .then(() => {
               setMessages((prevMessages) =>
                 prevMessages.map((message) =>
-                  unreadMessageIds.includes(message.id) ? { ...message, is_unread: false } : message
+                  unreadMessageIds.includes(message.id) ? { ...message, is_read: true } : message
                 )
               );
               dispatch(resetUnreadCount(chat.id));
@@ -99,7 +100,7 @@ const Chat = ({ chat, globalChannel }) => {
       .catch((error) => {
         console.error("Error loading messages:", error);
       });
-  }, [chat, dispatch]);
+  }, [chat, dispatch, user.id]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -115,8 +116,11 @@ const Chat = ({ chat, globalChannel }) => {
         },
       });
 
-      privateChannel.publish("message-sent", response.data);
-      globalChannel.publish("message-sent", { chatId: chat.id, userId: user.id });
+      const messageData = response.data;
+      messageData.users = [{ id: user.id, pivot: { sender: true } }];
+
+      privateChannel.publish("message-sent", messageData);
+      globalChannel.publish("message-sent", { chatId: chat.id, senderId: user.id });
     } catch (error) {
       console.error("Failed to send message:", error);
     }
@@ -130,13 +134,11 @@ const Chat = ({ chat, globalChannel }) => {
         chatId: chat.id,
         messageId,
         userId: message.user_id,
-        wasUnread: message.is_unread,
       });
       globalChannel.publish("message-deleted", {
         chatId: chat.id,
         messageId,
         userId: message.user_id,
-        wasUnread: message.is_unread,
       });
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
     } catch (error) {
@@ -148,9 +150,9 @@ const Chat = ({ chat, globalChannel }) => {
     axios
       .post("/api/messages/mark-as-read", { messageIds: [messageId] })
       .then(() => {
-        privateChannel.publish("message-read", { messageIds: [messageId] });
+        privateChannel.publish("message-read", { messageIds: [messageId], userId: user.id });
         setMessages((prevMessages) =>
-          prevMessages.map((message) => (message.id === messageId ? { ...message, is_unread: false } : message))
+          prevMessages.map((message) => (message.id === messageId ? { ...message, is_read: true } : message))
         );
       })
       .catch((error) => {
@@ -158,7 +160,7 @@ const Chat = ({ chat, globalChannel }) => {
       });
   };
 
-  const otherUser = chat.users?.find((user) => user.id !== chat.pivot.user_id);
+  const otherUser = chat.users?.find((u) => u.id !== user.id);
 
   return (
     <Card className="d-flex flex-column h-100 bg-light" style={{ color: "#000" }}>
@@ -170,27 +172,24 @@ const Chat = ({ chat, globalChannel }) => {
           style={{ width: "40px", height: "40px" }}
         />
         {chat.name ||
-          (chat.group_chat
-            ? "Group Chat"
-            : chat.users && chat.users.length === 1
-            ? chat.users[0].username
-            : chat.users
-            ? chat.users
-                .filter((user) => user.id !== chat.pivot.user_id)
-                .map((user) => (
-                  <Link key={user.id} to={`/profile/${user.id}`} className="text-white">
-                    {user.username}
-                  </Link>
-                ))
-                .reduce((prev, curr) => [prev, ", ", curr])
-            : "Chat with no users")}
+          (chat.group_chat ? (
+            "Group Chat"
+          ) : otherUser ? (
+            <Link to={`/profile/${otherUser.id}`} className="text-white">
+              {otherUser.username}
+            </Link>
+          ) : (
+            "Chat with no users"
+          ))}
       </Card.Header>
-      <MessageList
-        messages={messages}
-        onDelete={handleDeleteMessage}
-        onMarkAsRead={handleMarkAsRead}
-        messagesEndRef={messagesEndRef}
-      />
+      <div className="flex-grow-1 overflow-auto custom-scrollbar">
+        <MessageList
+          messages={messages}
+          onDelete={handleDeleteMessage}
+          onMarkAsRead={handleMarkAsRead}
+          messagesEndRef={messagesEndRef}
+        />
+      </div>
       <Card.Footer className="bg-blue text-white">
         <MessageForm chatId={chat.id} onSendMessage={handleSendMessage} />
       </Card.Footer>

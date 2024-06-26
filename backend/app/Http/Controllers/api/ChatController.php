@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use App\Models\Chat;
-use App\Models\User;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
     public function index()
-{
-    $user = Auth::user();
-    $chats = $user->chats()->with(['users' => function ($query) {
-        $query->withPivot('type');
-    }])->get();
-    return response()->json($chats);
-}
+    {
+        $user = Auth::user();
+        $chats = $user->chats()->with(['users' => function ($query) {
+            $query->withPivot('type');
+        }])->get();
+        return response()->json($chats);
+    }
 
     public function show(Chat $chat)
     {
@@ -25,25 +25,25 @@ class ChatController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'nullable|string|max:255',
-        'active' => 'boolean',
-        'travel_id' => 'nullable|exists:travels,id',
-        'image' => 'nullable|string|max:255',
-    ]);
+    {
+        $request->validate([
+            'name' => 'nullable|string|max:255',
+            'active' => 'boolean',
+            'travel_id' => 'nullable|exists:travels,id',
+            'image' => 'nullable|string|max:255',
+        ]);
 
-    try {
-        // Log::info('Creating chat with data: ', $request->all());
-        $chat = Chat::create($request->all());
-        // Log::info('Chat created successfully: ', $chat->toArray());
+        try {
+            // Log::info('Creating chat with data: ', $request->all());
+            $chat = Chat::create($request->all());
+            // Log::info('Chat created successfully: ', $chat->toArray());
 
-        return response()->json($chat, 201);
-    } catch (\Exception $e) {
-        // Log::error('Error creating chat: ', ['error' => $e->getMessage()]); 
-        return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json($chat, 201);
+        } catch (\Exception $e) {
+            // Log::error('Error creating chat: ', ['error' => $e->getMessage()]); 
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-}
 
     public function update(Request $request, Chat $chat)
     {
@@ -94,5 +94,4 @@ class ChatController extends Controller
         return response()->json(['message' => 'User removed from chat successfully'], 200);
     }
 
-    
 }

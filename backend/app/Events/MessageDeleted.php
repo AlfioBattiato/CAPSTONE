@@ -1,6 +1,5 @@
 <?php
 
-// App\Events\MessageDeleted.php
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
@@ -15,15 +14,11 @@ class MessageDeleted implements ShouldBroadcast
 
     public $chatId;
     public $messageId;
-    public $userId;
-    public $wasUnread;
 
-    public function __construct($chatId, $messageId, $userId, $wasUnread)
+    public function __construct($chatId, $messageId)
     {
         $this->chatId = $chatId;
         $this->messageId = $messageId;
-        $this->userId = $userId;
-        $this->wasUnread = $wasUnread;
     }
 
     public function broadcastOn()
@@ -34,6 +29,14 @@ class MessageDeleted implements ShouldBroadcast
     public function broadcastAs()
     {
         return 'message-deleted';
+    }
+
+    public function broadcastWith()
+    {
+        return [
+            'chatId' => $this->chatId,
+            'messageId' => $this->messageId,
+        ];
     }
 }
 

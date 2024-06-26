@@ -30,16 +30,23 @@ class MessageSent implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        Log::info('MessageSent Event Broadcasting', ['message' => $this->message]);
+        $user = $this->message->users->where('pivot.sender', true)->first();
+        Log::info('MessageSent Event Broadcasting', [
+            'id' => $this->message->id,
+            'chat_id' => $this->message->chat_id,
+            'message' => $this->message->message,
+            'file_url' => $this->message->file_url,
+            'send_at' => $this->message->send_at->toDateTimeString(),
+            'sender_id' => $user->id,
+        ]);
+
         return [
             'id' => $this->message->id,
             'chat_id' => $this->message->chat_id,
-            'user_id' => $this->message->user_id,
             'message' => $this->message->message,
             'file_url' => $this->message->file_url,
-            'is_unread' => $this->message->is_unread,
             'send_at' => $this->message->send_at->toDateTimeString(),
-            'user' => $this->message->user,
+            'sender_id' => $user->id,
         ];
     }
 }

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 const Message = ({ message, onDelete, onMarkAsRead }) => {
   const [isHovered, setIsHovered] = useState(false);
   const user = useSelector((state) => state.auth.user);
-  const isOwnMessage = user.id === message.user_id;
+  const isOwnMessage = message.users && message.users.some((u) => u.pivot.sender && u.id === user.id); // Controlla se l'utente è il mittente
 
   const handleDelete = () => {
     onDelete(message.id);
@@ -44,6 +44,7 @@ const Message = ({ message, onDelete, onMarkAsRead }) => {
           </div>
         )}
         <div className="fs-5">{message.message}</div>
+        {!isOwnMessage && message.is_read && <span className="badge bg-success">Read</span>}
       </div>
     </ListGroup.Item>
   );

@@ -4,7 +4,7 @@ import Message from "./Message";
 
 const MessageList = ({ messages, onDelete, onMarkAsRead, messagesEndRef }) => {
   return (
-    <ListGroup variant="flush" className="flex-grow-1 overflow-auto p-2 custom-scrollbar">
+    <ListGroup className="flex-grow-1 overflow-auto custom-scrollbar">
       {messages.map((message) => (
         <Message key={message.id} message={message} onDelete={onDelete} onMarkAsRead={onMarkAsRead} />
       ))}

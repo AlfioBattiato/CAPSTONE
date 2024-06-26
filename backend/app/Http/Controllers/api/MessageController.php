@@ -8,6 +8,7 @@ use App\Events\MessageRead;
 use App\Events\MessageSent;
 use Illuminate\Http\Request;
 use App\Events\MessageDeleted;
+use App\Events\NotificationsUpdated;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -22,33 +23,43 @@ class MessageController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'chat_id' => 'required|exists:chats,id',
-        'message' => 'nullable|string',
-        'file' => 'nullable|file',
-    ]);
-
-    $message = new Message();
-    $message->chat_id = $request->input('chat_id');
-    $message->user_id = Auth::id();
-    $message->message = $request->input('message');
-
-    if ($request->hasFile('file')) {
-        $file = $request->file('file');
-        $message->file = $file;
+    {
+        $request->validate([
+            'chat_id' => 'required|exists:chats,id',
+            'message' => 'nullable|string',
+            'file' => 'nullable|file',
+        ]);
+    
+        try {
+            $data = $request->all();
+            $data['user_id'] = Auth::id();
+    
+            $message = Message::create($data);
+    
+            if ($request->hasFile('file')) {
+                $message->setFileAttribute($request->file('file'));
+                $message->save();
+            }
+    
+            // Associa il messaggio agli utenti della chat
+            $chat = Chat::find($message->chat_id);
+            $users = $chat->users;
+    
+            foreach ($users as $user) {
+                $message->users()->syncWithoutDetaching([$user->id => [
+                    'is_read' => ($user->id === auth()->id()),
+                    'sender' => ($user->id === auth()->id())
+                ]]);
+            }
+    
+            // Trigger the MessageSent event
+            broadcast(new MessageSent($message))->toOthers();
+    
+            return response()->json($message, 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-
-    $message->is_unread = true;
-    $message->send_at = now();
-    $message->save();
-
-    $message->load('user');
-
-    broadcast(new MessageSent($message))->toOthers();
-
-    return response()->json($message, 201);
-}
 
     public function show(Message $message)
     {
@@ -75,51 +86,54 @@ class MessageController extends Controller
         return response()->json($message);
     }
 
-    // App\Http\Controllers\MessageController.php
-public function destroy(Message $message)
-{
-    $wasUnread = $message->is_unread;
-    $userId = $message->user_id;
-    $chatId = $message->chat_id;
-    $messageId = $message->id;
+    public function destroy(Message $message)
+    {
+        $chatId = $message->chat_id;
+        $messageId = $message->id;
 
-    if ($message->file_path) {
-        Storage::delete($message->file_path);
+        if ($message->file_path) {
+            Storage::delete($message->file_path);
+        }
+
+        $message->delete();
+
+        broadcast(new MessageDeleted($chatId, $messageId))->toOthers();
+
+        return response()->json(null, 204);
     }
-
-    $message->delete();
-
-    broadcast(new MessageDeleted($chatId, $messageId, $userId, $wasUnread))->toOthers();
-
-    return response()->json(null, 204);
-}
-
 
     public function markAsRead(Request $request)
-{
-    $messageIds = $request->input('messageIds', []);
+    {
+        $request->validate([
+            'messageIds' => 'required|array',
+            'messageIds.*' => 'exists:messages,id',
+        ]);
 
-    // Assicurati che solo i destinatari dei messaggi possano contrassegnarli come letti
-    $messages = Message::whereIn('id', $messageIds)->where('user_id', '!=', Auth::id())->get();
+        $user = Auth::user();
+        $messageIds = $request->input('messageIds');
 
-    foreach ($messages as $message) {
-        $message->is_unread = false;
-        $message->save();
+        foreach ($messageIds as $messageId) {
+            $message = Message::find($messageId);
+            $message->users()->updateExistingPivot($user->id, ['is_read' => true]);
+        }
+
+        // Trigger the MessageRead event
+        broadcast(new MessageRead($messageIds, $user->id))->toOthers();
+
+        return response()->json(['message' => 'Messages marked as read']);
     }
 
-    if ($messages->isNotEmpty()) {
-        $chatId = $messages->first()->chat_id;
-        broadcast(new MessageRead($messageIds, $chatId))->toOthers();
-    }
-
-    return response()->json(['message' => 'Messages marked as read']);
-}
-
- 
 
     public function getMessagesByChat(Chat $chat)
     {
-        $messages = $chat->messages()->with('user')->get();
+        $user = Auth::user();
+        $messages = $chat->messages()
+            ->with(['users' => function ($query) use ($user) {
+                $query->where('user_id', $user->id)
+                      ->withPivot('is_read', 'sender');
+            }])
+            ->get();
+
         return response()->json($messages);
     }
 }

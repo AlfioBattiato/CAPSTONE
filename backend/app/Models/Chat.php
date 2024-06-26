@@ -17,7 +17,10 @@ class Chat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'travel_id', 'name', 'active', 'group_chat', 'image',
+        'travel_id', 
+        'name', 
+        'active', 
+        'image',
     ];
 
     /**
@@ -25,7 +28,7 @@ class Chat extends Model
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'lobby')->withPivot('type');
+        return $this->belongsToMany(User::class, 'lobby')->withPivot('type')->withTimestamps();;
     }
 
     /**

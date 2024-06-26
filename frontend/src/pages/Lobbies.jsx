@@ -16,6 +16,7 @@ const Lobbies = () => {
     axios
       .get("/api/chats")
       .then((response) => {
+        console.log("Fetched chats:", response.data);
         dispatch(setChats(response.data));
 
         response.data.forEach((chat) => {
@@ -23,9 +24,15 @@ const Lobbies = () => {
             .get(`/api/chats/${chat.id}/messages`)
             .then((res) => {
               const loadedMessages = res.data;
-              const unreadCount = loadedMessages.filter(
-                (message) => message.is_unread && message.user_id !== user.id
-              ).length;
+              console.log(`Messages for chat ${chat.id}:`, loadedMessages);
+
+              const unreadMessages = loadedMessages.filter((message) => {
+                const userInMessage = message.users.find((u) => u.id === user.id);
+                return userInMessage && !userInMessage.pivot.is_read;
+              });
+
+              const unreadCount = unreadMessages.length;
+              console.log(`Unread count for chat ${chat.id}:`, unreadCount);
 
               if (unreadCount > 0) {
                 dispatch(setUnreadCount(chat.id, unreadCount));
@@ -43,14 +50,24 @@ const Lobbies = () => {
 
   const { channel: globalChannel } = useChannel("global", (message) => {
     if (message.name === "message-sent") {
-      const { chatId, userId } = message.data;
-      if (userId !== user.id) {
+      const { chatId, senderId } = message.data;
+      console.log(`Incrementing unread count for chat ${chatId}`);
+      if (senderId !== user.id) {
         dispatch(incrementUnreadCount(chatId));
       }
     } else if (message.name === "message-deleted") {
-      const { chatId, userId, wasUnread } = message.data;
-      if (wasUnread && userId !== user.id) {
+      const { chatId, userId } = message.data;
+      console.log(`Decrementing unread count for chat ${chatId}`);
+      if (userId !== user.id) {
         dispatch(decrementUnreadCount(chatId));
+      }
+    } else if (message.name === "message-read") {
+      const { messageIds, userId, chatId } = message.data;
+      console.log(`Marking messages as read for chat ${chatId}`);
+      if (userId !== user.id) {
+        messageIds.forEach(() => {
+          dispatch(decrementUnreadCount(chatId));
+        });
       }
     }
   });

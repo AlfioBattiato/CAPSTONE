@@ -9,32 +9,32 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MessageRead implements ShouldBroadcast
+class NotificationsUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $messageIds;
-    public $chatId;
     public $userId;
+    public $chatId;
+    public $unreadCount;
 
-    public function __construct($messageIds, $chatId)
+    public function __construct($userId, $chatId, $unreadCount)
     {
-        $this->messageIds = $messageIds;
+        $this->userId = $userId;
         $this->chatId = $chatId;
-        $this->userId = auth()->id();
+        $this->unreadCount = $unreadCount;
     }
 
     public function broadcastOn()
     {
-        return new PrivateChannel('chat.' . $this->chatId);
+        return new Channel('global');
     }
 
     public function broadcastWith()
-{
-    return [
-        'messageIds' => $this->messageIds,
-        'userId' => $this->userId,
-        'chatId' => $this->chatId,
-    ];
-}
+    {
+        return [
+            'user_id' => $this->userId,
+            'chat_id' => $this->chatId,
+            'unread_count' => $this->unreadCount,
+        ];
+    }
 }

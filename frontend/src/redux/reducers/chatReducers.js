@@ -8,7 +8,6 @@ import {
   DECREMENT_UNREAD_COUNT,
   RESET_UNREAD_COUNT,
   RESET_CHATS,
-  // SET_HAS_UNREAD_MESSAGES,
 } from "../actions";
 
 const initialState = {
@@ -89,12 +88,3 @@ const chatReducer = (state = initialState, action) => {
 };
 
 export default chatReducer;
-
-// case SET_HAS_UNREAD_MESSAGES:
-//   return {
-//     ...state,
-//     hasUnreadMessages: {
-//       ...state.hasUnreadMessages,
-//       [action.payload.chatId]: action.payload.hasUnread,
-//     },
-//   };
