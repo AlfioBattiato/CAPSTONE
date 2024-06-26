@@ -231,7 +231,7 @@ export default function SetCityTravel() {
                         <div key={index} className="d-flex mt-1 align-items-center ps-0 gap-2">
                             <FaMapMarkerAlt className='text-danger' />
                             <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
-                                {meta.city}
+                                {meta.city?meta.city:meta.name_location} 
                                 <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
                                     <FaTrash />
                                 </button>

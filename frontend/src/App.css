@@ -85,7 +85,7 @@ html::-webkit-scrollbar {
   color: white !important;
 }
 
-.travelCard > * {
+.travelCard>* {
   position: relative;
   z-index: 2;
 }
@@ -208,9 +208,10 @@ html::-webkit-scrollbar {
   max-width: 400px;
   max-height: 400px;
 }
+
 @media screen and (max-width: 500px) {
   .navbar-nav {
-    margin-top: 2rem!important;
+    margin-top: 2rem !important;
   }
-  
+
 }

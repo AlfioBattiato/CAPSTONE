@@ -20,19 +20,19 @@ function UpdateTravel() {
   const dispatch = useDispatch();
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
   const travel = useSelector((state) => state.infotravels.setTravel);
   const metas = useSelector((state) => state.infotravels.metas);
+
   const navigate = useNavigate();
   const [authUserRole, setAuthUserRole] = useState(null);
 
   useEffect(() => {
-  
+
     const formDataUpdate = {
       query: 'Punto interattivo',
       metaQuery: ''
     };
-  
+
     axios
       .get(`/api/travel/${id}`)
       .then((response) => {
@@ -48,7 +48,7 @@ function UpdateTravel() {
           startDate: response.data.departure_date,
           cc_moto: response.data.cc_moto,
           type_moto: response.data.type_moto,
-        
+
         };
         const updatedMetas = response.data.metas
 
@@ -126,21 +126,19 @@ function UpdateTravel() {
     <div className="container-fluid">
       <h1>Modifica viaggio</h1>
       <Row className="mt-3 pb-5">
-        <Col md={3} className="border-end">
-
-          <SetTravel />
-          <SetTravelSettings />
+        <Col md={2} className="border-start">
+          <RouteInstructions />
         </Col>
-        <Col md={7}>
+        <Col md={5}>
 
           <Maps />
           {/* <All_interest_places /> */}
           <hr />
           <div className="mt-5 d-flex justify-content-end">
             <Button variant="success" onClick={handleShow}>
-              Crea Viaggio
+              Modifica viaggio
             </Button>
-            {/* <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>Riepilogo</Modal.Title>
               </Modal.Header>
@@ -163,13 +161,13 @@ function UpdateTravel() {
                 </p>
                 <span>Mete:</span>
 
-                {travel.metas.length > 0 ? (
+                {metas.length > 0 ? (
                   <ul className="list-group mt-1">
-                    {travel.metas.map((meta, index) => (
+                    {metas.map((meta, index) => (
                       <div key={index} className="d-flex mt-1 align-items-center ps-0 gap-2">
                         <FaMapMarkerAlt className="text-danger" />
                         <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
-                          {meta.city}
+                          {meta.city ? meta.city : meta.name_location}
                           <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
                             <FaTrash />
                           </button>
@@ -202,15 +200,18 @@ function UpdateTravel() {
                 <Button variant="secondary" onClick={handleClose}>
                   Close
                 </Button>
-                <Button variant="primary" onClick={()=>console.log('o')}>
-                  Completa creazione
+                <Button variant="primary" onClick={() => console.log('o')}>
+                  Modifica
                 </Button>
               </Modal.Footer>
-            </Modal> */}
+            </Modal>
           </div>
         </Col>
-        <Col md={2} className="border-start">
-          <RouteInstructions />
+
+        <Col md={5} className="border-end">
+
+          <SetTravel />
+          <SetTravelSettings />
         </Col>
       </Row>
     </div>

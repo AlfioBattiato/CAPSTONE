@@ -60,35 +60,41 @@ export default function SetTravelSettings() {
                 />
             </div>
             <hr className="my-3" />
-            <p className="mb-1 ps-2 fw-bold">Categorie moto:</p>
-            <div className="d-flex flex-wrap flex-column">
-                <MyRadio
-                    name="motoCategory"
-                    options={[
-                        { id: "scooter", label: "Scooter", value: "scooter" },
-                        { id: "racebikes", label: "Racebikes", value: "racebikes" },
-                        { id: "motocross", label: "Motocross", value: "motocross" },
-                        { id: "offroad", label: "Offroad", value: "offroad" },
-                        { id: "harley", label: "Harley", value: "harley" }
-                    ]}
-                    selectedValue={selectedCategory}
-                    onChange={handleCategoryChange}
-                />
-            </div>
-            <hr className="my-3" />
-            <p className="mb-1 ps-2 fw-bold">Cilindrata:</p>
-            <div className="d-flex flex-column">
-                <MyRadio
-                    name="motoCC"
-                    options={[
-                        { id: "150", label: "150cc", value: "150" },
-                        { id: "300", label: "300cc", value: "300" },
-                        { id: "600", label: "600cc", value: "600" },
-                        { id: "1200", label: "1200cc", value: "1200" }
-                    ]}
-                    selectedValue={selectedCC}
-                    onChange={handleCCChange}
-                />
+            <div className="d-flex justify-content-between">
+                <div>
+                    <p className="mb-1 ps-2 fw-bold">Categorie moto:</p>
+                    <div className="d-flex flex-wrap flex-column">
+                        <MyRadio
+                            name="motoCategory"
+                            options={[
+                                { id: "scooter", label: "Scooter", value: "scooter" },
+                                { id: "racebikes", label: "Racebikes", value: "racebikes" },
+                                { id: "motocross", label: "Motocross", value: "motocross" },
+                                { id: "offroad", label: "Offroad", value: "offroad" },
+                                { id: "harley", label: "Harley", value: "harley" }
+                            ]}
+                            selectedValue={selectedCategory}
+                            onChange={handleCategoryChange}
+                        />
+                    </div>
+                </div>
+                <div>
+                    <p className="mb-1 ps-2 fw-bold">Cilindrata:</p>
+                    <div className="d-flex flex-column">
+                        <MyRadio
+                            name="motoCC"
+                            options={[
+                                { id: "150", label: "150cc", value: "150" },
+                                { id: "300", label: "300cc", value: "300" },
+                                { id: "600", label: "600cc", value: "600" },
+                                { id: "1200", label: "1200cc", value: "1200" }
+                            ]}
+                            selectedValue={selectedCC}
+                            onChange={handleCCChange}
+                        />
+                    </div>
+
+                </div>
             </div>
         </div>
     );
