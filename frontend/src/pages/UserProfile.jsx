@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Row, Col, Spinner, Button, Card, Modal } from "react-bootstrap";
+import { Container, Row, Col, Spinner, Button, Card, Modal, ListGroup, Image } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import Dashboard from "../components/userProfile/Dashboard";
@@ -11,8 +11,14 @@ const UserProfile = () => {
   const loggedInUser = useSelector((state) => state.auth.user);
   const [profileUser, setProfileUser] = useState(null);
   const [travels, setTravels] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
   const [loadingTravels, setLoadingTravels] = useState(true);
+  const [loadingFriends, setLoadingFriends] = useState(true);
+  const [loadingRequests, setLoadingRequests] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showFriendsModal, setShowFriendsModal] = useState(false);
+  const [showRequestsModal, setShowRequestsModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -36,7 +42,31 @@ const UserProfile = () => {
         console.error("Error fetching travels:", error);
         setLoadingTravels(false);
       });
-  }, [id]);
+
+    axios
+      .get(`/api/users/${id}/friends`)
+      .then((response) => {
+        setFriends(response.data);
+        setLoadingFriends(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching friends:", error);
+        setLoadingFriends(false);
+      });
+
+    if (loggedInUser.id === parseInt(id)) {
+      axios
+        .get(`/api/friendships/requests`)
+        .then((response) => {
+          setPendingRequests(response.data);
+          setLoadingRequests(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching friend requests:", error);
+          setLoadingRequests(false);
+        });
+    }
+  }, [id, loggedInUser.id]);
 
   const handleProfileImageUpdate = (updatedUser) => {
     setProfileUser(updatedUser);
@@ -44,7 +74,6 @@ const UserProfile = () => {
 
   const createOrOpenChat = async () => {
     try {
-      // Controlla se una chat esiste già
       const response = await axios.get("/api/chats");
       const existingChat = response.data.find(
         (chat) =>
@@ -54,11 +83,9 @@ const UserProfile = () => {
       );
 
       if (existingChat) {
-        // Se esiste, seleziona quella chat
         dispatch(setSelectedChat(existingChat));
         navigate("/lobbies");
       } else {
-        // Altrimenti, crea una nuova chat
         const newChatResponse = await axios.post("/api/chats", {
           name: null,
           active: true,
@@ -69,19 +96,61 @@ const UserProfile = () => {
         await axios.post(`/api/chats/${newChat.id}/add-user`, { user_id: profileUser.id, type: "private" });
         await axios.post(`/api/chats/${newChat.id}/add-user`, { user_id: loggedInUser.id, type: "private" });
 
-        // Aggiorna la lista delle chat
         const updatedChatsResponse = await axios.get("/api/chats");
         dispatch(setChats(updatedChatsResponse.data));
 
-        // Recupera la nuova chat aggiornata
         const updatedChat = updatedChatsResponse.data.find((chat) => chat.id === newChat.id);
 
-        // Seleziona la nuova chat e naviga
         dispatch(setSelectedChat(updatedChat));
         navigate("/lobbies");
       }
     } catch (error) {
       console.error("Error creating or opening chat:", error);
+    }
+  };
+
+  const sendFriendRequest = async () => {
+    try {
+      await axios.post("/api/friendships/send", { addressee_id: profileUser.id });
+      alert("Richiesta di amicizia inviata!");
+    } catch (error) {
+      console.error("Error sending friend request:", error);
+    }
+  };
+
+  const handleShowFriendsModal = () => {
+    setShowFriendsModal(true);
+  };
+
+  const handleCloseFriendsModal = () => {
+    setShowFriendsModal(false);
+  };
+
+  const handleShowRequestsModal = () => {
+    setShowRequestsModal(true);
+  };
+
+  const handleCloseRequestsModal = () => {
+    setShowRequestsModal(false);
+  };
+
+  const handleAcceptRequest = async (requestId) => {
+    try {
+      await axios.post(`/api/friendships/${requestId}/accept`);
+      setPendingRequests(pendingRequests.filter((request) => request.id !== requestId));
+      alert("Richiesta di amicizia accettata!");
+    } catch (error) {
+      console.error("Error accepting friend request:", error);
+    }
+  };
+
+  const handleDeclineRequest = async (requestId) => {
+    try {
+      await axios.post(`/api/friendships/${requestId}/decline`);
+      setPendingRequests(pendingRequests.filter((request) => request.id !== requestId));
+      alert("Richiesta di amicizia rifiutata!");
+    } catch (error) {
+      console.error("Error declining friend request:", error);
     }
   };
 
@@ -119,8 +188,21 @@ const UserProfile = () => {
             </Button>
           )}
           {!isOwner && (
-            <Button variant="success" onClick={createOrOpenChat}>
-              Inizia Chat
+            <>
+              <Button variant="success" onClick={createOrOpenChat}>
+                Inizia Chat
+              </Button>
+              <Button variant="info" onClick={sendFriendRequest} className="ms-2">
+                Aggiungi Amico
+              </Button>
+            </>
+          )}
+          <Button variant="info" onClick={handleShowFriendsModal} className="ms-2">
+            Mostra Amici
+          </Button>
+          {isOwner && (
+            <Button variant="warning" onClick={handleShowRequestsModal} className="ms-2">
+              Visualizza Richieste
             </Button>
           )}
         </Col>
@@ -189,6 +271,74 @@ const UserProfile = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Chiudi
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showFriendsModal} onHide={handleCloseFriendsModal} centered size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>I miei amici</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {loadingFriends ? (
+            <Spinner animation="border" />
+          ) : friends.length > 0 ? (
+            <ListGroup>
+              {friends.map((friend) => (
+                <ListGroup.Item key={friend.id} action onClick={() => navigate(`/profile/${friend.id}`)}>
+                  <Image
+                    src={friend.profile_img || "path/to/default-profile-image.jpg"}
+                    roundedCircle
+                    style={{ width: "40px", height: "40px", marginRight: "10px" }}
+                  />
+                  <span>{friend.username}</span>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          ) : (
+            <p>Nessun amico trovato.</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseFriendsModal}>
+            Chiudi
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showRequestsModal} onHide={handleCloseRequestsModal} centered size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Richieste di amicizia</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {loadingRequests ? (
+            <Spinner animation="border" />
+          ) : pendingRequests.length > 0 ? (
+            <ListGroup>
+              {pendingRequests.map((request) => (
+                <ListGroup.Item key={request.id}>
+                  <Image
+                    src={request.requester.profile_img || "path/to/default-profile-image.jpg"}
+                    roundedCircle
+                    style={{ width: "40px", height: "40px", marginRight: "10px" }}
+                  />
+                  <span>{request.requester.username}</span>
+                  <Button variant="success" size="sm" className="ms-2" onClick={() => handleAcceptRequest(request.id)}>
+                    Accetta
+                  </Button>
+                  <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDeclineRequest(request.id)}>
+                    Rifiuta
+                  </Button>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          ) : (
+            <p>Nessuna richiesta di amicizia in sospeso.</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseRequestsModal}>
             Chiudi
           </Button>
         </Modal.Footer>

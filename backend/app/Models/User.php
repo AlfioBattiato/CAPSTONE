@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,6 +55,36 @@ class User extends Authenticatable
     public function chats(): BelongsToMany
     {
         return $this->belongsToMany(Chat::class, 'lobby')->withPivot('type');
+    }
+
+    // Relazioni di amicizia
+
+    // Questo metodo restituisce tutti gli utenti che hanno ricevuto una richiesta di amicizia dall'utente corrente e l'hanno accettata.
+    public function friendsOfMine(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'requester_id', 'addressee_id')
+                    ->withPivot('status')
+                    ->wherePivot('status', 'accepted');
+    }
+
+    // Questo metodo restituisce tutti gli utenti che hanno inviato una richiesta di amicizia all'utente corrente e l'hanno accettata.
+    public function friendOf(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'addressee_id', 'requester_id')
+                    ->withPivot('status')
+                    ->wherePivot('status', 'accepted');
+    }
+
+    // Questo metodo combina (merge) i risultati di friendsOfMine e friendOf. 
+    // Restituisce tutti gli amici dell'utente corrente, sia quelli che hanno ricevuto una richiesta dall'utente corrente sia quelli che hanno inviato una richiesta all'utente corrente
+    /**
+     * Ottiene tutti gli amici dell'utente.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function friends(): Collection
+    {
+        return $this->friendsOfMine()->get()->merge($this->friendOf()->get());
     }
 
     protected static function booted()

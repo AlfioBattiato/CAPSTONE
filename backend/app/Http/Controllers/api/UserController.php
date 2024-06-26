@@ -128,22 +128,26 @@ class UserController extends Controller
         return response()->json(null, 204);
     }
 
-    // UserController.php
-
-    public function search(Request $request)
-{
-    
-    $query = $request->input('q');
-    Log::info("Search query: $query");
-    $users = User::where('username', 'LIKE', "%$query%")->get();
-    Log::info("Found users: " . $users->count());
-
-    if ($users->isEmpty()) {
-        return response()->json([], 200);
+    public function getFriends($id)
+    {
+        $user = User::findOrFail($id);
+        $friends = $user->friends();
+        return response()->json($friends);
     }
 
-    return response()->json($users);
-}
+    public function search(Request $request)
+    {
+    
+        $query = $request->input('q');
+        // Log::info("Search query: $query");
+        $users = User::where('username', 'LIKE', "%$query%")->get();
+        // Log::info("Found users: " . $users->count());
 
+        if ($users->isEmpty()) {
+            return response()->json([], 200);
+        }
+
+        return response()->json($users);
+    }
 
 }

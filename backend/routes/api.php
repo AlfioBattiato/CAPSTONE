@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\api\MetaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\api\MetaController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\api\TravelController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\FriendshipController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\api\InterestPlaceController;
@@ -59,6 +60,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/search', [UserController::class, 'search']);
     Route::get('users/{id}/travels', [UserController::class, 'getUserTravels']);
     Route::post('users/{id}/update-profile-image', [UserController::class, 'updateProfileImage']);
+
+    Route::get('users/{id}/friends', [UserController::class, 'getFriends']);
+
+    // Friendship
+Route::post('/friendships/send', [FriendshipController::class, 'sendRequest']);
+Route::post('/friendships/{friendshipId}/accept', [FriendshipController::class, 'acceptRequest']);
+Route::post('/friendships/{friendshipId}/decline', [FriendshipController::class, 'declineRequest']);
+Route::get('/friendships/requests', [FriendshipController::class, 'getPendingRequests']);
 
     // ***************************************CHAT***************************************
 
