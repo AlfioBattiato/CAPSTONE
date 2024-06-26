@@ -77,8 +77,8 @@ class TravelController extends Controller
             'lon' => 'required|numeric',
             'type_moto' => 'required|string|max:255',
             'cc_moto' => 'required|string',
-            'departure_date' => 'required|string',
-            'expiration_date' => 'required|string',
+            'departure_date' => 'required|date',
+            'expiration_date' => 'required|date',
             'days' => 'required|integer',
         ]);
 
@@ -169,20 +169,20 @@ class TravelController extends Controller
         // Verifica che l'utente autenticato sia il creatore del viaggio
         $authUser = Auth::user();
         $user = $travel->users()->where('user_id', $authUser->id)->first();
-        
+
         if ($user) {
             $role = $user->pivot->role;
         } else {
             $role = null;
         }
-    
+
         if ($role !== 'creator_travel') {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-    
+
         // Elimina il viaggio
         $travel->delete();
-    
+
         // Restituisci una risposta di successo
         return response()->json(['message' => 'Travel deleted successfully']);
     }

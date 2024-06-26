@@ -14,26 +14,24 @@ const RouteInstructions = () => {
     return `${hours}h ${minutes}m`;
   };
 
-  const calculateExpirationDate = (startDate, totalTime) => {
-    const startDateTime = new Date(startDate);
+  const calculateExpirationDate = (departure_date, totalTime) => {
+    const startDateTime = new Date(departure_date);
     const totalHours = totalTime / 3600;
-    if (totalHours < 24) {
-      return startDateTime;
-    }
-    const days = Math.floor(totalHours / 24);
-    startDateTime.setDate(startDateTime.getDate() + days);
+    const days = Math.ceil(totalHours / 24);
+    startDateTime.setDate(startDateTime.getDate() + days - 1); // -1 to account for the start day
     return startDateTime;
   };
 
   const calculateDay = () => {
-    if (map_instructions && map_instructions.summary && travel.startDate) {
+    if (map_instructions && map_instructions.summary && travel.departure_date) {
       const totalTime = map_instructions.summary.totalTime;
       const days = Math.ceil(totalTime / (24 * 3600));
-      const expirationDate = calculateExpirationDate(travel.startDate, totalTime);
+      const expirationDate = calculateExpirationDate(travel.departure_date, totalTime);
 
       const updatedTravel = {
+       
         days: days,
-        expiration_date: expirationDate.toISOString().split('T')[0],
+        expiration_date: expirationDate, //.toISOString().split('T')[0] Format as YYYY-MM-DD
       };
 
       // Dispatch the updated travel information
@@ -43,7 +41,7 @@ const RouteInstructions = () => {
 
   useEffect(() => {
     calculateDay();
-  }, [map_instructions, travel.startDate, dispatch]);
+  }, [map_instructions, travel.departure_date, dispatch]);
 
   return (
     <div className="bg-white rounded p-3 shadow">

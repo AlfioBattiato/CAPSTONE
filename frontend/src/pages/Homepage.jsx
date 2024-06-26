@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Button, Col, Row } from "react-bootstrap";
 import SetTravel from "../components/maps/SetCityTravel";
@@ -91,11 +91,11 @@ function Homepage() {
       return;
     }
     console.log("Submit called with travel data:", infotravels);
-    const formatDate = (isoDateString) => {
-      const date = new Date(isoDateString);
-      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-      return date.toLocaleDateString('it-IT', options);
-    };
+    // const formatDate = (isoDateString) => {
+    //   const date = new Date(isoDateString);
+    //   const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    //   return date.toLocaleDateString('it-IT', options);
+    // };
 
     try {
       const body = {
@@ -104,8 +104,8 @@ function Homepage() {
         cc_moto: infotravels.setTravel.cc_moto,
         lat: infotravels.setTravel.start_location.lat,
         lon: infotravels.setTravel.start_location.lon,
-        departure_date: formatDate(infotravels.setTravel.startDate),
-        expiration_date: formatDate(infotravels.details.expiration_date),
+        departure_date: infotravels.setTravel.departure_date,
+        expiration_date: infotravels.details.expiration_date,
         days: infotravels.details.days,
       };
 
@@ -134,7 +134,7 @@ function Homepage() {
       }
     }
   };
-
+ 
   return (
     <div className="container-fluid">
       <Row className="mt-3 pb-5">
@@ -179,8 +179,8 @@ function Homepage() {
                 </p>
                 <p>
                   Data partenza:{" "}
-                  {travel.startDate ? (
-                    <span className="fw-bold">{travel.startDate.split("T")[0].split(":")}</span>
+                  {travel.departure_date ? (
+                    <span className="fw-bold">{travel.departure_date.split("T")[0].split(":")}</span>
                   ) : (
                     <span className="text-danger">Inserisci una data</span>
                   )}

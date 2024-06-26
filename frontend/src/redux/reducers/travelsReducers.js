@@ -17,7 +17,7 @@ const initialState = {
       lat: 0,
       lon: 0,
     },
-    startDate: null,
+    departure_date: null,
     cc_moto: null,
     participants: null,
     type_moto: null,

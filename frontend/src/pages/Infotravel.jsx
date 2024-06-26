@@ -72,6 +72,7 @@ function Infotravel() {
       })
       .then((response) => {
         console.log("Travel deleted:", response.data);
+        alert('Viaggio eliminato con successo')
         navigate('/AllTravels/');
       })
       .catch((err) => {
@@ -152,15 +153,19 @@ function Infotravel() {
               <p>Participanti: {activeParticipants.length}</p>
 
               {activeParticipants && activeParticipants.length > 0 && (
-                activeParticipants.map((user, index) => (
-                  <div key={index} className="d-flex mt-1 align-items-center my-2 gap-2 border rounded p-1">
-                    <li className="list-group-item rounded w-100 gap-2 overflow-hidden d-flex align-items-center">
-                      <img src={user.profile_img} alt="Profile" className="img_profile" />
-                      <span>{user.email}</span>
-                      <span>{user.pivot.role === 'creator_travel' ? '(Administrator)' : ' (Participant)'}</span>
-                    </li>
-                  </div>
-                ))
+                <div className="my-2 gap-2 border rounded p-1 bg-white">
+                  {activeParticipants.map((user, index) => (
+
+                  
+                      <li key={index} className="list-group-item py-2 w-100 gap-2 overflow-hidden border-bottom d-flex align-items-center">
+                        <img src={user.profile_img} alt="Profile" className="img_profile" />
+                        <span>{user.username}</span>
+                        <span>{user.pivot.role === 'creator_travel' ? '(Administrator)' : ' (Participant)'}</span>
+                      </li>
+                   
+                 
+                  ))}
+                </div>
               )}
 
               {authUserRole === 'creator_travel' && participantsPending.length > 0 && (
@@ -188,7 +193,7 @@ function Infotravel() {
               ) : (
                 <>
                   <Button variant="danger me-2" onClick={destroy}>Elimina viaggio</Button>
-                  <Button variant="warning">Modifica</Button>
+                  <Button variant="warning"onClick={()=>navigate(`/updateTravel/${travel.id}`)}>Modifica</Button>
                 </>
               )}
             </Col>

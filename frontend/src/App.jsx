@@ -21,6 +21,7 @@ import { AblyProvider, ChannelProvider } from "ably/react";
 import "react-multi-carousel/lib/styles.css";
 import CreateInterestPlace from "./components/interest_places/CreateInterestPlace";
 import UserProfile from "./pages/UserProfile";
+import UpdateTravel from "./pages/UpdateTravel";
 
 function App() {
   // const user = useSelector((state) => state.user);
@@ -63,6 +64,7 @@ function App() {
               <Route path="/createInterestPlace" element={<CreateInterestPlace />} />
               <Route path="/profile/:id" element={<UserProfile />} />
               <Route path="/infoTravel/:id" element={<Infotravel/>} />
+              <Route path="/updateTravel/:id" element={<UpdateTravel/>} />
 
               <Route
                 path="/lobbies"

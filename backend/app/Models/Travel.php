@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Chat;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -64,5 +65,15 @@ class Travel extends Model
 
     }
 
+    public function setDepartureDateAttribute($value)
+    {
+        $this->attributes['departure_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+    // Mutatore per expiration_date
+    public function setExpirationDateAttribute($value)
+    {
+        $this->attributes['expiration_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
 
 }

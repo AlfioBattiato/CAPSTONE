@@ -1,8 +1,5 @@
 body {
   background-color: #eff3f8 !important;
-  /* background-image: url('https://wallpaper.dog/large/10811796.jpg');
-background-repeat: no-repeat;
-background-size: cover; */
 }
 
 /* Nascondi la barra di scorrimento solo per WebKit */
@@ -15,9 +12,6 @@ html::-webkit-scrollbar {
   /* Per IE e Edge */
 }
 
-.bg-lgrey {
-  /* background-color: #eff3f8 !important; */
-}
 
 .img_profile {
   width: 2rem;
@@ -50,10 +44,6 @@ html::-webkit-scrollbar {
   color: #69359c !important;
 }
 
-/* .my-nav {
-    background-color: black !important;
-} */
-
 .bg-blue {
   background-color: #05203c !important;
 }
@@ -72,8 +62,6 @@ html::-webkit-scrollbar {
 
 .travelCard {
   cursor: pointer;
-  /* position: relative; */
-  /* overflow: hidden; */
   transition: color 0.5s;
 }
 
@@ -219,4 +207,10 @@ html::-webkit-scrollbar {
 .message-attachment audio {
   max-width: 400px;
   max-height: 400px;
+}
+@media screen and (max-width: 500px) {
+  .navbar-nav {
+    margin-top: 2rem!important;
+  }
+  
 }
