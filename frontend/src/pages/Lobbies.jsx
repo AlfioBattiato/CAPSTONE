@@ -56,17 +56,17 @@ const Lobbies = () => {
         dispatch(incrementUnreadCount(chatId));
       }
     } else if (message.name === "message-deleted") {
-      const { chatId, userId } = message.data;
+      const { chatId, wasUnreadByAnyUser } = message.data;
       console.log(`Decrementing unread count for chat ${chatId}`);
-      if (userId !== user.id) {
+      if (wasUnreadByAnyUser) {
         dispatch(decrementUnreadCount(chatId));
       }
     } else if (message.name === "message-read") {
-      const { messageIds, userId, chatId } = message.data;
-      console.log(`Marking messages as read for chat ${chatId}`);
+      const { messageIds, userId } = message.data;
+      console.log(`Marking messages as read for chat ${messageIds}`);
       if (userId !== user.id) {
-        messageIds.forEach(() => {
-          dispatch(decrementUnreadCount(chatId));
+        messageIds.forEach((messageId) => {
+          dispatch(decrementUnreadCount(messageId));
         });
       }
     }

@@ -129,16 +129,18 @@ const Chat = ({ chat, globalChannel }) => {
   const handleDeleteMessage = async (messageId) => {
     try {
       const message = messages.find((msg) => msg.id === messageId);
+      const wasUnreadByAnyUser = !message.users.some((u) => u.pivot.is_read);
+
       await axios.delete(`/api/messages/${messageId}`);
       privateChannel.publish("message-deleted", {
         chatId: chat.id,
         messageId,
-        userId: message.user_id,
+        wasUnreadByAnyUser,
       });
       globalChannel.publish("message-deleted", {
         chatId: chat.id,
         messageId,
-        userId: message.user_id,
+        wasUnreadByAnyUser,
       });
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
     } catch (error) {

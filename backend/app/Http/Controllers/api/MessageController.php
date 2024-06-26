@@ -91,13 +91,15 @@ class MessageController extends Controller
         $chatId = $message->chat_id;
         $messageId = $message->id;
 
+        $wasUnreadByAnyUser = $message->users()->where('is_read', false)->exists();
+
         if ($message->file_path) {
             Storage::delete($message->file_path);
         }
 
         $message->delete();
 
-        broadcast(new MessageDeleted($chatId, $messageId))->toOthers();
+        broadcast(new MessageDeleted($chatId, $messageId, $wasUnreadByAnyUser))->toOthers();
 
         return response()->json(null, 204);
     }
