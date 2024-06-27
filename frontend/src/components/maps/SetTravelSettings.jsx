@@ -80,7 +80,7 @@ export default function SetTravelSettings() {
             </div>
             <hr className="my-3" />
             <Row>
-                <div className="col-12 col-md-6">
+                <div className="col-12 col-xxl-6">
                     <p className="mb-1 ps-2 fw-bold">Categorie moto:</p>
                     <MyRadio
                         name="motoCategory"
@@ -95,7 +95,7 @@ export default function SetTravelSettings() {
                         onChange={handleCategoryChange}
                     />
                 </div>
-                <div className="col-12 col-md-6">
+                <div className="col-12 col-xxl-6">
                     <p className="mb-1 ps-2 fw-bold">Cilindrata:</p>
                     <MyRadio
                         name="motoCC"

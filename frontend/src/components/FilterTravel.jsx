@@ -103,16 +103,16 @@ export default function FilterTravel({ setTravels }) {
     }, [city, startDate, participants, checkboxes, days, alltravel, setTravels, checkboxes2]);
 
     return (
-        <div className="mt-2  p-3 rounded bg-white">
+        <div className="mt-2 p-3 rounded bg-white">
             <input
                 type="text"
                 required
                 name="city"
-                className="form-control rounded-pill"
+                className="form-control rounded-pill mb-2"
                 placeholder="Città di partenza"
                 onChange={(e) => setCity(e.target.value.toUpperCase())}
             />
-            <hr />
+           
             <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
@@ -121,6 +121,7 @@ export default function FilterTravel({ setTravels }) {
                 dateFormat="dd/MM/yyyy"
                 isClearable
                 placeholderText='Data di partenza'
+                
             />
             <hr />
             <Form.Label className="fw-bold">
@@ -202,7 +203,7 @@ export default function FilterTravel({ setTravels }) {
             />
             <p className='mb-0'>Numero partecipanti:</p>
             <div className="fw-bold text-secondary">{participants === 0 ? 'Nessun filtro' : participants}</div>
-            <hr />
+           
             <Form.Label className="mt-3 fw-bold">Giorni in viaggio</Form.Label>
             <Slider
                 min={0}

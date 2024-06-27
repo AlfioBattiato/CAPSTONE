@@ -49,10 +49,12 @@ class Travel extends Model
         static::created(function ($travel) {
             Log::info('Travel created with ID: ' . $travel->id);
 
-            // Associa l'utente creatore al viaggio
-            $creatorUserId = auth()->user()->id;
-            $travel->users()->syncWithoutDetaching([$creatorUserId => ['role' => 'creator_travel', 'active' => true]]);
-            Log::info('Users associated with travel: ' . json_encode([$creatorUserId]));
+            // Controlla se c'è un utente autenticato
+            if (auth()->check()) {
+                $creatorUserId = auth()->user()->id;
+                $travel->users()->syncWithoutDetaching([$creatorUserId => ['role' => 'creator_travel', 'active' => true]]);
+                Log::info('Users associated with travel: ' . json_encode([$creatorUserId]));
+            }
 
             // Crea la chat per il viaggio
             $chat = Chat::create([

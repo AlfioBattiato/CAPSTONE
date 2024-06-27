@@ -19,8 +19,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             // InterestPlaceSeeder::class,
-            // TravelSeeder::class,
-            // MetaSeeder::class,
+            TravelSeeder::class,
+            MetaSeeder::class,
             ChatSeeder::class,
         ]);
         

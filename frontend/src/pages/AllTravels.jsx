@@ -10,7 +10,7 @@ function AllTravels() {
     const [travels, setTravels] = useState([]);
     const [activeTravels, setActiveTravels] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const travelsPerPage = 10; // Numero di viaggi per pagina
+    const travelsPerPage = 8; // Numero di viaggi per pagina
     const [totalPages, setTotalPages] = useState(0);
 
     // Funzione per gestire il cambio di pagina
@@ -43,7 +43,7 @@ function AllTravels() {
                     <p className="text-dark">Pagina {currentPage} di {totalPages}</p>
                     <Row className='gy-4 '>
                         {activeTravels && activeTravels.length > 0 ? (
-                            activeTravels.reverse().map((travel, index) => (
+                            activeTravels.map((travel, index) => (
                                 <TravelCard key={index} travel={travel} />
                             ))
                         ) : (

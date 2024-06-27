@@ -7,7 +7,7 @@
     backdrop-filter: blur(10px); /* Blur effect */
     -webkit-backdrop-filter: blur(10px);
     position: relative;
-    padding: 1.8rem;
+    padding: 1rem;
     border: 2px solid #c3c6ce;
     transition: 0.5s ease-out;
 
