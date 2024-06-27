@@ -288,8 +288,9 @@ html::-webkit-scrollbar {
   display: inline-block;
   width: 30px;
   height: 30px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background: rgb(255, 135, 65);
   background: linear-gradient(145deg, rgba(255, 135, 65, 1) 15%, rgba(255, 65, 65, 1) 65%);
-  box-shadow: 0 10px 30px rgba(65, 72, 86, 0.05);
   color: white;
   text-align: center;
   line-height: 1.85rem;
