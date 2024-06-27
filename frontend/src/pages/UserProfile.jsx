@@ -77,24 +77,19 @@ const UserProfile = () => {
       const response = await axios.get("/api/chats");
       const existingChat = response.data.find(
         (chat) =>
+          chat.type === "private" &&
           chat.users.some((user) => user.id === profileUser.id) &&
-          chat.users.some((user) => user.id === loggedInUser.id) &&
-          chat.users.some((user) => user.pivot && user.pivot.type === "private")
+          chat.users.some((user) => user.id === loggedInUser.id)
       );
 
       if (existingChat) {
         dispatch(setSelectedChat(existingChat));
         navigate("/lobbies");
       } else {
-        const newChatResponse = await axios.post("/api/chats", {
-          name: null,
-          active: true,
-          travel_id: null,
-          image: null,
+        const newChatResponse = await axios.post("/api/chats/private", {
+          user_id: profileUser.id,
         });
         const newChat = newChatResponse.data;
-        await axios.post(`/api/chats/${newChat.id}/add-user`, { user_id: profileUser.id, type: "private" });
-        await axios.post(`/api/chats/${newChat.id}/add-user`, { user_id: loggedInUser.id, type: "private" });
 
         const updatedChatsResponse = await axios.get("/api/chats");
         dispatch(setChats(updatedChatsResponse.data));

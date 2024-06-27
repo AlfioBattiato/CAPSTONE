@@ -13,9 +13,7 @@ class ChatController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $chats = $user->chats()->with(['users' => function ($query) {
-            $query->withPivot('type');
-        }])->get();
+        $chats = $user->chats()->with('users')->get();
         return response()->json($chats);
     }
 
@@ -31,18 +29,71 @@ class ChatController extends Controller
             'active' => 'boolean',
             'travel_id' => 'nullable|exists:travels,id',
             'image' => 'nullable|string|max:255',
+            'type' => 'required|in:private,group,travel',
         ]);
 
         try {
-            // Log::info('Creating chat with data: ', $request->all());
             $chat = Chat::create($request->all());
-            // Log::info('Chat created successfully: ', $chat->toArray());
-
             return response()->json($chat, 201);
         } catch (\Exception $e) {
-            // Log::error('Error creating chat: ', ['error' => $e->getMessage()]); 
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function createPrivateChat(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $loggedInUserId = Auth::id();
+        $otherUserId = $request->user_id;
+
+        // Controlla se esiste già una chat privata tra i due utenti
+        $existingChat = Chat::whereHas('users', function($query) use ($loggedInUserId) {
+                $query->where('users.id', $loggedInUserId);
+            })
+            ->whereHas('users', function($query) use ($otherUserId) {
+                $query->where('users.id', $otherUserId);
+            })
+            ->where('type', 'private')
+            ->first();
+
+        if ($existingChat) {
+            return response()->json($existingChat);
+        }
+
+        // Crea una nuova chat privata
+        $chat = Chat::create([
+            'name' => null,
+            'active' => true,
+            'type' => 'private',
+        ]);
+
+        // Aggiungi gli utenti alla chat
+        $chat->users()->attach([$loggedInUserId, $otherUserId]);
+
+        return response()->json($chat, 201);
+    }
+
+    public function createGroupChat(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id',
+        ]);
+
+        $chat = Chat::create([
+            'name' => $request->name,
+            'active' => true,
+            'type' => 'group',
+        ]);
+
+        // Aggiungi gli utenti alla chat
+        $chat->users()->attach($request->user_ids);
+
+        return response()->json($chat, 201);
     }
 
     public function update(Request $request, Chat $chat)
@@ -55,8 +106,6 @@ class ChatController extends Controller
         ]);
 
         $chat->update($request->all());
-        $chat->updateGroupChatStatus();
-
         return response()->json($chat);
     }
 
@@ -72,7 +121,6 @@ class ChatController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'type' => 'required|string|in:private,group',
         ]);
 
         $user = User::findOrFail($request->input('user_id'));
@@ -89,9 +137,7 @@ class ChatController extends Controller
 
         $user = User::findOrFail($request->input('user_id'));
         $chat->users()->detach($user);
-        $chat->updateGroupChatStatus();
 
         return response()->json(['message' => 'User removed from chat successfully'], 200);
     }
-
 }

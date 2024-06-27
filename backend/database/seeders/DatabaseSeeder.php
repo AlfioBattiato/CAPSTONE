@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         foreach ($travels as $travel) {
             $randomUsers = $users->random(rand(1, $users->count()));
             $userIds = $randomUsers->pluck('id')->toArray();
-            $travel->users()->syncWithoutDetaching($userIds);
+            $travel->users()->sync($userIds);
 
             if ($travel->chat) {
                 $travel->chat->addUsersFromTravel($travel);

@@ -30,8 +30,6 @@ Route::name('api.v1.')
         // Route::get('/users/{id}', [RegisteredUserController::class, 'show'])->name('users.show')->middleware(['auth:sanctum']);
     });
 
-
-
 // Route::get('/travel', [TravelController::class, 'index'])->name('travel.index');
 
 Route::group(['middleware' => ['guest']], function () {
@@ -64,10 +62,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/{id}/friends', [UserController::class, 'getFriends']);
 
     // Friendship
-Route::post('/friendships/send', [FriendshipController::class, 'sendRequest']);
-Route::post('/friendships/{friendshipId}/accept', [FriendshipController::class, 'acceptRequest']);
-Route::post('/friendships/{friendshipId}/decline', [FriendshipController::class, 'declineRequest']);
-Route::get('/friendships/requests', [FriendshipController::class, 'getPendingRequests']);
+    Route::post('/friendships/send', [FriendshipController::class, 'sendRequest']);
+    Route::post('/friendships/{friendshipId}/accept', [FriendshipController::class, 'acceptRequest']);
+    Route::post('/friendships/{friendshipId}/decline', [FriendshipController::class, 'declineRequest']);
+    Route::get('/friendships/requests', [FriendshipController::class, 'getPendingRequests']);
 
     // ***************************************CHAT***************************************
 
@@ -75,6 +73,8 @@ Route::get('/friendships/requests', [FriendshipController::class, 'getPendingReq
     Route::get('chats', [ChatController::class, 'index']);
     Route::get('chats/{chat}', [ChatController::class, 'show']);
     Route::post('chats', [ChatController::class, 'store']);
+    Route::post('chats/private', [ChatController::class, 'createPrivateChat']);
+    Route::post('chats/group', [ChatController::class, 'createGroupChat']);
     Route::put('chats/{chat}', [ChatController::class, 'update']);
     Route::delete('chats/{chat}', [ChatController::class, 'destroy']);
 
@@ -92,7 +92,6 @@ Route::get('/friendships/requests', [FriendshipController::class, 'getPendingReq
     Route::post('messages/mark-as-read', [MessageController::class, 'markAsRead']);
     Route::put('messages/{message}', [MessageController::class, 'update']);
     Route::delete('messages/{message}', [MessageController::class, 'destroy']);
-
 
     // Routes for InterestPlaceController
     Route::get('interest-places', [InterestPlaceController::class, 'index']);
@@ -119,6 +118,7 @@ Route::get('/friendships/requests', [FriendshipController::class, 'getPendingReq
     Route::put('meta/{meta}', [MetaController::class, 'update']);
     Route::delete('meta/{meta}', [MetaController::class, 'destroy']);
 });
+
 // funzioni per il map 
 Route::get('/proxy/nominatim', function (Request $request) {
     $query = $request->input('q');

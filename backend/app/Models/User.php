@@ -54,7 +54,7 @@ class User extends Authenticatable
     // Relazione molti-a-molti con Chat
     public function chats(): BelongsToMany
     {
-        return $this->belongsToMany(Chat::class, 'lobby')->withPivot('type');
+        return $this->belongsToMany(Chat::class, 'lobby');
     }
 
     // Relazioni di amicizia

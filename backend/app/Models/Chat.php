@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\User;
-use App\Models\Travel;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Chat extends Model
@@ -21,19 +18,14 @@ class Chat extends Model
         'name', 
         'active', 
         'image',
+        'type',
     ];
 
-    /**
-     * Get the users that belong to the chat.
-     */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'lobby')->withPivot('type')->withTimestamps();;
+        return $this->belongsToMany(User::class, 'lobby');
     }
 
-    /**
-     * Get the messages for the chat.
-     */
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
@@ -47,13 +39,15 @@ class Chat extends Model
     public function addUsersFromTravel(Travel $travel)
     {
         $users = $travel->users()->pluck('users.id')->toArray();
-        // Log::info('Users being added to chat: ', $users);
-        $this->users()->syncWithoutDetaching($users);
+        Log::info('Users being added to chat: ', $users);
+        try {
+            $this->users()->syncWithoutDetaching($users);
+            Log::info('Users successfully added to chat.');
+        } catch (\Exception $e) {
+            Log::error('Error adding users to chat: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Boot the model.
-     */
     protected static function booted()
     {
         static::creating(function ($chat) {
@@ -66,7 +60,7 @@ class Chat extends Model
             if ($chat->travel_id) {
                 $travel = Travel::find($chat->travel_id);
                 if ($travel) {
-                    $chat->users()->attach($travel->users->pluck('id')->toArray(), ['type' => 'group']);
+                    $chat->addUsersFromTravel($travel);
                 }
             }
         });
@@ -82,6 +76,4 @@ class Chat extends Model
             $chat->messages()->delete();
         });
     }
-
 }
-

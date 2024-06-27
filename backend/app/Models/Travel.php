@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Chat;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
@@ -25,12 +24,14 @@ class Travel extends Model
         'expiration_date',
         'days',
     ];
+
     protected $attributes = [
         'active' => true,
     ];
+
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'travel_user')->withPivot('role','active');
+        return $this->belongsToMany(User::class, 'travel_user')->withPivot('role', 'active');
     }
 
     public function metas(): HasMany
@@ -46,23 +47,44 @@ class Travel extends Model
     protected static function booted()
     {
         static::created(function ($travel) {
+            Log::info('Travel created with ID: ' . $travel->id);
+
+            // Associa l'utente creatore al viaggio
+            $creatorUserId = auth()->user()->id;
+            $travel->users()->syncWithoutDetaching([$creatorUserId => ['role' => 'creator_travel', 'active' => true]]);
+            Log::info('Users associated with travel: ' . json_encode([$creatorUserId]));
+
+            // Crea la chat per il viaggio
             $chat = Chat::create([
                 'name' => 'Chat for travel ' . $travel->id,
                 'travel_id' => $travel->id,
                 'active' => true,
+                'type' => 'travel',
             ]);
 
-            $chat->addUsersFromTravel($travel);
+            if ($chat) {
+                Log::info('Chat created for travel with ID: ' . $travel->id);
+                $chat->addUsersFromTravel($travel);
+                Log::info('Chat users after adding from travel: ' . json_encode($chat->users->pluck('id')->toArray()));
+            } else {
+                Log::error('Failed to create chat for travel with ID: ' . $travel->id);
+            }
         });
 
         static::updated(function ($travel) {
             if ($travel->isDirty('users')) {
-                $chat = $travel->chat()->first();
-                $chat->addUsersFromTravel($travel);
+                try {
+                    $chat = $travel->chat()->first();
+                    if ($chat) {
+                        Log::info('Updating users in chat for travel with ID: ' . $travel->id);
+                        $chat->addUsersFromTravel($travel);
+                        Log::info('Chat users after updating: ' . json_encode($chat->users->pluck('id')->toArray()));
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Exception while updating users in chat for travel with ID: ' . $travel->id . ' - ' . $e->getMessage());
+                }
             }
         });
-
-
     }
 
     public function setDepartureDateAttribute($value)
@@ -70,10 +92,8 @@ class Travel extends Model
         $this->attributes['departure_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 
-    // Mutatore per expiration_date
     public function setExpirationDateAttribute($value)
     {
         $this->attributes['expiration_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
-
 }

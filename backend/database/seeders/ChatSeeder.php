@@ -20,10 +20,10 @@ class ChatSeeder extends Seeder
         if ($user1 && $user2 && $user3) {
             $groupChat = Chat::create([
                 'name' => 'Group Chat',
-                'image' => 'http://localhost:8000/storage/profiles/group-of-people.svg',
                 'active' => true,
+                'type' => 'group',
             ]);
-            $groupChat->users()->attach([$user1->id, $user2->id, $user3->id], ['type' => 'group']);
+            $groupChat->users()->attach([$user1->id, $user2->id, $user3->id]);
         } else {
             $this->command->error('Gli utenti non sono stati trovati. Assicurati di eseguire UserSeeder prima di ChatSeeder.');
         }

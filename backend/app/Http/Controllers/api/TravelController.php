@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Models\Travel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreTravelRequest;
@@ -70,46 +71,49 @@ class TravelController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'start_location' => 'required|string|max:255',
-            'lat' => 'required|numeric',
-            'lon' => 'required|numeric',
-            'type_moto' => 'required|string|max:255',
-            'cc_moto' => 'required|string',
-            'departure_date' => 'required|date',
-            'expiration_date' => 'required|date',
-            'days' => 'required|integer',
-        ]);
+{
+    $request->validate([
+        'start_location' => 'required|string|max:255',
+        'lat' => 'required|numeric',
+        'lon' => 'required|numeric',
+        'type_moto' => 'required|string|max:255',
+        'cc_moto' => 'required|string',
+        'departure_date' => 'required|date',
+        'expiration_date' => 'required|date',
+        'days' => 'required|integer',
+    ]);
 
-        $data = $request->only([
-            'start_location',
-            'lat',
-            'lon',
-            'type_moto',
-            'cc_moto',
-            'departure_date',
-            'expiration_date',
-            'days',
-        ]);
+    $data = $request->only([
+        'start_location',
+        'lat',
+        'lon',
+        'type_moto',
+        'cc_moto',
+        'departure_date',
+        'expiration_date',
+        'days',
+    ]);
 
-        $travel = Travel::create($data);
+    $travel = Travel::create($data);
 
-        // Aggiungi l'utente creatore con il ruolo corretto
-        $travel->users()->attach(auth()->user()->id, ['role' => 'creator_travel', 'active' => true]);
+    // Aggiungi l'utente creatore con il ruolo corretto
+    $travel->users()->syncWithoutDetaching([auth()->user()->id => ['role' => 'creator_travel', 'active' => true]]);
 
-        // Aggiungi altri utenti con ruolo guest se specificati nel request
-        if ($request->has('selected_users')) {
-            $selectedUsers = $request->input('selected_users');
-            foreach ($selectedUsers as $userId) {
-                $travel->users()->attach($userId, ['role' => 'guest', 'active' => true]);
-            }
+    // Aggiungi altri utenti con ruolo guest se specificati nel request
+    if ($request->has('selected_users')) {
+        $selectedUsers = $request->input('selected_users');
+        foreach ($selectedUsers as $userId) {
+            $travel->users()->syncWithoutDetaching([$userId => ['role' => 'guest', 'active' => true]]);
         }
-
-        $travel->load('users'); // Assicurati di caricare correttamente la relazione
-
-        return response()->json($travel, 201);
     }
+
+    $travel->load('users'); // Assicurati di caricare correttamente la relazione
+
+    return response()->json($travel, 201);
+}
+
+
+
 
     /**
      * Display the specified resource.
@@ -203,22 +207,37 @@ class TravelController extends Controller
         return response()->json(['message' => 'Request to join travel as guest submitted successfully'], 200);
     }
     public function approveGuest(Request $request, $travelId, $userId)
-    {
-        $travel = Travel::findOrFail($travelId);
-        $creatorId = $travel->users()->wherePivot('role', 'creator_travel')->first()->id;
+{
+    $travel = Travel::findOrFail($travelId);
+    $creatorId = $travel->users()->wherePivot('role', 'creator_travel')->first()->id;
 
-        if (Auth::id() === $creatorId) {
-            $user = $travel->users()->where('user_id', $userId)->first();
-            if ($user) {
-                $travel->users()->updateExistingPivot($userId, ['active' => 1]);
-                return response()->json(['message' => 'Guest approved successfully', 'user' => $user]);
+    if (Auth::id() === $creatorId) {
+        $user = $travel->users()->where('user_id', $userId)->first();
+        if ($user) {
+            $travel->users()->updateExistingPivot($userId, ['active' => 1]);
+
+            // Aggiungi l'utente alla chat del viaggio
+            $chat = $travel->chat;
+            if ($chat) {
+                try {
+                    $chat->users()->syncWithoutDetaching([$userId]);
+                    Log::info("User $userId successfully added to chat for travel $travelId.");
+                } catch (\Exception $e) {
+                    Log::error("Failed to add user $userId to chat for travel $travelId: " . $e->getMessage());
+                }
             } else {
-                return response()->json(['message' => 'User not found in travel participants'], 404);
+                Log::error("Chat not found for travel $travelId.");
             }
+
+            return response()->json(['message' => 'Guest approved successfully', 'user' => $user]);
         } else {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return response()->json(['message' => 'User not found in travel participants'], 404);
         }
+    } else {
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
+}
+
     public function rejectGuest(Request $request, $travelId, $userId)
     {
         $travel = Travel::findOrFail($travelId);

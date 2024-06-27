@@ -7,12 +7,17 @@ const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
       {Array.isArray(chats) && chats.length > 0 ? (
         chats.map((chat) => {
           const otherUsers = chat.users.filter((user) => user.id !== chat.pivot.user_id);
-          const chatName = chat.name || (otherUsers.length === 1 ? otherUsers[0].username : "Chat with no users");
-          const chatImage = chat.group_chat
-            ? chat.image
-            : otherUsers.length === 1
-            ? otherUsers[0].profile_img
-            : chat.image;
+          let chatName = chat.name || "Chat with no users";
+          let chatImage = chat.image || "default-group-image-url";
+
+          if (chat.type === "private" && otherUsers.length === 1) {
+            chatName = otherUsers[0].username;
+            chatImage = otherUsers[0].profile_img;
+          } else if (chat.type === "group") {
+            chatName = chat.name || "Group Chat";
+          } else if (chat.type === "travel") {
+            chatName = `Travel Chat: ${chat.travel ? chat.travel.name : "Unnamed Travel"}`;
+          }
 
           return (
             <ListGroup.Item
@@ -43,11 +48,7 @@ const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
               }}
             >
               <div className="d-flex align-items-center">
-                <Image
-                  src={chatImage || "default-group-image-url"}
-                  roundedCircle
-                  style={{ width: "40px", height: "40px", marginRight: "10px" }}
-                />
+                <Image src={chatImage} roundedCircle style={{ width: "40px", height: "40px", marginRight: "10px" }} />
                 <div>
                   {chatName}
                   {unreadCounts[chat.id] > 0 && (

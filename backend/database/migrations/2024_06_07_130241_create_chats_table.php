@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('image')->nullable();
             $table->boolean('active')->default(true);
+            $table->enum('type', ['private', 'group', 'travel'])->default('private');
             $table->timestamps();
         });
     }
