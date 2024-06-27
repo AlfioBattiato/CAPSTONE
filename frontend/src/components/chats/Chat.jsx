@@ -192,7 +192,7 @@ const Chat = ({ chat, globalChannel }) => {
           messagesEndRef={messagesEndRef}
         />
       </div>
-      <Card.Footer className="bg-blue text-white">
+      <Card.Footer className="bg-blue text-white mt-2">
         <MessageForm chatId={chat.id} onSendMessage={handleSendMessage} />
       </Card.Footer>
     </Card>

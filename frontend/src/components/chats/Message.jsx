@@ -24,13 +24,15 @@ const Message = ({ message, onDelete }) => {
 
   return (
     <ListGroup.Item
-      className={`message-item px-5 py-4 d-flex bg-light border-0 ${
+      className={`message-item px-5 py-2 d-flex bg-light border-0 ${
         isOwnMessage ? "justify-content-end" : "justify-content-start"
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={`message-content d-inline-block px-4 py-3 rounded-4 ${isOwnMessage ? "own-message" : ""}`}>
+      <div
+        className={`message-content d-inline-block ps-3 pe-5 pb-3 pt-2 rounded-4 ${isOwnMessage ? "own-message" : ""}`}
+      >
         <div className="message-header">
           <strong className="message-username">{senderName}</strong>
           {isOwnMessage && isHovered && (
