@@ -154,10 +154,49 @@ class TravelController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        // Aggiorna i dettagli del viaggio
-        $travel->update($request->validated());
+        $request->validate([
+            'start_location' => 'required|string|max:255',
+            'lat' => 'required|numeric',
+            'lon' => 'required|numeric',
+            'type_moto' => 'required|string|max:255',
+            'cc_moto' => 'required|string',
+            'departure_date' => 'required|date',
+            'expiration_date' => 'required|date',
+            'days' => 'required|integer',
+        ]);
 
-        // Restituisci i dettagli aggiornati del viaggio
+        if ($request->has('start_location')) {
+            $travel->start_location = $request->input('start_location');
+        }
+
+        if ($request->has('lat')) {
+            $travel->lat = $request->input('lat');
+        }
+
+        if ($request->has('lon')) {
+            $travel->lon = $request->input('lon');
+        }
+
+        if ($request->has('type_moto')) {
+            $travel->type_moto = $request->input('type_moto');
+        }
+
+        if ($request->has('cc_moto')) {
+            $travel->cc_moto = $request->input('cc_moto');
+        }
+
+        if ($request->has('departure_date')) {
+            $travel->departure_date = $request->input('departure_date');
+        }
+        if ($request->has('expiration_date')) {
+            $travel->expiration_date = $request->input('expiration_date');
+        }
+        if ($request->has('days')) {
+            $travel->days = $request->input('days');
+        }
+
+        $travel->save();
+
         return response()->json($travel);
     }
 

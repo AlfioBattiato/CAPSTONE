@@ -99,7 +99,7 @@ function UpdateTravel() {
       //   await axios.put(`/api/meta/${meta.id}`, metaBody);
       // }
 
-      // navigate(`/infoTravel/${travelResponse.data.id}`);
+      navigate(`/infoTravel/${travelResponse.data.id}`);
     } catch (error) {
       console.error("There was an error!", error);
     }
