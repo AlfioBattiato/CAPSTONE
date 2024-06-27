@@ -85,9 +85,9 @@ function UpdateTravel() {
         days: infotravels.details.days,
       };
 
-      const travelResponse = await axios.put(`/api/travel/${id}`, body);
+      const travelResponse = await axios.put(`/api/travel/${id}`, body);//fetch modfica viaggio effettivo
       console.log("Travel update successfully:", travelResponse);
-      await axios.delete(`/api/travel/${id}/metas/`);
+      await axios.delete(`/api/travel/${id}/metas/`);//elimina tutte le mete che aveva salvato nel viaggio iniziale
 
       for (const meta of infotravels.metas) {
         const metaBody = {
@@ -96,7 +96,7 @@ function UpdateTravel() {
           lat: meta.lat,
           lon: meta.lon,
         };
-        await axios.post("/api/meta", metaBody);
+        await axios.post("/api/meta", metaBody);//creazione nuova di tutte le mete
       }
 
       navigate(`/infoTravel/${travelResponse.data.id}`);

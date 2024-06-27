@@ -58,7 +58,7 @@ const RouteInstructions = () => {
           <p className="fw-bold">Autostrade:</p>
           <p>{map_instructions.name}</p>
           <hr />
-          <ListGroup style={{ maxHeight: "23rem", overflowY: "auto" }}>
+          <ListGroup style={{ maxHeight: "19.2rem", overflowY: "auto" }}>
             <p className="fw-bold">Percorso:</p>
             {map_instructions.instructions.map((instruction, index) => (
               <ListGroup.Item key={index} className="bg-dark text-white">

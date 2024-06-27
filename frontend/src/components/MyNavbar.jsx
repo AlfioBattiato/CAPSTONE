@@ -102,8 +102,8 @@ function MyNavbar() {
                   >
                     <FormControl
                       type="search"
-                      placeholder="Search users"
-                      className="me-2"
+                      placeholder="Cerca utenti"
+                      className="me-2 rounded-pill"
                       value={searchQuery}
                       onChange={handleSearchChange}
                     />
