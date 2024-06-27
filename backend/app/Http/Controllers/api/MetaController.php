@@ -6,6 +6,7 @@ use App\Models\Meta;
 use App\Models\Travel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreMetaRequest;
 use App\Http\Requests\UpdateMetaRequest;
 
@@ -68,8 +69,32 @@ class MetaController extends Controller
      */
     public function update(UpdateMetaRequest $request, Meta $meta)
     {
-        $meta->update($request->validated());
-        return response()->json($meta, 200);
+        $request->validate([
+            'travel_id' => 'required|exists:travel,id',
+            'name_location' => 'required|string|max:255',
+            'lat' => 'required|numeric',
+            'lon' => 'required|numeric',
+        ]);
+
+           if ($request->has('travel_id')) {
+            $meta->travel_id = $request->input('travel_id');
+        }
+
+        if ($request->has('name_location')) {
+            $meta->name_location = $request->input('name_location');
+        }
+        if ($request->has('lat')) {
+            $meta->lat = $request->input('lat');
+        }
+
+        if ($request->has('lon')) {
+            $meta->lon = $request->input('lon');
+        }
+
+
+        $meta->save();
+
+        return response()->json($meta);
     }
 
     /**
@@ -81,4 +106,21 @@ class MetaController extends Controller
 
         return response()->json(null, 204);
     }
+    public function destroyAllByTravel(Travel $travel)
+    {
+        // Verifica che l'utente autenticato sia il creatore del viaggio
+        $authUser = Auth::user();
+        $role = $travel->users()->where('user_id', $authUser->id)->first()->pivot->role ?? null;
+
+        if ($role !== 'creator_travel') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Elimina tutte le mete associate al viaggio
+        Meta::where('travel_id', $travel->id)->delete();
+
+        return response()->json(['message' => 'All metas associated with the travel have been deleted'], 204);
+    }
 }
+
+

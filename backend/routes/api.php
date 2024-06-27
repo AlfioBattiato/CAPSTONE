@@ -118,6 +118,7 @@ Route::get('/friendships/requests', [FriendshipController::class, 'getPendingReq
     Route::get('meta/{meta}', [MetaController::class, 'show']);
     Route::put('meta/{id}', [MetaController::class, 'update']);
     Route::delete('meta/{meta}', [MetaController::class, 'destroy']);
+    Route::delete('travel/{travel}/metas', [MetaController::class, 'destroyAllByTravel']);
 });
 // funzioni per il map 
 Route::get('/proxy/nominatim', function (Request $request) {

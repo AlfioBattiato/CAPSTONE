@@ -81,23 +81,23 @@ function UpdateTravel() {
         lat: infotravels.setTravel.start_location.lat,
         lon: infotravels.setTravel.start_location.lon,
         departure_date: infotravels.setTravel.departure_date,
-        expiration_date:infotravels.details.expiration_date,
+        expiration_date: infotravels.details.expiration_date,
         days: infotravels.details.days,
       };
 
       const travelResponse = await axios.put(`/api/travel/${id}`, body);
       console.log("Travel update successfully:", travelResponse);
+      await axios.delete(`/api/travel/${id}/metas/`);
 
-      // for (const meta of infotravels.metas) {
-      //   const metaBody = {
-      //     travel_id:id,
-      //     name_location: meta.city?meta.city:meta.name_location,
-      //     lat: meta.lat,
-      //     lon: meta.lon,
-      //   };
-      //   console.log("Sending meta data to backend:", metaBody);
-      //   await axios.put(`/api/meta/${meta.id}`, metaBody);
-      // }
+      for (const meta of infotravels.metas) {
+        const metaBody = {
+          travel_id: id,
+          name_location: meta.city ? meta.city : meta.name_location,
+          lat: meta.lat,
+          lon: meta.lon,
+        };
+        await axios.post("/api/meta", metaBody);
+      }
 
       navigate(`/infoTravel/${travelResponse.data.id}`);
     } catch (error) {
