@@ -44,7 +44,7 @@ const RouteInstructions = () => {
   }, [map_instructions, travel.departure_date, dispatch]);
 
   return (
-    <div className="bg-white rounded p-3 shadow">
+    <div className="bg-white rounded p-3 shadow" style={{height:'39rem',overflow:'hidden'}}>
       {map_instructions && map_instructions.instructions ? (
         <React.Fragment>
           <p className="fw-bold">Istruzioni</p>
@@ -58,7 +58,7 @@ const RouteInstructions = () => {
           <p className="fw-bold">Autostrade:</p>
           <p>{map_instructions.name}</p>
           <hr />
-          <ListGroup style={{ maxHeight: "19.2rem", overflowY: "auto" }}>
+          <ListGroup style={{ maxHeight: "17.2rem", overflowY: "auto", }}>
             <p className="fw-bold">Percorso:</p>
             {map_instructions.instructions.map((instruction, index) => (
               <ListGroup.Item key={index} className="bg-dark text-white">

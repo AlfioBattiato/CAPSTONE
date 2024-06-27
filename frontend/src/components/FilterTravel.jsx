@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Switch from 'react-switch';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,7 +9,7 @@ import axios from 'axios';
 import { setActionTravels } from '../redux/actions';
 import { format } from 'date-fns';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-
+import './css/switch.css'
 
 // Hook per gestire i checkbox
 function useCheckboxes(initialState) {
@@ -33,7 +32,6 @@ export default function FilterTravel({ setTravels }) {
     useEffect(() => {
         axios('/api/v1/travels')
             .then((res) => {
-                // console.log('filter',res.data)
                 dispatch(setActionTravels(res.data));
                 setTravels(res.data);
             })
@@ -71,7 +69,6 @@ export default function FilterTravel({ setTravels }) {
 
         if (startDate) {
             const formattedDate = format(startDate, 'dd/MM/yyyy');
-            // console.log(formattedDate)
             filteredTravels = filteredTravels.filter((travel) => travel.departure_date === formattedDate);
         }
 
@@ -106,7 +103,7 @@ export default function FilterTravel({ setTravels }) {
     }, [city, startDate, participants, checkboxes, days, alltravel, setTravels, checkboxes2]);
 
     return (
-        <div className="mt-2">
+        <div className="mt-2  p-3 rounded bg-white">
             <input
                 type="text"
                 required
@@ -143,21 +140,16 @@ export default function FilterTravel({ setTravels }) {
                 const label =
                     key === 'racebikes' ? 'Race Bikes' : key === 'offroad' ? 'Off Road' : key.charAt(0).toUpperCase() + key.slice(1);
                 return (
-                    <div className="form-check ps-0" key={key}>
-
-                        <Switch
-                            checked={checkboxes[key]}
-                            onChange={(checked) => handleCheckboxChange(key, checked)}
-                            onColor="#86d3ff"
-                            onHandleColor="#2693e6"
-                            handleDiameter={22}
-                            uncheckedIcon={false}
-                            checkedIcon={false}
-                            height={18}
-                            width={40}
-                            className="react-switch"
-                            id={key}
-                        />
+                    <div className="form-check ps-0 checkbox-wrapper-5" key={key}>
+                        <div className="check">
+                            <input
+                                type="checkbox"
+                                id={key}
+                                checked={checkboxes[key]}
+                                onChange={(e) => handleCheckboxChange(key, e.target.checked)}
+                            />
+                            <label htmlFor={key}></label>
+                        </div>
                         <label className="form-check-label ms-2" htmlFor={key}>
                             {label}
                         </label>
@@ -182,20 +174,16 @@ export default function FilterTravel({ setTravels }) {
                 const label =
                     key === 'racebikes' ? 'Race Bikes' : key === 'offroad' ? 'Off Road' : key.charAt(0).toUpperCase() + key.slice(1);
                 return (
-                    <div className="form-check ps-0" key={key}>
-                        <Switch
-                            checked={checkboxes2[key]}
-                            onChange={(checked) => handleCheckboxChange2(key, checked)}
-                            onColor="#86d3ff"
-                            onHandleColor="#2693e6"
-                            handleDiameter={22}
-                            uncheckedIcon={false}
-                            checkedIcon={false}
-                            height={18}
-                            width={40}
-                            className="react-switch"
-                            id={key}
-                        />
+                    <div className="form-check ps-0 checkbox-wrapper-5" key={key}>
+                        <div className="check">
+                            <input
+                                type="checkbox"
+                                id={key}
+                                checked={checkboxes2[key]}
+                                onChange={(e) => handleCheckboxChange2(key, e.target.checked)}
+                            />
+                            <label htmlFor={key}></label>
+                        </div>
                         <label className="form-check-label ms-2" htmlFor={key}>
                             {label}
                         </label>
