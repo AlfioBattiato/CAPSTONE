@@ -27,71 +27,56 @@ export default function TravelCard(props) {
                 return '/assets/moto.png';
         }
     };
+    const formatDate = (timestamp) => {
+        const date = new Date(timestamp);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    };
     return (
-        <Card className='bg-white text-dark mb-2 shadow-sm travelCard ' style={{ width: "" }}>
-            <Card.Body>
-                {props.travel && (
-                    <>
-                        <Row >
-                            <Col xs={12}>
-                                <Row >
-                                    <Col md={8}>
-                                        <span className='text-secondary fs-12 fw-semi-bold'>Partenza:</span>
-                                        <h5 className=' ms-2 '>{props.travel.start_location.toUpperCase()}</h5>
-                                        <div className='d-flex justify-content-center align-items-center h-50'>
-                                            {/* <p className='m-0'>Data partenza</p> */}
-                                            <BsCalendarDate className='me-1 text-warning' />
-                                            <p className='fs-12 fw-bold me-2 mb-0'>
-                                                {props.travel.departure_date}
-                                            </p>
+        <Col  md={4} lg={3}>
+            <Card className='bg-white text-dark mb-2 shadow-sm travelCard ' style={{ width: "" }}>
+                <Card.Body>
+                    {props.travel && (
+                        <>
+                            <img src={getImageSource(props.travel.type_moto)} alt="mototype" className='img-fluid d-block' style={{ width: "48px", height: '48px', objectFit: "contain" }} />
+                            <h3 className=' ms-2 '>{props.travel.start_location.toUpperCase()}</h3>
+                            <div className='d-flex flex-wrap gap-2'>
+                                <BsCalendarDate className='me-1 text-warning' />
+                                <p className='fs-12 fw-bold me-2 mb-0'>
+                                    {formatDate(props.travel.departure_date)}
+                                </p>
+                            </div>
+
+                            <div className="d-flex flex-wrap mt-2 gap-2">
+                                <Badge bg="dark" text="white">
+                                    {props.travel.type_moto}
+                                </Badge>
+                                <Badge bg="dark" text="white">
+                                    Cc: {props.travel.cc_moto}
+                                </Badge>
+                            </div>
+
+                            <p className='m-0 fs-12 text-secondary'>Partecipanti attuali:</p>
+                            <BsFillPeopleFill className='me-2 text-success' />
+                            <Badge bg="light" text="dark">
+
+                                {props.travel.users.length}
+                            </Badge>
 
 
-                                            <span className='line'></span>
-                                            <PiMotorcycleFill className='ms-2' />
-                                            <BsCalendarDate className='ms-3 text-success' />
-                                            <h6 className='fw-bold fs-12 ms-1 mb-0'>
-                                                {props.travel.expiration_date}
-                                            </h6>
-                                        </div>
 
 
-                                    </Col>
-                                    <Col md={4}>
-                                        <img src={getImageSource(props.travel.type_moto)} alt="mototype" className='img-fluid d-block' style={{ width: "48px", height: '48px', objectFit: "contain" }} />
-
-                                        <span className='me-1 fs-12'>Tipologia moto:</span>
-                                        <Badge bg="light" text="dark">
-                                            {props.travel.type_moto}
-                                        </Badge>
-                                        <hr />
-                                        <span className='me-1 fs-12'>MIN Cilindrata</span>
-                                        <Badge bg="light" text="dark">
-                                            {props.travel.cc_moto}
-                                        </Badge>
-
-                                    </Col>
-                                    <hr className='my-1' />
-                                    <Col xs={6}>
-                                        <p className='m-0 fs-12 text-secondary'>Partecipanti attuali:</p>
-                                        <BsFillPeopleFill className='me-2 text-success' />
-                                        <Badge bg="light" text="dark">
-
-                                            {props.travel.users.length}
-                                        </Badge>
-                                    </Col>
-                                    <Col xs={6} className='d-flex justify-content-center  align-items-center'>
-                                        <Link to={`/infoTravel/${props.travel.id}`} className="nav-link fs-6">
-                                            <Button className='btn-blue-dark fw-bold border-0 ms-auto' >Vedi viaggio <FaArrowRight /></Button>
-                                        </Link>
-
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </>
-                )}
+                            <Link to={`/infoTravel/${props.travel.id}`} className="nav-link fs-6">
+                                    <Button className='btn-blue-dark fw-bold border-0 ms-auto' >Vedi viaggio <FaArrowRight /></Button>
+                                </Link>
+                       
+                </>
+                    )}
 
             </Card.Body>
         </Card>
+        </Col >
     )
 }

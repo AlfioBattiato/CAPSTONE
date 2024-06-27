@@ -57,7 +57,7 @@ export default function Maps() {
     }
 
     return (
-        <div>
+        <div className='shadow'>
             <MapContainer center={position} zoom={10} style={{ height: '39rem', width: '100%', borderRadius: '25px' }}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

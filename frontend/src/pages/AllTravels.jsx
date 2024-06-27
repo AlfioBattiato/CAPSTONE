@@ -23,7 +23,7 @@ function AllTravels() {
         const startIndex = (currentPage - 1) * travelsPerPage;
         const endIndex = startIndex + travelsPerPage;
         setActiveTravels(travels.slice(startIndex, endIndex));
-        
+
     }, [travels, currentPage]);
 
     // Effetto per calcolare il numero totale di pagine
@@ -33,22 +33,26 @@ function AllTravels() {
     }, [travels]);
 
     return (
-        <div className="container">
+        <div className="container-fluid">
             <Row>
                 <Col md={3} className="border-end">
                     <h5 className="mt-2">Filtri di ricerca</h5>
-                   <FilterTravel setTravels={setTravels} />
+                    <FilterTravel setTravels={setTravels} />
                 </Col>
-                <Col md={6}>
+                <Col md={7}>
                     <h5 className="my-2 pb-2">Viaggi programmati da altri utenti</h5>
                     <p className="text-primary">Pagina {currentPage} di {totalPages}</p>
-                    {activeTravels && activeTravels.length > 0 ? (
-                        activeTravels.map((travel, index) => (
-                            <TravelCard key={index} travel={travel} />
-                        ))
-                    ) : (
-                        <p>No match found</p>
-                    )}
+                    <Row>
+
+
+                        {activeTravels && activeTravels.length > 0 ? (
+                            activeTravels.map((travel, index) => (
+                                <TravelCard key={index} travel={travel} />
+                            ))
+                        ) : (
+                            <p>No match found</p>
+                        )}
+                    </Row>
                     <Pagination className="justify-content-center mt-4">
                         <Pagination.First onClick={() => handlePageChange(1)} />
                         <Pagination.Prev onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : 1)} />
@@ -65,7 +69,7 @@ function AllTravels() {
                         <Pagination.Last onClick={() => handlePageChange(totalPages)} />
                     </Pagination>
                 </Col>
-                <Col md={3} className="border-start">
+                <Col md={2} className="border-start">
                     <h5 className="mt-2">I nostri partner</h5>
                     <Sponsor />
                 </Col>
