@@ -84,7 +84,7 @@ html::-webkit-scrollbar {
   color: white !important;
 }
 
-.travelCard > * {
+.travelCard>* {
   position: relative;
   z-index: 2;
 }

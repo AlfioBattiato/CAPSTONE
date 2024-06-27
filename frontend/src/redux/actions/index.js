@@ -27,6 +27,7 @@ export const SET_FORMDATA = "SET_FORMDATA";
 export const SET_INTERESTPLACES = "SET_INTERESTPLACES";
 export const SET_METAS = "SET_METAS";
 export const SET_EXPIRATION = "SET_EXPIRATION";
+export const SET_ALL = "SET_ALL";
 
 // chat////////
 
@@ -143,5 +144,9 @@ export const setMetas = (meta) => ({
 });
 export const setExpiration = (obj) => ({
   type: SET_EXPIRATION,
+  payload: obj,
+});
+export const setAllreduxTravel = (obj) => ({
+  type: SET_ALL,
   payload: obj,
 });

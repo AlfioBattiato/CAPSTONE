@@ -23,7 +23,7 @@ class UpdateMetaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'travel_id' => 'required|integer|exists:travels,id',
+            'travel_id' => 'required|integer|exists:travel,id',
             'name_location' => 'required|string|max:255',
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',

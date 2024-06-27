@@ -11,7 +11,7 @@ import All_interest_places from "../components/interest_places/All_interest_plac
 import Meteo from "../components/meteo";
 import Modal from "react-bootstrap/Modal";
 import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
-import { removeMeta } from "../redux/actions";
+import { removeMeta, setAllreduxTravel } from "../redux/actions";
 import { LOGIN } from "../redux/actions";
 
 function Homepage() {
@@ -26,24 +26,9 @@ function Homepage() {
   const navigate = useNavigate();
 
   const [weatherData, setWeatherData] = useState([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    axios.get("/sanctum/csrf-cookie").then(() => {
-      axios
-        .get("/api/user")
-        .then((res) => {
-          console.log("User authenticated:", res.data);
-          dispatch({
-            type: LOGIN,
-            payload: res.data,
-          });
-          setIsAuthenticated(true);
-        })
-        .catch((err) => {
-          console.error("Authentication error:", err);
-        });
-    });
+    dispatch(setAllreduxTravel())
   }, [dispatch]);
 
   useEffect(() => {
@@ -86,10 +71,6 @@ function Homepage() {
 
   const submit = async (ev) => {
     ev.preventDefault();
-    if (!isAuthenticated) {
-      console.error("User is not authenticated");
-      return;
-    }
     console.log("Submit called with travel data:", infotravels);
     // const formatDate = (isoDateString) => {
     //   const date = new Date(isoDateString);
@@ -109,9 +90,9 @@ function Homepage() {
         days: infotravels.details.days,
       };
 
-      console.log("Sending travel data to backend:", body);
+      // console.log("Sending travel data to backend:", body);
       const travelResponse = await axios.post("/api/travel", body);
-      console.log("Travel created successfully:", travelResponse.data);
+      // console.log("Travel created successfully:", travelResponse.data);
 
       for (const meta of infotravels.metas) {
         const metaBody = {
@@ -120,7 +101,7 @@ function Homepage() {
           lat: meta.lat,
           lon: meta.lon,
         };
-        console.log("Sending meta data to backend:", metaBody);
+        // console.log("Sending meta data to backend:", metaBody);
         await axios.post("/api/meta", metaBody);
       }
 

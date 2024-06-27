@@ -115,8 +115,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('meta', [MetaController::class, 'index']);
     Route::post('meta', [MetaController::class, 'store']);
     Route::get('meta/{meta}', [MetaController::class, 'show']);
-    Route::put('meta/{meta}', [MetaController::class, 'update']);
+    Route::put('meta/{id}', [MetaController::class, 'update']);
     Route::delete('meta/{meta}', [MetaController::class, 'destroy']);
+    Route::delete('travel/{travel}/metas', [MetaController::class, 'destroyAllByTravel']);
 });
 
 // funzioni per il map 
