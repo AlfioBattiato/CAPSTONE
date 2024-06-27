@@ -21,22 +21,22 @@ function UpdateTravel() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const travel = useSelector((state) => state.infotravels.setTravel);
+  const infotravels = useSelector((state) => state.infotravels);
   const metas = useSelector((state) => state.infotravels.metas);
+
 
   const navigate = useNavigate();
   const [authUserRole, setAuthUserRole] = useState(null);
 
   useEffect(() => {
-
-    const formDataUpdate = {
-      query: 'Punto interattivo',
-      metaQuery: ''
-    };
-
     axios
       .get(`/api/travel/${id}`)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
+        const formDataUpdate = {
+          query: response.data.start_location,
+          metaQuery: ''
+        };
 
         const updatedTravel = {
           ...travel,
@@ -45,7 +45,7 @@ function UpdateTravel() {
             lat: response.data.lat,
             lon: response.data.lon,
           },
-          startDate: response.data.departure_date,
+          departure_date: response.data.departure_date,
           cc_moto: response.data.cc_moto,
           type_moto: response.data.type_moto,
 
@@ -71,73 +71,54 @@ function UpdateTravel() {
 
 
 
-  // const submit = async (ev) => {
-  //   ev.preventDefault();
-  //   if (!isAuthenticated) {
-  //     console.error("User is not authenticated");
-  //     return;
-  //   }
-  //   console.log("Submit called with travel data:", infotravels);
-  //   const formatDate = (isoDateString) => {
-  //     const date = new Date(isoDateString);
-  //     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-  //     return date.toLocaleDateString('it-IT', options);
-  //   };
+  const submit = async (ev) => {
+    ev.preventDefault()
+    try {
+      const body = {
+        start_location: infotravels.setTravel.start_location.city,
+        type_moto: infotravels.setTravel.type_moto,
+        cc_moto: infotravels.setTravel.cc_moto,
+        lat: infotravels.setTravel.start_location.lat,
+        lon: infotravels.setTravel.start_location.lon,
+        departure_date: infotravels.setTravel.departure_date,
+        expiration_date:infotravels.details.expiration_date,
+        days: infotravels.details.days,
+      };
 
-  //   try {
-  //     const body = {
-  //       start_location: infotravels.setTravel.start_location.city,
-  //       type_moto: infotravels.setTravel.type_moto,
-  //       cc_moto: infotravels.setTravel.cc_moto,
-  //       lat: infotravels.setTravel.start_location.lat,
-  //       lon: infotravels.setTravel.start_location.lon,
-  //       departure_date: formatDate(infotravels.setTravel.startDate),
-  //       expiration_date: formatDate(infotravels.details.expiration_date),
-  //       days: infotravels.details.days,
-  //     };
+      const travelResponse = await axios.put(`/api/travel/${id}`, body);
+      console.log("Travel update successfully:", travelResponse);
 
-  //     console.log("Sending travel data to backend:", body);
-  //     const travelResponse = await axios.post("/api/travel", body);
-  //     console.log("Travel created successfully:", travelResponse.data);
+      // for (const meta of infotravels.metas) {
+      //   const metaBody = {
+      //     travel_id:id,
+      //     name_location: meta.city?meta.city:meta.name_location,
+      //     lat: meta.lat,
+      //     lon: meta.lon,
+      //   };
+      //   console.log("Sending meta data to backend:", metaBody);
+      //   await axios.put(`/api/meta/${meta.id}`, metaBody);
+      // }
 
-  //     for (const meta of infotravels.metas) {
-  //       const metaBody = {
-  //         travel_id: travelResponse.data.id,
-  //         name_location: meta.city,
-  //         lat: meta.lat,
-  //         lon: meta.lon,
-  //       };
-  //       console.log("Sending meta data to backend:", metaBody);
-  //       await axios.post("/api/meta", metaBody);
-  //     }
-
-  //     navigate("/AllTravels/");
-  //   } catch (error) {
-  //     console.error("There was an error!", error);
-  //     if (error.response) {
-  //       console.error("Error response data:", error.response.data);
-  //       console.error("Error response status:", error.response.status);
-  //       console.error("Error response headers:", error.response.headers);
-  //     }
-  //   }
-  // };
+      // navigate(`/infoTravel/${travelResponse.data.id}`);
+    } catch (error) {
+      console.error("There was an error!", error);
+    }
+  };
 
   return (
     <div className="container-fluid">
-      <h1>Modifica viaggio</h1>
+      <h1 className="my-4">Modifica viaggio</h1>
       <Row className="mt-3 pb-5">
-        <Col md={2} className="border-start">
+        <Col lg={2} className="border-start">
           <RouteInstructions />
         </Col>
-        <Col md={5}>
+        <Col lg={5}>
 
           <Maps />
           {/* <All_interest_places /> */}
           <hr />
           <div className="mt-5 d-flex justify-content-end">
-            <Button variant="success" onClick={handleShow}>
-              Modifica viaggio
-            </Button>
+
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>Riepilogo</Modal.Title>
@@ -153,8 +134,8 @@ function UpdateTravel() {
                 </p>
                 <p>
                   Data partenza:{" "}
-                  {travel.startDate ? (
-                    <span className="fw-bold">{travel.startDate.split("T")[0].split(":")}</span>
+                  {travel.departure_date ? (
+                    <span className="fw-bold">{travel.departure_date}</span>
                   ) : (
                     <span className="text-danger">Inserisci una data</span>
                   )}
@@ -200,7 +181,7 @@ function UpdateTravel() {
                 <Button variant="secondary" onClick={handleClose}>
                   Close
                 </Button>
-                <Button variant="primary" onClick={() => console.log('o')}>
+                <Button variant="primary" onClick={submit}>
                   Modifica
                 </Button>
               </Modal.Footer>
@@ -208,10 +189,15 @@ function UpdateTravel() {
           </div>
         </Col>
 
-        <Col md={5} className="border-end">
+        <Col lg={5} className="border-end">
 
           <SetTravel />
           <SetTravelSettings />
+          <div className="mt-5 d-flex justify-content-start">
+            <Button variant="success" onClick={handleShow}>
+              Modifica viaggio
+            </Button>
+          </div>
         </Col>
       </Row>
     </div>

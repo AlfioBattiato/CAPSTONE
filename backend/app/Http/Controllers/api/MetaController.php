@@ -68,20 +68,7 @@ class MetaController extends Controller
      */
     public function update(UpdateMetaRequest $request, Meta $meta)
     {
-        $request->validate([
-            'travel_id' => 'required|integer|exists:travel,id',
-            'name_location' => 'required|string|max:255',
-            'lat' => 'required|numeric',
-            'lon' => 'required|numeric',
-        ]);
-
-        $meta->update($request->only([
-            'travel_id',
-            'name_location',
-            'lat',
-            'lon',
-        ]));
-
+        $meta->update($request->validated());
         return response()->json($meta, 200);
     }
 

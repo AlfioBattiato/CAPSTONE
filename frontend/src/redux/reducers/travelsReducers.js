@@ -1,5 +1,6 @@
 import {
   REMOVE_META,
+  SET_ALL,
   SET_ALLTRAVELS,
   SET_EXPIRATION,
   SET_FORMDATA,
@@ -77,6 +78,33 @@ const travelsReducer = (state = initialState, action) => {
       return {
         ...state,
         details: action.payload,
+      };
+    case SET_ALL:
+      return {
+        alltravels: [],
+        setTravel: {
+          start_location: {
+            city: "",
+            lat: 0,
+            lon: 0,
+          },
+          departure_date: null,
+          cc_moto: null,
+          participants: null,
+          type_moto: null,
+          inputDisable: false,
+        },
+        map_instructions: [],
+        formData: {
+          query: "",
+          metaQuery: "",
+        },
+        interestPlaces: [],
+        metas: [],
+        details: {
+          days: null,
+          expiration_date: null,
+        },
       };
     default:
       return state;
