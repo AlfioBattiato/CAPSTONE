@@ -12,7 +12,6 @@ html::-webkit-scrollbar {
   /* Per IE e Edge */
 }
 
-
 .img_profile {
   width: 2rem;
   height: 2rem;
@@ -161,10 +160,10 @@ html::-webkit-scrollbar {
 }
 
 /* MESSAGE */
-
 .message-item {
   border: none;
   background: transparent;
+  position: relative; /* Aggiunto per il posizionamento relativo delle date */
 }
 
 .message-content {
@@ -174,9 +173,10 @@ html::-webkit-scrollbar {
   box-shadow: inset 5px 5px 13px #d5d5d5, inset -5px -5px 13px #f8f9fa;
 }
 
-.message-content.own-message {
-  /* box-shadow: 5px 5px 10px #d38f8f, -5px -5px 10px #f9f6f6; */
+/* .message-content.own-message {
+  * box-shadow: 5px 5px 10px #d38f8f, -5px -5px 10px #f9f6f6; *
 }
+*/
 
 .message-header {
   display: flex;
@@ -187,6 +187,13 @@ html::-webkit-scrollbar {
 .message-username {
   font-weight: bold;
   padding-right: 10px;
+}
+
+.message-time {
+  font-size: 0.8rem;
+  color: grey;
+  text-align: right;
+  margin-top: 5px;
 }
 
 .message-delete-button {
@@ -208,9 +215,14 @@ html::-webkit-scrollbar {
   max-width: 400px;
   max-height: 400px;
 }
+
+.message-date {
+  text-align: center;
+  margin: 20px 0;
+}
+
 @media screen and (max-width: 500px) {
   .navbar-nav {
-    margin-top: 2rem!important;
+    margin-top: 2rem !important;
   }
-  
 }

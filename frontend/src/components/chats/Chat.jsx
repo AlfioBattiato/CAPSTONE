@@ -117,7 +117,7 @@ const Chat = ({ chat, globalChannel }) => {
       });
 
       const messageData = response.data;
-      messageData.users = [{ id: user.id, pivot: { sender: true } }];
+      messageData.users = [{ id: user.id, username: user.username, pivot: { sender: true } }];
 
       privateChannel.publish("message-sent", messageData);
       globalChannel.publish("message-sent", { chatId: chat.id, senderId: user.id });

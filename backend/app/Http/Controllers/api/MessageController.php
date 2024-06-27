@@ -125,17 +125,25 @@ class MessageController extends Controller
         return response()->json(['message' => 'Messages marked as read']);
     }
 
-
     public function getMessagesByChat(Chat $chat)
     {
-        $user = Auth::user();
         $messages = $chat->messages()
-            ->with(['users' => function ($query) use ($user) {
-                $query->where('user_id', $user->id)
-                      ->withPivot('is_read', 'sender');
-            }])
+            ->with('users') // Carica tutti gli utenti associati ai messaggi
             ->get();
-
+    
         return response()->json($messages);
     }
+    
+    // public function getMessagesByChat(Chat $chat)
+    // {
+    //     $user = Auth::user();
+    //     $messages = $chat->messages()
+    //         ->with(['users' => function ($query) use ($user) {
+    //             $query->where('user_id', $user->id)
+    //                   ->withPivot('is_read', 'sender');
+    //         }])
+    //         ->get();
+
+    //     return response()->json($messages);
+    // }
 }
