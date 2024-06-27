@@ -47,7 +47,7 @@ const MessageForm = ({ chatId, onSendMessage }) => {
   };
 
   return (
-    <Form onSubmit={handleSendMessage} className="w-100">
+    <Form onSubmit={handleSendMessage} className="w-100 bg-trasparent">
       {filePreview && (
         <div className="mb-3 position-relative">
           {file.type.startsWith("image/") && <Image src={filePreview} fluid />}
@@ -70,10 +70,10 @@ const MessageForm = ({ chatId, onSendMessage }) => {
         <Col xs={8} md={9} xl={10} className="p-1">
           <Form.Control
             type="text"
-            placeholder="Type a message..."
+            placeholder="Scrivi un messaggio..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            className="rounded-pill"
+            className="rounded-pill search-input"
             style={{ backgroundColor: "#FFF", color: "#000" }}
           />
         </Col>

@@ -48,21 +48,21 @@ const AllChats = () => {
   });
 
   return (
-    <Card className="h-100">
-      <Card.Header className="fs-2 d-flex flex-column align-items-center justify-content-between rounded-0 bg-light text-white">
+    <Card className="h-100 neumorphic-card border-0">
+      <Card.Header className="fs-2 d-flex flex-column align-items-center justify-content-between rounded-0 neumorphic-header">
         <div className="d-flex w-100 justify-content-between">
           <ButtonGroup className="w-100">
-            <Button variant="light" onClick={() => setFilter("all")} active={filter === "all"}>
-              All
-            </Button>
             <Button variant="light" onClick={() => setFilter("private")} active={filter === "private"}>
-              Private
+              Utenti
             </Button>
             <Button variant="light" onClick={() => setFilter("group")} active={filter === "group"}>
-              Group
+              Gruppi
             </Button>
             <Button variant="light" onClick={() => setFilter("travel")} active={filter === "travel"}>
-              Travel
+              Viaggi
+            </Button>
+            <Button variant="light" onClick={() => setFilter("all")} active={filter === "all"}>
+              Tutti
             </Button>
           </ButtonGroup>
         </div>
@@ -71,7 +71,7 @@ const AllChats = () => {
           placeholder="Cerca chat"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="mt-2 rounded-pill"
+          className="mt-2 rounded-pill search-input"
         />
       </Card.Header>
       <Card.Body className="p-0">

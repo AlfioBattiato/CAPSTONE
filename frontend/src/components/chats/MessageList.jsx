@@ -28,7 +28,7 @@ const MessageList = ({ messages, onDelete, onMarkAsRead, messagesEndRef }) => {
           <React.Fragment key={message.id}>
             {showDate && (
               <div className="message-date">
-                <span className="badge bg-secondary">{formatDate(message.created_at)}</span>
+                <span className="badge date_message">{formatDate(message.created_at)}</span>
               </div>
             )}
             <Message message={message} onDelete={onDelete} onMarkAsRead={onMarkAsRead} />
