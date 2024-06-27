@@ -104,7 +104,7 @@ html::-webkit-scrollbar {
   color: white !important;
 }
 
-.travelCard>* {
+.travelCard > * {
   position: relative;
   z-index: 2;
 }
@@ -183,7 +183,7 @@ html::-webkit-scrollbar {
 .message-item {
   border: none;
   background: transparent;
-  position: relative; /* Aggiunto per il posizionamento relativo delle date */
+  position: relative;
 }
 
 .message-content {
@@ -191,12 +191,12 @@ html::-webkit-scrollbar {
   color: #000;
   background: #f8f9fa;
   box-shadow: inset 5px 5px 13px #d5d5d5, inset -5px -5px 13px #f8f9fa;
+  position: relative; /* Ensure the content is relatively positioned */
 }
 
 /* .message-content.own-message {
-  * box-shadow: 5px 5px 10px #d38f8f, -5px -5px 10px #f9f6f6; *
-}
-*/
+  box-shadow: 5px 5px 10px #d38f8f, -5px -5px 10px #f9f6f6;
+} */
 
 .message-header {
   display: flex;
@@ -212,8 +212,9 @@ html::-webkit-scrollbar {
 .message-time {
   font-size: 0.8rem;
   color: grey;
-  text-align: right;
-  margin-top: 5px;
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
 }
 
 .message-delete-button {
@@ -245,4 +246,79 @@ html::-webkit-scrollbar {
   .navbar-nav {
     margin-top: 2rem !important;
   }
+}
+
+/* CHATLIST */
+
+/* Common neumorphic styles */
+.neumorphic-card {
+  /* box-shadow: 8px 8px 16px #a3b1c6, -8px -8px 16px #ffffff; */
+  border-radius: 1rem;
+}
+
+.neumorphic-header {
+  /* box-shadow: inset 8px 8px 16px #a3b1c6, inset -8px -8px 16px #ffffff; */
+  border-radius: 1rem 1rem 0 0;
+}
+
+.search-input {
+  box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
+}
+
+.chat-list {
+  height: 80vh;
+  max-height: 80vh;
+}
+
+.chat-item {
+  transition: background 0.3s, color 0.3s;
+}
+
+.default-chat {
+  color: #000;
+  /* box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff; */
+}
+
+.default-chat:hover {
+  color: #000;
+  box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
+}
+
+.selected-chat {
+  color: #fff;
+  box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
+}
+
+.chat-image {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+}
+
+.chat-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 30px); /* Adjust as needed */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.notification {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background: rgb(255, 135, 65);
+  background: linear-gradient(145deg, rgba(255, 135, 65, 1) 15%, rgba(255, 65, 65, 1) 65%);
+  color: white;
+  text-align: center;
+  line-height: 1.85rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.date_message {
+  background: linear-gradient(165deg, rgb(162, 160, 160) 15%, rgb(114, 113, 113) 65%);
+  box-shadow: 0 10px 30px rgba(65, 72, 86, 0.05);
 }

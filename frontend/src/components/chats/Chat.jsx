@@ -165,8 +165,8 @@ const Chat = ({ chat, globalChannel }) => {
   const otherUser = chat.users?.find((u) => u.id !== user.id);
 
   return (
-    <Card className="d-flex flex-column h-100 bg-light" style={{ color: "#000" }}>
-      <Card.Header className="bg-blue text-white fs-2 d-flex align-items-center border-bottom rounded-0">
+    <Card className="d-flex flex-column h-100 bg-light border-0" style={{ color: "#000" }}>
+      <Card.Header className="bg-dark text-white fs-2 d-flex align-items-center border-bottom rounded-0">
         <img
           src={chat.group_chat ? chat.image : otherUser?.profile_img || "default-profile-image-url"}
           alt="Chat"
@@ -192,7 +192,7 @@ const Chat = ({ chat, globalChannel }) => {
           messagesEndRef={messagesEndRef}
         />
       </div>
-      <Card.Footer className="bg-blue text-white">
+      <Card.Footer className="bg-light text-white mt-2">
         <MessageForm chatId={chat.id} onSendMessage={handleSendMessage} />
       </Card.Footer>
     </Card>

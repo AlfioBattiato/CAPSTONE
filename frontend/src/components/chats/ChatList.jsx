@@ -3,7 +3,7 @@ import { ListGroup, Badge, Image } from "react-bootstrap";
 
 const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
   return (
-    <ListGroup className="custom-scrollbar bg-white rounded-0 border-0" style={{ height: "80vh", maxHeight: "80vh" }}>
+    <ListGroup className="custom-scrollbar bg-light rounded-0 border-0 chat-list">
       {Array.isArray(chats) && chats.length > 0 ? (
         chats.map((chat) => {
           const otherUsers = chat.users.filter((user) => user.id !== chat.pivot.user_id);
@@ -16,45 +16,23 @@ const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
           } else if (chat.type === "group") {
             chatName = chat.name || "Group Chat";
           } else if (chat.type === "travel") {
-            chatName = `Travel Chat: ${chat.travel ? chat.travel.name : "Unnamed Travel"}`;
+            chatName = chat.name || "Unnamed Travel";
           }
 
           return (
             <ListGroup.Item
               key={chat.id}
               onClick={() => onChatClick(chat)}
-              className={`chat-item px-4 rounded-0 border-0 py-3 btn fs-4 text-start ${
-                selectedChat && selectedChat.id === chat.id ? "bg-red" : "bg-blue text-white"
+              className={`chat-item bg-light rounded-0 py-3 border-0 my-1 btn fs-4 text-start ${
+                selectedChat && selectedChat.id === chat.id ? "selected-chat" : "default-chat"
               }`}
-              onMouseEnter={(e) => {
-                if (!(selectedChat && selectedChat.id === chat.id)) {
-                  e.currentTarget.classList.add("bg-white");
-                  e.currentTarget.classList.add("text-black");
-                  e.currentTarget.classList.remove("bg-blue");
-                  e.currentTarget.classList.remove("text-white");
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!(selectedChat && selectedChat.id === chat.id)) {
-                  e.currentTarget.classList.remove("bg-white");
-                  e.currentTarget.classList.remove("text-black");
-                  if (selectedChat && selectedChat.id === chat.id) {
-                    e.currentTarget.classList.add("bg-red");
-                  } else {
-                    e.currentTarget.classList.add("bg-blue");
-                  }
-                  e.currentTarget.classList.add("text-white");
-                }
-              }}
             >
-              <div className="d-flex align-items-center">
-                <Image src={chatImage} roundedCircle style={{ width: "40px", height: "40px", marginRight: "10px" }} />
-                <div>
-                  {chatName}
+              <div className="d-flex align-items-center bg-trasparent">
+                <Image src={chatImage} roundedCircle className="chat-image bg-black me-3" />
+                <div className="d-flex justify-content-between align-items-center w-100">
+                  <span className="chat-name">{chatName}</span>
                   {unreadCounts[chat.id] > 0 && (
-                    <Badge bg="secondary" className="ms-2">
-                      {unreadCounts[chat.id]}
-                    </Badge>
+                    <span className="ms-2 rounded-circle notification">{unreadCounts[chat.id]}</span>
                   )}
                 </div>
               </div>
