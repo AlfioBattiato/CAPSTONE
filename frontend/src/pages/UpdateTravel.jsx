@@ -116,7 +116,7 @@ function UpdateTravel() {
 
           <Maps />
           {/* <All_interest_places /> */}
-          <hr />
+        
           <div className="mt-5 d-flex justify-content-end">
 
             <Modal show={show} onHide={handleClose}>

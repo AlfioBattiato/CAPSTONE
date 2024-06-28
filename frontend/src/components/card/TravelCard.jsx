@@ -5,20 +5,21 @@ import { BsCalendarDate } from "react-icons/bs";
 import { useNavigate } from 'react-router-dom';
 import './travelcard.css'
 import { SiGooglemaps } from "react-icons/si";
+import { useEffect } from 'react';
 
 export default function TravelCard(props) {
     const getImageSource = (vehicleType) => {
         switch (vehicleType) {
-            case 'racebikes':
-                return '/assets/moto2.png';
-            case 'motocross':
-                return '/assets/motocross1.png';
-            case 'scooter':
-                return '/assets/vespa.png';
-            case 'offroad':
-                return '/assets/motocross1.png';
-            case 'harley':
-                return '/assets/harley2.png';
+            case 'Race Bikes':
+                return '/assets/moto3.png';
+            case 'Motocross':
+                return '/assets/motocross3.png';
+            case 'Scooter':
+                return '/assets/vespa3.png';
+            case 'Off Road':
+                return '/assets/offroad3.png';
+            case 'Harley':
+                return '/assets/harley3.png';
             default:
                 return '/assets/moto.png';
         }
@@ -31,16 +32,20 @@ export default function TravelCard(props) {
         const year = date.getFullYear();
         return `${day}-${month}-${year}`;
     };
+    useEffect(()=>{console.log(props.travel)})
     return (
-        <Col xs={6} lg={4} xl={3}>
-            <div className='cardTravel' style={{ width: "" }}>
+        <Col xs={12} sm={6} lg={4} xl={3}>
+            <div className='cardTravel position-relative' style={{ width: "" }}>
 
                 {props.travel && (
                     <>
-                        <img src={getImageSource(props.travel.type_moto)} alt="mototype" className='img-fluid d-block' style={{ width: "48px", height: '48px', objectFit: "contain" }} />
-                        <div className="d-flex gap-2 align-items-center my-3">
+                    <div className='d-flex justify-content-end '>
+                        <img src={getImageSource(props.travel.type_moto)} alt="mototype" className='img-fluid d-block' style={{ width: "70px", height: '70px', objectFit: "contain" }} />
+
+                    </div>
+                        <div className="d-flex gap-2 align-items-center my-3 start-25 top-0 position-absolute">
                             <SiGooglemaps className='text-danger' />
-                            <p className='fw-bold mb-0 '>{props.travel.start_location.toUpperCase()}</p>
+                            <p className='fw-bold mb-0 '>{props.travel.start_location}</p>
                         </div>
                         <div className='d-flex flex-wrap gap-2'>
                             <BsCalendarDate className='me-1' />
@@ -49,20 +54,26 @@ export default function TravelCard(props) {
                             </p>
                         </div>
 
-                        <div className="d-flex mt-2 gap-2">
-                            <Badge bg="dark" text="white">
-                                {props.travel.type_moto}
-                            </Badge>
-                            <Badge bg="dark" text="white">
-                                Cc: {props.travel.cc_moto}
-                            </Badge>
+                        <div className="d-flex flex-column mt-2 gap-1">
+                            <div>
+
+                                <Badge bg="dark" text="white">
+                                    {props.travel.type_moto}
+                                </Badge>
+                            </div>
+                            <div>
+
+                                <Badge bg="dark" text="white">
+                                    Cc: {props.travel.cc_moto}
+                                </Badge>
+                            </div>
                         </div>
 
                         <p className='m-0 fs-12 text-secondary'>Partecipanti attuali:</p>
                         <BsFillPeopleFill className='me-2 text-success' />
                         <Badge bg="light" text="dark">
 
-                            {props.travel.users.length}
+                            {props.travel.users.filter(user => user.pivot.active === 1).length}
                         </Badge>
                         <button className='cardTravel-button' onClick={() => navigate(`/infoTravel/${props.travel.id}`)} >Vedi</button>
 

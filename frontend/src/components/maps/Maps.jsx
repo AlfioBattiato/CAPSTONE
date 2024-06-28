@@ -58,7 +58,7 @@ export default function Maps() {
 
     return (
         <div className='shadow rounded'>
-            <MapContainer center={position} zoom={10} style={{ height: '36rem', width: '100%', borderRadius: '25px' }}>
+            <MapContainer center={position} zoom={10} style={{ height: '39rem', width: '100%', borderRadius: '25px' }}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

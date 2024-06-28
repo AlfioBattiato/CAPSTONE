@@ -98,12 +98,12 @@ export default function FilterTravel({ setTravels }) {
             });
         }
 
-        setTravels(filteredTravels);
+        setTravels(filteredTravels.reverse());
 
     }, [city, startDate, participants, checkboxes, days, alltravel, setTravels, checkboxes2]);
 
     return (
-        <div className="mt-2 p-3 rounded bg-white">
+        <div className="mt-2 p-3 rounded-25 bg-white">
             <input
                 type="text"
                 required

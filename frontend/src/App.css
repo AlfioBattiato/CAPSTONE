@@ -1,12 +1,13 @@
 body {
   background-color: #eff3f8 !important;
-  /* background-position: cover;
-  background-repeat: no-repeat;
-  background-size: cover; */
+  /* background-color: white !important; */
+  /* /* background-position: cover; */
+  /* background-repeat: no-repeat;
+  background-size: cover; */ 
   /* background-image: url('https://images.unsplash.com/photo-1708418739245-3b59082a9016?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); */
   /* background-image: url('https://images.unsplash.com/photo-1707209856575-a80b9dff5524?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); */
 }
-.container-fluid {
+/* .container-fluid {
   display: flex;
   flex-direction: column;
 }
@@ -20,8 +21,10 @@ body {
   justify-content: center;
   align-items: flex-end;
   padding-bottom: 20px; /* Aggiungi spazio in fondo */
+ 
+.rounded-25{
+  border-radius: 25px!important;
 }
-
 /* Nascondi la barra di scorrimento solo per WebKit */
 html::-webkit-scrollbar {
   display: none !important;
