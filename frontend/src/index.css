@@ -104,3 +104,20 @@
     z-index: 2;
     line-height: 0;
 }
+.newinterestplace{
+  width: 100%!important;
+  height: 30rem;
+  background-image: url('/assets/header2.jpg');
+  background-size: cover;
+  background-position-x: center;
+  background-position-y:center;
+  border-radius: 15px;
+  background-color: rgba(0, 0, 0, 0.534);
+  background-blend-mode: multiply;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+
+}

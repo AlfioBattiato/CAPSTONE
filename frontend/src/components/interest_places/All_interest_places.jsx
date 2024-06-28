@@ -23,7 +23,7 @@ export default function All_interest_places() {
       .catch((error) => {
         console.error("Error fetching travels:", error);
       });
-  }, [dispatch]);
+  }, [selectedPlace]);
 
   const handleCardClick = (place) => {
     // console.log(place)
@@ -71,12 +71,8 @@ export default function All_interest_places() {
           ))}
       </Carousel>
 
-      <Link to="/createInterestPlace" className="me-2">
-        <Button variant="outline-dark" className="my-3">
-          Crea nuovo punto di interesse
-        </Button>
-      </Link>
-      <OverlayTrigger
+   
+      {/* <OverlayTrigger
         placement="right"
         overlay={
           <Tooltip id="tooltip-help">
@@ -87,7 +83,7 @@ export default function All_interest_places() {
         <span style={{ cursor: "pointer" }} className="fw-bold">
           ?
         </span>
-      </OverlayTrigger>
+      </OverlayTrigger> */}
 
       {selectedPlace && (
         <InfoPlace

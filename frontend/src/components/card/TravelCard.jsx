@@ -11,17 +11,21 @@ export default function TravelCard(props) {
     const getImageSource = (vehicleType) => {
         switch (vehicleType) {
             case 'Race Bikes':
-                return '/assets/moto3.png';
+                return '/assets/moto/moto3.png';
+            case 'racebikes':
+                return '/assets/moto/moto3.png';
             case 'Motocross':
-                return '/assets/motocross3.png';
+                return '/assets/moto/motocross3.png';
             case 'Scooter':
-                return '/assets/vespa3.png';
+                return '/assets/moto/vespa3.png';
+            case 'scooter':
+                return '/assets/moto/vespa3.png';
             case 'Off Road':
-                return '/assets/offroad3.png';
+                return '/assets/moto/offroad3.png';
             case 'Harley':
-                return '/assets/harley3.png';
+                return '/assets/moto/harley3.png';
             default:
-                return '/assets/moto.png';
+                return '/assets/moto/moto.png';
         }
     };
     const navigate = useNavigate()

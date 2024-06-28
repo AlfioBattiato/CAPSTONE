@@ -10,13 +10,13 @@
 }
 
 .meteo-card:hover {
-  background-color: rgba(245, 189, 5, 0.25); /* Cambio colore al passaggio del mouse */
+  background-color: #FFE87C; /* Cambio colore al passaggio del mouse */
   cursor: pointer;
 }
 
 .weather-icon img {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
 }
 
 .weather-info {

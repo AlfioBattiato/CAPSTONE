@@ -60,7 +60,7 @@ export default function Meteo({ name, date, temp, min, max, img, humidity }) {
     };
 
     return (
-        <Col xs={12} md={6}  xxl={4} className="mb-3">
+        <Col className="mb-3">
             <Card className="meteo-card">
                 <Card.Body className='p-1'>
                     <div className="weather-icon">
