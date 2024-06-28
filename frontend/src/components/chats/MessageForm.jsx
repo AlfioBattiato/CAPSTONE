@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Col, Image } from "react-bootstrap";
 import { MdAttachFile } from "react-icons/md";
+import { FaTrash } from "react-icons/fa";
 import AudioRecorder from "./AudioRecorder";
 
 const MessageForm = ({ chatId, onSendMessage }) => {
@@ -47,9 +48,9 @@ const MessageForm = ({ chatId, onSendMessage }) => {
   };
 
   return (
-    <Form onSubmit={handleSendMessage} className="w-100 bg-trasparent">
+    <Form onSubmit={handleSendMessage} className="w-100 bg-trasparent text-end ">
       {filePreview && (
-        <div className="mb-3 position-relative">
+        <div className="mb-3 position-relative pe-5">
           {file.type.startsWith("image/") && <Image src={filePreview} fluid />}
           {file.type.startsWith("video/") && (
             <video controls width="100%">
@@ -61,8 +62,15 @@ const MessageForm = ({ chatId, onSendMessage }) => {
               <source src={filePreview} type="audio/wav" />
             </audio>
           )}
-          <Button variant="danger" className="position-absolute top-0 end-0" onClick={handleCancelFile}>
-            Annulla
+          <Button
+            className="position-absolute d-flex align-items-center justify-content-center rounded-circle top-0 end-0 gradient-orange border-0"
+            style={{
+              width: "40px",
+              height: "40px",
+            }}
+            onClick={handleCancelFile}
+          >
+            <FaTrash />
           </Button>
         </div>
       )}
@@ -78,8 +86,16 @@ const MessageForm = ({ chatId, onSendMessage }) => {
           />
         </Col>
         <Col xs={4} md={3} xl={2} className="p-1 d-flex align-items-center justify-content-around">
-          <label htmlFor="fileInput" className="mb-0 d-flex align-items-center fs-3">
-            <MdAttachFile style={{ color: "#FFF", cursor: "pointer" }} />
+          <label
+            htmlFor="fileInput"
+            className="mb-0 d-flex align-items-center justify-content-center fs-3 bg-black"
+            style={{
+              borderRadius: "50%",
+              width: "40px",
+              height: "40px",
+            }}
+          >
+            <MdAttachFile className="" />
             <input id="fileInput" type="file" onChange={handleFileChange} className="d-none" />
           </label>
 
@@ -88,13 +104,11 @@ const MessageForm = ({ chatId, onSendMessage }) => {
           <Button
             variant="light"
             type="submit"
-            className="d-flex align-items-center justify-content-center"
-            style={{ backgroundColor: "#CC0000", borderColor: "#CC0000", height: "38px" }}
+            className="d-flex align-items-center justify-content-center gradient-orange"
+            style={{ height: "38px" }}
             disabled={!newMessage.trim() && !file}
           >
-            <p style={{ color: "#FFF" }} className="m-0 fs-5">
-              Invia
-            </p>
+            <p className="m-0 text-white fs-5">Invia</p>
           </Button>
         </Col>
       </Form.Group>

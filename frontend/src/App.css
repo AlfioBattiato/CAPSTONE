@@ -115,14 +115,17 @@ html::-webkit-scrollbar {
   color: white !important;
 }
 
-/* SCROLL BAR */
+.custom-scrollbar {
+  flex-grow: 1;
+  overflow-y: auto;
+}
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #05203c;
+  background-color: #000000;
   border-radius: 4px;
 }
 
@@ -134,9 +137,9 @@ html::-webkit-scrollbar {
   background-color: #f1f1f1;
 }
 
-.bg-red {
-  background-color: #cc0100 !important;
-  color: white !important;
+.chat-list {
+  flex-grow: 1;
+  overflow-y: auto;
 }
 
 .group-item img {
@@ -298,7 +301,41 @@ html::-webkit-scrollbar {
   font-weight: bold;
 }
 
+.gradient-orange {
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background: rgb(255, 135, 65);
+  background: linear-gradient(160deg, rgba(255, 135, 65, 1) 15%, rgba(255, 65, 65, 1) 65%);
+}
+
 .date_message {
   background: linear-gradient(165deg, rgb(162, 160, 160) 15%, rgb(114, 113, 113) 65%);
   box-shadow: 0 10px 30px rgba(65, 72, 86, 0.05);
+}
+
+/* modal group */
+
+.friend-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.friend-item:hover {
+  background-color: #f0f0f0;
+}
+
+.friend-image {
+  width: 40px;
+  height: 40px;
+}
+
+.selected-friend {
+  background-color: #007bff;
+  color: white;
+}
+
+.friend-list {
+  max-height: 300px;
+  overflow-y: auto;
 }

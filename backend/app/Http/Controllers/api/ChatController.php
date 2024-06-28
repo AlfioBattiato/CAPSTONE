@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ChatController extends Controller
 {
@@ -77,24 +78,36 @@ class ChatController extends Controller
     }
 
     public function createGroupChat(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'user_ids' => 'required|array',
-            'user_ids.*' => 'exists:users,id',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'user_ids' => 'required|array',
+        'user_ids.*' => 'exists:users,id',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        $chat = Chat::create([
-            'name' => $request->name,
-            'active' => true,
-            'type' => 'group',
-        ]);
+    $imagePath = null;
 
-        // Aggiungi gli utenti alla chat
-        $chat->users()->attach($request->user_ids);
-
-        return response()->json($chat, 201);
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('public/profiles');
+        $imagePath = Storage::url($imagePath);
+    } else {
+        $imagePath = url('/storage/profiles/group-of-people.svg');
     }
+
+    $chat = Chat::create([
+        'name' => $request->name,
+        'active' => true,
+        'type' => 'group',
+        'image' => $imagePath,
+    ]);
+
+    // Aggiungi gli utenti alla chat
+    $chat->users()->attach($request->user_ids);
+
+    return response()->json($chat, 201);
+}
+
 
     public function update(Request $request, Chat $chat)
     {

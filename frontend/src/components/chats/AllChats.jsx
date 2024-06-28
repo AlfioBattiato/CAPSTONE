@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { setChats, setSelectedChat, resetUnreadCount } from "../../redux/actions";
 import ChatList from "./ChatList";
+import CreateGroupModal from "./CreateGroupModal";
 
 const AllChats = () => {
   const chats = useSelector((state) => state.chats.chats);
@@ -12,6 +13,7 @@ const AllChats = () => {
   const dispatch = useDispatch();
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     axios
@@ -48,7 +50,7 @@ const AllChats = () => {
   });
 
   return (
-    <Card className="h-100 neumorphic-card border-0">
+    <Card className="h-100 neumorphic-card border-0 d-flex flex-column">
       <Card.Header className="fs-2 d-flex flex-column align-items-center justify-content-between rounded-0 neumorphic-header">
         <div className="d-flex w-100 justify-content-between">
           <ButtonGroup className="w-100">
@@ -74,7 +76,12 @@ const AllChats = () => {
           className="mt-2 rounded-pill search-input"
         />
       </Card.Header>
-      <Card.Body className="p-0">
+      <Card.Body className="p-0 d-flex flex-column flex-grow-1 overflow-hidden">
+        <div className="d-flex justify-content-end m-2">
+          <Button variant="primary" onClick={() => setShowModal(true)}>
+            Nuovo Gruppo
+          </Button>
+        </div>
         <ChatList
           chats={filteredChats}
           onChatClick={handleChatClick}
@@ -82,6 +89,8 @@ const AllChats = () => {
           unreadCounts={unreadCounts}
         />
       </Card.Body>
+
+      <CreateGroupModal show={showModal} handleClose={() => setShowModal(false)} />
     </Card>
   );
 };

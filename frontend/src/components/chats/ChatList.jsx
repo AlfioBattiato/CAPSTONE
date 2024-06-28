@@ -1,12 +1,12 @@
 import React from "react";
-import { ListGroup, Badge, Image } from "react-bootstrap";
+import { ListGroup, Image } from "react-bootstrap";
 
 const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
   return (
-    <ListGroup className="custom-scrollbar bg-light rounded-0 border-0 chat-list">
+    <ListGroup className="custom-scrollbar chat-list bg-light rounded-0 border-0 flex-grow-1">
       {Array.isArray(chats) && chats.length > 0 ? (
         chats.map((chat) => {
-          const otherUsers = chat.users.filter((user) => user.id !== chat.pivot.user_id);
+          const otherUsers = chat.pivot ? chat.users.filter((user) => user.id !== chat.pivot.user_id) : chat.users;
           let chatName = chat.name || "Chat with no users";
           let chatImage = chat.image || "default-group-image-url";
 
@@ -27,10 +27,10 @@ const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
                 selectedChat && selectedChat.id === chat.id ? "selected-chat" : "default-chat"
               }`}
             >
-              <div className="d-flex align-items-center bg-trasparent">
+              <div className="d-flex align-items-center bg-trasparent ">
                 <Image src={chatImage} roundedCircle className="chat-image bg-black me-3" />
-                <div className="d-flex justify-content-between align-items-center w-100">
-                  <span className="chat-name">{chatName}</span>
+                <div className="text-truncate">
+                  {chatName}
                   {unreadCounts[chat.id] > 0 && (
                     <span className="ms-2 rounded-circle notification">{unreadCounts[chat.id]}</span>
                   )}
