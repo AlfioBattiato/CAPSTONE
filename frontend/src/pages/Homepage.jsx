@@ -41,6 +41,7 @@ function Homepage() {
           if (response.ok) {
             const data = await response.json();
             setWeatherData(data.list);
+            console.log(data.list)
           } else {
             throw new Error("Problema nella chiamata API");
           }
@@ -66,6 +67,7 @@ function Homepage() {
       min={(data.main.temp_min - 273.15).toFixed(1)}
       max={(data.main.temp_max - 273.15).toFixed(1)}
       temp={(data.main.temp - 273.15).toFixed(1)}
+      humidity={data.main.humidity}
     />
   );
 
@@ -115,32 +117,42 @@ function Homepage() {
       }
     }
   };
- 
+
   return (
     <div className="container-fluid">
       <Row className="mt-3 pb-5">
-        <Col md={3} className="border-end">
+        <Col md={4} className="border-end">
           <h5 className="mt-2">Organizza il percorso per il tuo viaggio</h5>
           <SetTravel />
           <SetTravelSettings />
+          {weatherData.length > 0 ? (
+             <div className="p-2 rounded mt-2">
+              <p className="fw-bold">Ecco le informazioni meteo previste tra oggi e i prossimi 5 giorni</p>
+              <Row className="row position-relative gx-4 gy-4">
+                {weatherData
+                  .slice(0, 33)
+                  .filter((_, index) => index % 8 === 0)
+                  .map(renderMeteo)}
+              </Row>
+            </div>
+          ) : (
+            <div className="p-2 rounded bg-white mt-2">
+              <p className="fw-bold">Informazioni meteo previste tra oggi e i prossimi 5 giorni</p>
+              <p className="">Imposta prima la città di partenza</p>
+            </div>
+          )}
+
+
+
+
         </Col>
-        <Col md={7}>
+        <Col md={6} >
           <h5 className="my-2 pb-2">maps</h5>
           <Maps />
           <All_interest_places />
           <hr />
-          <p className="fw-bold text-center">Ecco le informazioni meteo previste tra oggi e i prossimi 5 giorni</p>
-          {weatherData.length > 0 ? (
-            <Row className="row-cols-2 row-cols-md-3 row-cols-xxl-5 gy-4">
-              {weatherData
-                .slice(0, 33)
-                .filter((_, index) => index % 8 === 0)
-                .map(renderMeteo)}
-            </Row>
-          ) : (
-            <p className="text-center"> Imposta prima la città di partenza</p>
-          )}
-          <hr />
+
+
           <div className="mt-5 d-flex justify-content-end">
             <Button variant="success" onClick={handleShow}>
               Crea Viaggio
