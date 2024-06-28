@@ -88,7 +88,7 @@ const MessageForm = ({ chatId, onSendMessage }) => {
         <Col xs={4} md={3} xl={2} className="p-1 d-flex align-items-center justify-content-around">
           <label
             htmlFor="fileInput"
-            className="mb-0 d-flex align-items-center justify-content-center fs-3 bg-black"
+            className="mb-0 d-flex align-items-center justify-content-center fs-3 gradient-orange"
             style={{
               borderRadius: "50%",
               width: "40px",

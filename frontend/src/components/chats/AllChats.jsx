@@ -76,9 +76,9 @@ const AllChats = () => {
           className="mt-2 rounded-pill search-input"
         />
       </Card.Header>
-      <Card.Body className="p-0 d-flex flex-column flex-grow-1 overflow-hidden">
-        <div className="d-flex justify-content-end m-2">
-          <Button variant="primary" onClick={() => setShowModal(true)}>
+      <Card.Body className="p-0 d-flex flex-column flex-grow-1 overflow-hidden bg-light">
+        <div className="d-flex justify-content-end m-2 bg-trasparent">
+          <Button className="rounded-pill gradient-orange border-0" onClick={() => setShowModal(true)}>
             Nuovo Gruppo
           </Button>
         </div>

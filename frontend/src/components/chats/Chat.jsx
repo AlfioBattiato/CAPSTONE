@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Card } from "react-bootstrap";
+import { Card, Dropdown } from "react-bootstrap";
 import { useChannel, useConnectionStateListener } from "ably/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -163,26 +163,44 @@ const Chat = ({ chat, globalChannel }) => {
   };
 
   const otherUser = chat.users?.find((u) => u.id !== user.id);
+  const chatImage = chat.type === "private" ? otherUser?.profile_img : chat.image;
 
   return (
     <Card className="d-flex flex-column h-100 bg-light border-0" style={{ color: "#000" }}>
-      <Card.Header className="bg-dark text-white fs-2 d-flex align-items-center border-bottom rounded-0">
-        <img
-          src={chat.group_chat ? chat.image : otherUser?.profile_img || "default-profile-image-url"}
-          alt="Chat"
-          className="rounded-circle me-3"
-          style={{ width: "40px", height: "40px" }}
-        />
-        {chat.name ||
-          (chat.group_chat ? (
-            "Group Chat"
-          ) : otherUser ? (
-            <Link to={`/profile/${otherUser.id}`} className="text-white">
-              {otherUser.username}
-            </Link>
-          ) : (
-            "Chat with no users"
-          ))}
+      <Card.Header className="bg-dark text-white fs-2 d-flex align-items-center border-bottom rounded-0 justify-content-between">
+        <div className="d-flex align-items-center">
+          <img
+            src={chatImage || "default-profile-image-url"}
+            alt="Chat"
+            className="rounded-circle me-3"
+            style={{ width: "40px", height: "40px" }}
+          />
+          {chat.name ||
+            (chat.type === "group" ? (
+              "Group Chat"
+            ) : otherUser ? (
+              <Link to={`/profile/${otherUser.id}`} className="text-white">
+                {otherUser.username}
+              </Link>
+            ) : (
+              "Chat with no users"
+            ))}
+        </div>
+        {chat.type === "group" && (
+          <Dropdown>
+            <Dropdown.Toggle variant="dark" id="dropdown-basic" className="border-0">
+              &#8942;
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => alert("Visualizza membri")}>Visualizza membri</Dropdown.Item>
+              <Dropdown.Item onClick={() => alert("Cambia immagine del profilo")}>
+                Cambia immagine del profilo
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => alert("Cambia nome del gruppo")}>Cambia nome del gruppo</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
       </Card.Header>
       <div className="flex-grow-1 overflow-auto custom-scrollbar">
         <MessageList

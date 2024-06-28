@@ -33,10 +33,16 @@ const Message = ({ message, onDelete }) => {
       <div
         className={`message-content d-inline-block ps-3 pe-5 pb-3 pt-2 rounded-4 ${isOwnMessage ? "own-message" : ""}`}
       >
-        <div className="message-header">
+        <div className="message-header" style={{ minWidth: "65px" }}>
           <strong className="message-username">{senderName}</strong>
           {isOwnMessage && isHovered && (
-            <button className="message-delete-button" onClick={handleDelete}>
+            <button
+              className="message-delete-button btn d-flex align-items-center justify-content-center p-2 rounded-circle"
+              style={{
+                fontSize: "0.75rem",
+              }}
+              onClick={handleDelete}
+            >
               &times;
             </button>
           )}
