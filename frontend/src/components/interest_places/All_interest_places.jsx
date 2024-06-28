@@ -5,8 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setInterestPlaces } from "../../redux/actions";
 import Card_Interest_places from "./Card_Interest_places";
 import { Link } from "react-router-dom";
-import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Button, OverlayTrigger, Tooltip, Form } from "react-bootstrap";
 import InfoPlace from "./InfoPlace";
+import Slider from "rc-slider";
+import 'rc-slider/assets/index.css';
 
 export default function All_interest_places() {
   const dispatch = useDispatch();
@@ -17,16 +19,14 @@ export default function All_interest_places() {
   useEffect(() => {
     axios("/api/interest-places")
       .then((res) => {
-        // console.log(res);
         dispatch(setInterestPlaces(res.data));
       })
       .catch((error) => {
         console.error("Error fetching travels:", error);
       });
-  }, [selectedPlace]);
+  }, [dispatch]);
 
   const handleCardClick = (place) => {
-    // console.log(place)
     setSelectedPlace(place);
     setShowModal(true);
   };
@@ -58,10 +58,28 @@ export default function All_interest_places() {
       slidesToSlide: 2,
     },
   };
+  const [Km, setKm] = useState(0);
 
   return (
-    <div className="my-2 ">
-      <p className="my-2 fw-bold">Scopri i luoghi di interesse</p>
+    <div className="my-2">
+      <p className="my-2 fw-bold">Scopri i luoghi di interesse durante il tuo tragitto</p>
+      <Form.Label className="mt-3 fw-bold">Km di distanza dal tragitto:</Form.Label>
+      <Slider
+        min={0}
+        max={10}
+        step={1}
+        value={Km}
+        onChange={(value) => setKm(value)}
+        trackStyle={{ backgroundColor: '#86d3ff' }}
+        handleStyle={{ borderColor: '#2693e6', backgroundColor: '#2693e6' }}
+      />
+      <p className='mb-0'>Km distanza:</p>
+      <div className="fw-bold text-secondary mb-3">
+        {Km === 0 ? 'Nessun filtro' : Km}
+      </div>
+
+
+
       <Carousel responsive={responsive} className="">
         {reduxplaces &&
           reduxplaces.map((place, index) => (
@@ -70,21 +88,6 @@ export default function All_interest_places() {
             </div>
           ))}
       </Carousel>
-
-   
-      {/* <OverlayTrigger
-        placement="right"
-        overlay={
-          <Tooltip id="tooltip-help">
-            Aiuta gli altri utenti a scoprire nuovi luoghi da visitare
-          </Tooltip>
-        }
-      >
-        <span style={{ cursor: "pointer" }} className="fw-bold">
-          ?
-        </span>
-      </OverlayTrigger> */}
-
       {selectedPlace && (
         <InfoPlace
           show={showModal}
