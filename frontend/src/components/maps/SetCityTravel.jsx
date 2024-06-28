@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { removeMeta, setCurrentTravel, setFormData, setmapInstructions, setMetas } from '../../redux/actions';
 import { FaSearchLocation, FaTrash, FaMapMarked, FaMapMarkedAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { Modal, Button } from 'react-bootstrap';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export default function SetCityTravel() {
     const [suggestions, setSuggestions] = useState([]);
@@ -101,6 +102,16 @@ export default function SetCityTravel() {
 
     const handleRemoveMeta = (index) => {
         dispatch(removeMeta(index));
+    };
+
+    const onDragEnd = (result) => {
+        if (!result.destination) return;
+
+        const reorderedMetas = Array.from(infotravels.metas);
+        const [removed] = reorderedMetas.splice(result.source.index, 1);
+        reorderedMetas.splice(result.destination.index, 0, removed);
+
+        dispatch(setMetas(reorderedMetas));
     };
 
     const reset = () => {
@@ -226,19 +237,35 @@ export default function SetCityTravel() {
             </form>
 
             {infotravels.metas && infotravels.metas.length > 0 && (
-                <>
-                    {infotravels.metas.map((meta, index) => (
-                        <div key={index} className="d-flex mt-1 align-items-center ps-0 gap-2">
-                            <FaMapMarkerAlt className='text-danger' />
-                            <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
-                                {meta.city?meta.city:meta.name_location} 
-                                <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
-                                    <FaTrash />
-                                </button>
-                            </li>
-                        </div>
-                    ))}
-                </>
+                <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="metas">
+                        {(provided) => (
+                            <div {...provided.droppableProps} ref={provided.innerRef}>
+                                {infotravels.metas.map((meta, index) => (
+                                    <Draggable key={index} draggableId={`${index}`} index={index}>
+                                        {(provided) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                                className="d-flex mt-1 align-items-center ps-0 gap-2"
+                                            >
+                                                <FaMapMarkerAlt className='text-danger' />
+                                                <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
+                                                    {meta.city ? meta.city : meta.name_location}
+                                                    <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
+                                                        <FaTrash />
+                                                    </button>
+                                                </li>
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
             )}
 
             <div className="d-flex ">

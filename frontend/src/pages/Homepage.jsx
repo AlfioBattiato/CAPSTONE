@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Col, Row } from "react-bootstrap";
 import SetTravel from "../components/maps/SetCityTravel";
@@ -11,8 +11,9 @@ import All_interest_places from "../components/interest_places/All_interest_plac
 import Meteo from "../components/meteo";
 import Modal from "react-bootstrap/Modal";
 import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
-import { removeMeta, setAllreduxTravel } from "../redux/actions";
+import { removeMeta, setAllreduxTravel, setMetas } from "../redux/actions";
 import "../components/css/btntravel.css";
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 function Homepage() {
   const [show, setShow] = useState(false);
@@ -58,6 +59,16 @@ function Homepage() {
     dispatch(removeMeta(index));
   };
 
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const reorderedMetas = Array.from(metas);
+    const [removed] = reorderedMetas.splice(result.source.index, 1);
+    reorderedMetas.splice(result.destination.index, 0, removed);
+
+    dispatch(setMetas(reorderedMetas));
+  };
+
   const renderMeteo = (data, index) => (
     <Meteo
       key={index}
@@ -74,12 +85,7 @@ function Homepage() {
   const submit = async (ev) => {
     ev.preventDefault();
     console.log("Submit called with travel data:", infotravels);
-    // const formatDate = (isoDateString) => {
-    //   const date = new Date(isoDateString);
-    //   const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    //   return date.toLocaleDateString('it-IT', options);
-    // };
-
+    
     try {
       const body = {
         start_location: infotravels.setTravel.start_location.city,
@@ -123,7 +129,6 @@ function Homepage() {
           <SetTravelSettings />
           <div className="mt-3">
             <RouteInstructions />
-
           </div>
         </Col>
         <Col md={8} >
@@ -146,7 +151,6 @@ function Homepage() {
             </div>
           )}
 
-
           <div className="newinterestplace mt-3 p-2">
             <h1 className="display-5 text-center">Hai un luogo che vorresti condividere?</h1>
             <p className="text-center">Aiuta la community a visitare luoghi inesplorati</p>
@@ -160,9 +164,7 @@ function Homepage() {
             <button className="ms-auto mt-5 btnT" onClick={handleShow}>
               Crea Viaggio
             </button>
-
           </div>
-
 
           <div className="mt-5 d-flex justify-content-end">
             <Modal show={show} onHide={handleClose}>
@@ -188,19 +190,35 @@ function Homepage() {
                 </p>
                 <span>Mete:</span>
                 {metas.length > 0 ? (
-                  <ul className="list-group mt-1">
-                    {metas.map((meta, index) => (
-                      <div key={index} className="d-flex mt-1 align-items-center ps-0 gap-2">
-                        <FaMapMarkerAlt className="text-danger" />
-                        <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
-                          {meta.city}
-                          <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
-                            <FaTrash />
-                          </button>
-                        </li>
-                      </div>
-                    ))}
-                  </ul>
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="metas">
+                      {(provided) => (
+                        <ul className="list-group mt-1" {...provided.droppableProps} ref={provided.innerRef}>
+                          {metas.map((meta, index) => (
+                            <Draggable key={index} draggableId={`${index}`} index={index}>
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className="d-flex mt-1 align-items-center ps-0 gap-2"
+                                >
+                                  <FaMapMarkerAlt className="text-danger" />
+                                  <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
+                                    {meta.city}
+                                    <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
+                                      <FaTrash />
+                                    </button>
+                                  </li>
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </ul>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
                 ) : (
                   <span className="text-danger ms-1">Inserisci almeno una meta</span>
                 )}
@@ -233,7 +251,6 @@ function Homepage() {
           </div>
         </Col>
       </Row>
-
     </div>
   );
 }
