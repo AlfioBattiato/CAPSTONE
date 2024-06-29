@@ -36,7 +36,7 @@ export default function TravelCard(props) {
         const year = date.getFullYear();
         return `${day}-${month}-${year}`;
     };
-    useEffect(()=>{console.log(props.travel)})
+    // useEffect(()=>{console.log(props.travel)})
     return (
         <Col xs={12} sm={6} lg={4} xl={3}>
             <div className='cardTravel position-relative' style={{ width: "" }}>

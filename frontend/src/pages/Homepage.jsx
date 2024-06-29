@@ -42,7 +42,7 @@ function Homepage() {
           if (response.ok) {
             const data = await response.json();
             setWeatherData(data.list);
-            console.log(data.list)
+            // console.log(data.list)
           } else {
             throw new Error("Problema nella chiamata API");
           }
