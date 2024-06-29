@@ -6,7 +6,7 @@ import { FaSearchLocation, FaTrash, FaMapMarked, FaMapMarkedAlt, FaMapMarkerAlt 
 import { Modal, Button } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-export default function SetCityTravel() {
+const SetCityTravel = () => {
     const [suggestions, setSuggestions] = useState([]);
     const [metaSuggestions, setMetaSuggestions] = useState([]);
     const [showResetModal, setShowResetModal] = useState(false); // State for showing reset confirmation modal
@@ -131,7 +131,6 @@ export default function SetCityTravel() {
                 query: '',
                 metaQuery: ''
             },
-           
             inputDisable: false
         };
         dispatch(setCurrentTravel(updatedTravel));
@@ -290,4 +289,6 @@ export default function SetCityTravel() {
             </div>
         </div>
     );
-}
+};
+
+export default SetCityTravel;

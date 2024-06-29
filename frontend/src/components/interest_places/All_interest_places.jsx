@@ -6,7 +6,8 @@ import { setInterestPlaces } from '../../redux/actions';
 import Card_Interest_places from './Card_Interest_places';
 import { Form } from 'react-bootstrap';
 import InfoPlace from './InfoPlace';
-import InputSlider from 'react-input-slider';
+import RangeSlider from 'react-bootstrap-range-slider';
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 
 // Haversine formula to calculate distance between two lat/lng points
 const haversineDistance = (lat1, lng1, lat2, lng2) => {
@@ -41,16 +42,12 @@ const filterInterestPlaces = (places, routeCoordinates, maxDistance) => {
 
     return isWithinDistance;
   });
-
-
 };
 
 export default function All_interest_places() {
   const dispatch = useDispatch();
   const coordinates = useSelector((state) => state.infotravels.map_instructions.coordinates);
-  // const reduxplaces = useSelector((state) => state.infotravels.interestPlaces || []);
-
-  const [allplace, setAllplace] = useState([])
+  const [allplace, setAllplace] = useState([]);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [Km, setKm] = useState(0);
@@ -59,7 +56,7 @@ export default function All_interest_places() {
   useEffect(() => {
     axios('/api/interest-places')
       .then((res) => {
-        setAllplace(res.data)
+        setAllplace(res.data);
         dispatch(setInterestPlaces(res.data));
       })
       .catch((error) => {
@@ -106,6 +103,7 @@ export default function All_interest_places() {
       slidesToSlide: 2,
     },
   };
+
   const distanceMarks = [0, 2, 5, 10, 20, 50, 100];
 
   const mapIndexToKm = (index) => distanceMarks[index];
@@ -115,31 +113,25 @@ export default function All_interest_places() {
     <div className="my-2">
       <p className="my-2 fw-bold">Scopri i luoghi di interesse durante il tuo tragitto</p>
       <Form.Label className="mt-3 fw-bold d-block">Km di distanza dal tragitto:</Form.Label>
-      <InputSlider
-        axis="x"
-        x={mapKmToIndex(Km)}
-        xmin={0}
-        xmax={distanceMarks.length - 1}
-        xstep={1}
-        onChange={({ x }) => setKm(mapIndexToKm(x))}
-        styles={{
-          track: {
-            backgroundColor: '#86d3ff'
-          },
-          active: {
-            backgroundColor: '#2693e6'
-          },
-          thumb: {
-            width: 20,
-            height: 20,
-            backgroundColor: '#2693e6',
-            border: '2px solid #2693e6'
-          }
-        }}
+      <div style={{maxWidth:'15rem'}}>
+
+      <RangeSlider
+        value={mapKmToIndex(Km)}
+        onChange={(e) => setKm(mapIndexToKm(e.target.value))}
+        min={0}
+        max={distanceMarks.length - 1}
+        step={1}
+        variant='primary'
+        tooltip='auto'
+        tooltipLabel={(value) => `${distanceMarks[value]} km`}
+        tooltipPlacement='top'
       />
-      <p className='mb-0  ms-2'>Km distanza:</p>
-      <div className="fw-bold text-secondary  mb-3">
-        {Km === 0 ? 'Nessun tragitto impostato' : Km}
+
+      </div>
+      <p className='mb-0 '>distanza: {Km === 0 ? 'Nessun tragitto impostato' : Km} km</p>
+
+      <div className="fw-bold text-secondary mb-3">
+        
       </div>
 
       <Carousel responsive={responsive} className="">

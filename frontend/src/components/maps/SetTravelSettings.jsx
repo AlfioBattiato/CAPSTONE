@@ -65,7 +65,7 @@ export default function SetTravelSettings() {
 
     return (
         <div className="bg-white p-3 rounded mt-3">
-            <p className="mb-1 ps-2 fw-bold">Data partenza:</p>
+        
             <div className="d-flex gap-1 align-items-center">
                 <BsCalendar2DateFill className=" " />
                 <ReactDatePicker
@@ -80,16 +80,16 @@ export default function SetTravelSettings() {
             </div>
             <hr className="my-3" />
             <Row>
-                <div className="col-12 col-xxl-6">
+                <div className="col-12 col-xxl-6 border-end">
                     <p className="mb-1 ps-2 fw-bold">Categorie moto:</p>
                     <MyRadio
                         name="motoCategory"
                         options={[
-                            { id: "scooter", label: "Scooter", value: "scooter" },
-                            { id: "racebikes", label: "Racebikes", value: "racebikes" },
-                            { id: "motocross", label: "Motocross", value: "motocross" },
-                            { id: "offroad", label: "Offroad", value: "offroad" },
-                            { id: "harley", label: "Harley", value: "harley" }
+                            { id: "scooter", label: "Scooter", value: "Scooter" },
+                            { id: "racebikes", label: "Race bikes", value: "Race Bikes" },
+                            { id: "motocross", label: "Motocross", value: "Motocross" },
+                            { id: "offroad", label: "Off Road", value: "Off Road" },
+                            { id: "harley", label: "Harley", value: "Harley" }
                         ]}
                         selectedValue={selectedCategory}
                         onChange={handleCategoryChange}
