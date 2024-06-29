@@ -1,27 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Card, Dropdown, Modal, Button, Form, Image, ListGroup } from "react-bootstrap";
+import { Card, Dropdown } from "react-bootstrap";
 import { useChannel, useConnectionStateListener } from "ably/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  openChat,
-  closeChat,
-  incrementUnreadCount,
-  decrementUnreadCount,
-  resetUnreadCount,
-  setChats,
-} from "../../redux/actions";
+import { openChat, closeChat, incrementUnreadCount, decrementUnreadCount, resetUnreadCount } from "../../redux/actions";
 import MessageList from "./MessageList";
 import MessageForm from "./MessageForm";
-import EditGroupModal from "./EditGroupModal";
+import EditGroupModal from "./modals/EditGroupModal";
+import ViewMembersModal from "./modals/ViewMembersModal";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 const Chat = ({ chat, globalChannel }) => {
   const [messages, setMessages] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
-  const [members, setMembers] = useState([]);
-  const [friends, setFriends] = useState([]);
   const messagesEndRef = useRef(null);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -120,17 +113,6 @@ const Chat = ({ chat, globalChannel }) => {
     }
   }, [messages]);
 
-  useEffect(() => {
-    axios
-      .get(`/api/users/${user.id}/friends`)
-      .then((response) => {
-        setFriends(response.data);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch friends", error);
-      });
-  }, [user.id]);
-
   const handleSendMessage = async (formData) => {
     try {
       const response = await axios.post("/api/messages", formData, {
@@ -185,18 +167,6 @@ const Chat = ({ chat, globalChannel }) => {
       });
   };
 
-  const handleViewMembers = () => {
-    axios
-      .get(`/api/chats/${chat.id}`)
-      .then((response) => {
-        setMembers(response.data.users);
-        setShowMembersModal(true);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch members", error);
-      });
-  };
-
   const otherUser = chat.users?.find((u) => u.id !== user.id);
 
   return (
@@ -226,15 +196,22 @@ const Chat = ({ chat, globalChannel }) => {
               "Chat with no users"
             ))}
         </div>
-        {chat.type === "group" && (
+        {(chat.type === "group" || chat.type === "travel") && (
           <Dropdown>
-            <Dropdown.Toggle variant="dark" id="dropdown-basic" className="border-0">
-              &#8942;
+            <Dropdown.Toggle
+              as="span"
+              variant="dark"
+              id="dropdown-basic"
+              className="border-0 fs-1 dropdown-toggle-icon"
+            >
+              <BsThreeDotsVertical className="pb-2 pointer" />
             </Dropdown.Toggle>
 
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={handleViewMembers}>Visualizza membri</Dropdown.Item>
-              <Dropdown.Item onClick={() => setShowEditModal(true)}>Modifica gruppo</Dropdown.Item>
+            <Dropdown.Menu className="search-results">
+              <Dropdown.Item onClick={() => setShowMembersModal(true)}>Visualizza membri</Dropdown.Item>
+              {chat.type === "group" && (
+                <Dropdown.Item onClick={() => setShowEditModal(true)}>Modifica gruppo</Dropdown.Item>
+              )}
             </Dropdown.Menu>
           </Dropdown>
         )}
@@ -251,32 +228,8 @@ const Chat = ({ chat, globalChannel }) => {
         <MessageForm chatId={chat.id} onSendMessage={handleSendMessage} />
       </Card.Footer>
 
-      {/* Modal for Viewing Members */}
-      <Modal show={showMembersModal} onHide={() => setShowMembersModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Membri del Gruppo</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ListGroup>
-            {members.map((member) => (
-              <ListGroup.Item key={member.id}>
-                <Link
-                  to={`/profile/${member.id}`}
-                  className="text-black"
-                  style={{
-                    textDecoration: "none",
-                  }}
-                >
-                  <Image src={member.profile_img || "default-profile-image-url"} roundedCircle width={30} height={30} />
-                  <span className="ms-2">{member.username}</span>
-                </Link>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </Modal.Body>
-      </Modal>
+      <ViewMembersModal show={showMembersModal} handleClose={() => setShowMembersModal(false)} chatId={chat.id} />
 
-      {/* Modal for Editing Group */}
       <EditGroupModal show={showEditModal} handleClose={() => setShowEditModal(false)} chat={chat} />
     </Card>
   );

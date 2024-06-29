@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { setChats, setSelectedChat, resetUnreadCount } from "../../redux/actions";
 import ChatList from "./ChatList";
-import CreateGroupModal from "./CreateGroupModal";
+import CreateGroupModal from "./modals/CreateGroupModal";
 
 const AllChats = () => {
   const chats = useSelector((state) => state.chats.chats);
@@ -77,11 +77,13 @@ const AllChats = () => {
         />
       </Card.Header>
       <Card.Body className="p-0 d-flex flex-column flex-grow-1 overflow-hidden bg-light">
-        <div className="d-flex justify-content-end m-2 bg-trasparent">
-          <Button className="rounded-pill gradient-orange border-0" onClick={() => setShowModal(true)}>
-            Nuovo Gruppo
-          </Button>
-        </div>
+        {(filter === "all" || filter === "group") && (
+          <div className="d-flex justify-content-end mt-2 me-3 bg-transparent">
+            <Button className="rounded-pill gradient-orange border-0" onClick={() => setShowModal(true)}>
+              Nuovo Gruppo
+            </Button>
+          </div>
+        )}
         <ChatList
           chats={filteredChats}
           onChatClick={handleChatClick}

@@ -178,6 +178,18 @@ html::-webkit-scrollbar {
   box-shadow: 5px 5px 10px #d38f8f, -5px -5px 10px #f9f6f6;
 } */
 
+.own-message {
+  background: rgb(255, 113, 65);
+  position: relative;
+  max-width: 70%;
+}
+
+.other-message {
+  background-color: #000;
+  position: relative;
+  max-width: 70%;
+}
+
 .message-header {
   display: flex;
   justify-content: space-between;
@@ -191,23 +203,24 @@ html::-webkit-scrollbar {
 
 .message-time {
   font-size: 0.8rem;
-  color: grey;
+  color: rgb(193, 192, 192);
   position: absolute;
   bottom: 5px;
   right: 10px;
 }
 
+.own-message-time {
+  color: rgb(244, 217, 201);
+}
 .message-delete-button {
   line-height: 20px;
-  width: 10px;
-  height: 10px;
-  color: #000;
+  width: 15px;
+  height: 15px;
+  color: white !important;
 }
 
 .message-delete-button:hover {
-  background: rgb(255, 135, 65);
-  background: linear-gradient(160deg, rgba(255, 135, 65, 1) 15%, rgba(255, 65, 65, 1) 65%);
-  color: white !important;
+  background: #000 !important;
 }
 
 .message-attachment img,
@@ -377,4 +390,12 @@ html::-webkit-scrollbar {
 .search-item:hover {
   background: #000 !important;
   color: white !important;
+}
+
+.dropdown-toggle-icon::after {
+  display: none !important;
+}
+
+.pointer {
+  cursor: pointer;
 }

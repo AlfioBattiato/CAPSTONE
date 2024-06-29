@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { Modal, Button, Form, Image, ListGroup } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { setChats } from "../../redux/actions";
+import { setChats } from "../../../redux/actions";
 
 const EditGroupModal = ({ show, handleClose, chat }) => {
   const [groupName, setGroupName] = useState(chat.name);

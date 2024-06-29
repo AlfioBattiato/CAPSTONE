@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Modal, Form, Button, ListGroup, Image, Alert } from "react-bootstrap";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { setChats } from "../../redux/actions";
+import { setChats } from "../../../redux/actions";
 
 const CreateGroupModal = ({ show, handleClose }) => {
   const [groupName, setGroupName] = useState("");
@@ -44,7 +44,7 @@ const CreateGroupModal = ({ show, handleClose }) => {
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
-      setErrorMessage(null); // Clear any previous error messages
+      setErrorMessage(null);
     }
   };
 
@@ -54,38 +54,48 @@ const CreateGroupModal = ({ show, handleClose }) => {
     );
   };
 
-  const handleCreateGroup = () => {
-    if (groupName.trim() && selectedFriends.length > 0) {
-      const formData = new FormData();
-      formData.append("name", groupName);
-      formData.append("type", "group");
-      selectedFriends.forEach((friendId, index) => {
-        formData.append(`user_ids[${index}]`, friendId);
-      });
-      formData.append(`user_ids[${selectedFriends.length}]`, user.id); // Aggiungi l'utente autenticato
-      if (selectedImage) {
-        formData.append("image", selectedImage);
-      }
+  const handleCreateGroup = (e) => {
+    e.preventDefault();
 
-      axios
-        .post("/api/chats/group", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          dispatch(setChats([...chats, response.data]));
-          handleClose();
-          setGroupName("");
-          setSelectedImage(null);
-          setImagePreview(null);
-          setSelectedFriends([]);
-          setErrorMessage(null);
-        })
-        .catch((error) => {
-          console.error("Failed to create group", error);
-        });
+    if (groupName.trim() === "") {
+      setErrorMessage("Il nome del gruppo è obbligatorio.");
+      return;
     }
+
+    if (selectedFriends.length === 0) {
+      setErrorMessage("Seleziona almeno un amico per creare un gruppo.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", groupName);
+    formData.append("type", "group");
+    selectedFriends.forEach((friendId, index) => {
+      formData.append(`user_ids[${index}]`, friendId);
+    });
+    formData.append(`user_ids[${selectedFriends.length}]`, user.id);
+    if (selectedImage) {
+      formData.append("image", selectedImage);
+    }
+
+    axios
+      .post("/api/chats/group", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        dispatch(setChats([...chats, response.data]));
+        handleClose();
+        setGroupName("");
+        setSelectedImage(null);
+        setImagePreview(null);
+        setSelectedFriends([]);
+        setErrorMessage(null);
+      })
+      .catch((error) => {
+        console.error("Failed to create group", error);
+      });
   };
 
   return (
@@ -118,6 +128,7 @@ const CreateGroupModal = ({ show, handleClose }) => {
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
               placeholder="Inserisci nome gruppo"
+              required
             />
           </Form.Group>
           <Form.Group className="mb-3">
@@ -146,16 +157,16 @@ const CreateGroupModal = ({ show, handleClose }) => {
               ))}
             </ListGroup>
           </Form.Group>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Annulla
+            </Button>
+            <Button variant="primary" type="submit">
+              Crea
+            </Button>
+          </Modal.Footer>
         </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Annulla
-        </Button>
-        <Button variant="primary" onClick={handleCreateGroup}>
-          Crea
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 };
