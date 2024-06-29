@@ -3,18 +3,18 @@ import axios from "axios";
 import { Container, Row, Col, Spinner, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { setSelectedChat, setChats } from "../redux/actions";
+import { setSelectedChat, setChats, setActionTravels } from "../redux/actions";
 import DashboardModal from "../components/userProfile/DashboardModal";
 import FriendsModal from "../components/userProfile/FriendsModal";
 import RequestsModal from "../components/userProfile/RequestsModal";
-import TravelCard from "../components/TravelCard"; // Importa il componente TravelCard
+import TravelCard from "../components/card/TravelCard";
 
 const UserProfile = () => {
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.auth.user);
+  const travels = useSelector((state) => state.infotravels.alltravels);
   const [profileUser, setProfileUser] = useState(null);
-  const [travels, setTravels] = useState([]);
-  const [loadingTravels, setLoadingTravels] = useState(true);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showFriendsModal, setShowFriendsModal] = useState(false);
   const [showRequestsModal, setShowRequestsModal] = useState(false);
@@ -26,22 +26,22 @@ const UserProfile = () => {
       .get(`/api/users/${id}`)
       .then((response) => {
         setProfileUser(response.data);
+        setLoadingProfile(false);
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
+        setLoadingProfile(false);
       });
 
     axios
       .get(`/api/users/${id}/travels`)
       .then((response) => {
-        setTravels(response.data);
-        setLoadingTravels(false);
+        dispatch(setActionTravels(response.data));
       })
       .catch((error) => {
         console.error("Error fetching travels:", error);
-        setLoadingTravels(false);
       });
-  }, [id, loggedInUser.id]);
+  }, [id, dispatch]);
 
   const handleProfileImageUpdate = (updatedUser) => {
     setProfileUser(updatedUser);
@@ -104,13 +104,12 @@ const UserProfile = () => {
     setShowRequestsModal(false);
   };
 
-  if (!profileUser) {
-    return <div>Loading...</div>;
+  if (loadingProfile || !profileUser) {
+    return <Spinner animation="border" />;
   }
 
   const isOwner = loggedInUser && profileUser.id === loggedInUser.id;
   const currentDate = new Date().toISOString().split("T")[0];
-
   const activeTravels = travels.filter((travel) => travel.active && travel.expiration_date >= currentDate);
 
   return (
@@ -160,13 +159,11 @@ const UserProfile = () => {
       <Row className="mt-5">
         <Col>
           <h3>I miei viaggi in programma</h3>
-          {loadingTravels ? (
-            <Spinner animation="border" />
-          ) : activeTravels.length > 0 ? (
+          {activeTravels.length > 0 ? (
             <Row>
-              {activeTravels.map((travel, index) => (
+              {activeTravels.map((travel) => (
                 <Col md={4} key={travel.id} className="mb-4">
-                  <TravelCard travel={travel} />
+                  <TravelCard travel={travel} showParticipants={false} />
                 </Col>
               ))}
             </Row>
