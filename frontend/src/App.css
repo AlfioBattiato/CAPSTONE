@@ -350,5 +350,5 @@ html::-webkit-scrollbar {
 }
 
 .text-change:hover {
-  color: rgb(255, 135, 65);
+  color: rgba(255, 65, 65, 1);
 }
