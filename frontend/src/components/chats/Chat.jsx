@@ -1,15 +1,27 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Card, Dropdown } from "react-bootstrap";
+import { Card, Dropdown, Modal, Button, Form, Image, ListGroup } from "react-bootstrap";
 import { useChannel, useConnectionStateListener } from "ably/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { openChat, closeChat, incrementUnreadCount, decrementUnreadCount, resetUnreadCount } from "../../redux/actions";
+import {
+  openChat,
+  closeChat,
+  incrementUnreadCount,
+  decrementUnreadCount,
+  resetUnreadCount,
+  setChats,
+} from "../../redux/actions";
 import MessageList from "./MessageList";
 import MessageForm from "./MessageForm";
+import EditGroupModal from "./EditGroupModal";
 
 const Chat = ({ chat, globalChannel }) => {
   const [messages, setMessages] = useState([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showMembersModal, setShowMembersModal] = useState(false);
+  const [members, setMembers] = useState([]);
+  const [friends, setFriends] = useState([]);
   const messagesEndRef = useRef(null);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -108,6 +120,17 @@ const Chat = ({ chat, globalChannel }) => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    axios
+      .get(`/api/users/${user.id}/friends`)
+      .then((response) => {
+        setFriends(response.data);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch friends", error);
+      });
+  }, [user.id]);
+
   const handleSendMessage = async (formData) => {
     try {
       const response = await axios.post("/api/messages", formData, {
@@ -122,7 +145,7 @@ const Chat = ({ chat, globalChannel }) => {
       privateChannel.publish("message-sent", messageData);
       globalChannel.publish("message-sent", { chatId: chat.id, senderId: user.id });
     } catch (error) {
-      console.error("Failed to send message:", error);
+      console.error("Failed to send message", error);
     }
   };
 
@@ -144,7 +167,7 @@ const Chat = ({ chat, globalChannel }) => {
       });
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
     } catch (error) {
-      console.error("Failed to delete message:", error);
+      console.error("Failed to delete message", error);
     }
   };
 
@@ -162,24 +185,41 @@ const Chat = ({ chat, globalChannel }) => {
       });
   };
 
+  const handleViewMembers = () => {
+    axios
+      .get(`/api/chats/${chat.id}`)
+      .then((response) => {
+        setMembers(response.data.users);
+        setShowMembersModal(true);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch members", error);
+      });
+  };
+
   const otherUser = chat.users?.find((u) => u.id !== user.id);
-  const chatImage = chat.type === "private" ? otherUser?.profile_img : chat.image;
 
   return (
     <Card className="d-flex flex-column h-100 bg-light border-0" style={{ color: "#000" }}>
       <Card.Header className="bg-dark text-white fs-2 d-flex align-items-center border-bottom rounded-0 justify-content-between">
         <div className="d-flex align-items-center">
           <img
-            src={chatImage || "default-profile-image-url"}
+            src={chat.type === "group" ? chat.image : otherUser?.profile_img || "default-profile-image-url"}
             alt="Chat"
             className="rounded-circle me-3"
-            style={{ width: "40px", height: "40px" }}
+            style={{ width: "40px", height: "40px", objectFit: "cover" }}
           />
           {chat.name ||
             (chat.type === "group" ? (
               "Group Chat"
             ) : otherUser ? (
-              <Link to={`/profile/${otherUser.id}`} className="text-white">
+              <Link
+                to={`/profile/${otherUser.id}`}
+                className="text-white"
+                style={{
+                  textDecoration: "none",
+                }}
+              >
                 {otherUser.username}
               </Link>
             ) : (
@@ -193,11 +233,8 @@ const Chat = ({ chat, globalChannel }) => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Dropdown.Item onClick={() => alert("Visualizza membri")}>Visualizza membri</Dropdown.Item>
-              <Dropdown.Item onClick={() => alert("Cambia immagine del profilo")}>
-                Cambia immagine del profilo
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => alert("Cambia nome del gruppo")}>Cambia nome del gruppo</Dropdown.Item>
+              <Dropdown.Item onClick={handleViewMembers}>Visualizza membri</Dropdown.Item>
+              <Dropdown.Item onClick={() => setShowEditModal(true)}>Modifica gruppo</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         )}
@@ -213,6 +250,34 @@ const Chat = ({ chat, globalChannel }) => {
       <Card.Footer className="bg-light text-white mt-2">
         <MessageForm chatId={chat.id} onSendMessage={handleSendMessage} />
       </Card.Footer>
+
+      {/* Modal for Viewing Members */}
+      <Modal show={showMembersModal} onHide={() => setShowMembersModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Membri del Gruppo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {members.map((member) => (
+              <ListGroup.Item key={member.id}>
+                <Link
+                  to={`/profile/${member.id}`}
+                  className="text-black"
+                  style={{
+                    textDecoration: "none",
+                  }}
+                >
+                  <Image src={member.profile_img || "default-profile-image-url"} roundedCircle width={30} height={30} />
+                  <span className="ms-2">{member.username}</span>
+                </Link>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+      </Modal>
+
+      {/* Modal for Editing Group */}
+      <EditGroupModal show={showEditModal} handleClose={() => setShowEditModal(false)} chat={chat} />
     </Card>
   );
 };

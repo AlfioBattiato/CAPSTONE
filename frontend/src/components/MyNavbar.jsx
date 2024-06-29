@@ -34,10 +34,10 @@ function MyNavbar() {
   };
 
   const handleclick = () => {
-    const navbarbtn = document.getElementsByClassName('navbar-toggler')[0];
+    const navbarbtn = document.getElementsByClassName("navbar-toggler")[0];
     navbarbtn.click();
-    window.scroll(0, 0)
-  }
+    window.scroll(0, 0);
+  };
   const handleFormClick = () => {
     if (allUsers.length === 0) {
       axios
@@ -89,7 +89,12 @@ function MyNavbar() {
                 <div className="d-flex align-items-center">
                   <Link to={`/profile/${user.id}`} className="nav-link fs-6" onClick={handleclick}>
                     <div className="position-relative">
-                      <img src={user.profile_img} alt="Profile" className="img_profile" />
+                      <img
+                        src={user.profile_img}
+                        alt="Profile"
+                        className="img_profile"
+                        style={{ objectFit: "cover" }}
+                      />
                       <span className="position-absolute translate-middle badge border online rounded-circle bg-success">
                         <span className="visually-hidden">unread messages</span>
                       </span>
@@ -155,7 +160,13 @@ function MyNavbar() {
                           Benvenuto
                         </Link>
                         <hr />
-                        <Link onClick={() => { logout(); handleclick(); }} className="nav-link fs-6">
+                        <Link
+                          onClick={() => {
+                            logout();
+                            handleclick();
+                          }}
+                          className="nav-link fs-6"
+                        >
                           <RiLogoutBoxFill className="me-2" />
                           Esci
                         </Link>

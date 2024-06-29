@@ -33,7 +33,7 @@ export const SET_ALL = "SET_ALL";
 
 // OPEN
 export const openChat = (chatId) => {
-  console.log(`openChat called with chatId: ${chatId}`);
+  // console.log(`openChat called with chatId: ${chatId}`);
   return {
     type: OPEN_CHAT,
     payload: chatId,
@@ -41,7 +41,7 @@ export const openChat = (chatId) => {
 };
 
 export const closeChat = (chatId) => {
-  console.log(`closeChat called with chatId: ${chatId}`);
+  // console.log(`closeChat called with chatId: ${chatId}`);
   return {
     type: CLOSE_CHAT,
     payload: chatId,
@@ -50,7 +50,7 @@ export const closeChat = (chatId) => {
 
 // SET
 export const setChats = (chats) => {
-  console.log(`setChats called with chats:`, chats);
+  // console.log(`setChats called with chats:`, chats);
   return {
     type: SET_CHATS,
     payload: chats,
@@ -58,7 +58,7 @@ export const setChats = (chats) => {
 };
 
 export const setSelectedChat = (chat) => {
-  console.log(`setSelectedChat called with chat:`, chat);
+  // console.log(`setSelectedChat called with chat:`, chat);
   return {
     type: SET_SELECTED_CHAT,
     payload: chat,
@@ -66,7 +66,7 @@ export const setSelectedChat = (chat) => {
 };
 
 export const resetChats = () => {
-  console.log(`resetChats called`);
+  // console.log(`resetChats called`);
   return {
     type: RESET_CHATS,
   };
@@ -80,7 +80,7 @@ export const resetChats = () => {
 // });
 
 export const setUnreadCount = (chatId, count) => {
-  console.log(`setUnreadCount called with chatId: ${chatId}, count: ${count}`);
+  // console.log(`setUnreadCount called with chatId: ${chatId}, count: ${count}`);
   return {
     type: SET_UNREAD_COUNT,
     payload: { chatId, count },
@@ -88,7 +88,7 @@ export const setUnreadCount = (chatId, count) => {
 };
 
 export const incrementUnreadCount = (chatId) => {
-  console.log(`incrementUnreadCount called with chatId: ${chatId}`);
+  // console.log(`incrementUnreadCount called with chatId: ${chatId}`);
   return {
     type: INCREMENT_UNREAD_COUNT,
     payload: chatId,
@@ -96,7 +96,7 @@ export const incrementUnreadCount = (chatId) => {
 };
 
 export const decrementUnreadCount = (chatId) => {
-  console.log(`decrementUnreadCount called with chatId: ${chatId}`);
+  // console.log(`decrementUnreadCount called with chatId: ${chatId}`);
   return {
     type: DECREMENT_UNREAD_COUNT,
     payload: chatId,
@@ -104,7 +104,7 @@ export const decrementUnreadCount = (chatId) => {
 };
 
 export const resetUnreadCount = (chatId) => {
-  console.log(`resetUnreadCount called with chatId: ${chatId}`);
+  // console.log(`resetUnreadCount called with chatId: ${chatId}`);
   return {
     type: RESET_UNREAD_COUNT,
     payload: chatId,

@@ -122,6 +122,34 @@ class ChatController extends Controller
         return response()->json($chat);
     }
 
+    public function updateGroupChat(Request $request, Chat $chat)
+{
+    $request->validate([
+        'name' => 'nullable|string|max:255',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'user_ids' => 'nullable|array',
+        'user_ids.*' => 'exists:users,id',
+    ]);
+
+    if ($request->has('name')) {
+        $chat->name = $request->name;
+    }
+
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('public/profiles');
+        $chat->image = Storage::url($imagePath);
+    }
+
+    if ($request->has('user_ids')) {
+        $userIds = $request->input('user_ids');
+        $chat->users()->attach($userIds);
+    }
+
+    $chat->save();
+
+    return response()->json($chat);
+}
+
     public function destroy(Chat $chat)
     {
         $chat->users()->detach();
