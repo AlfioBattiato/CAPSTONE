@@ -352,3 +352,29 @@ html::-webkit-scrollbar {
 .text-change:hover {
   color: rgba(255, 65, 65, 1);
 }
+/* SEARCHUSER*/
+
+.search-users-form {
+  z-index: 1000; /* Assicurati che il modulo di ricerca sia sopra altri elementi */
+}
+
+.search-results {
+  top: 100%; /* Posiziona i risultati direttamente sotto il campo di input */
+  left: 0;
+  z-index: 1000; /* Assicurati che i risultati siano sopra altri elementi */
+  background-color: white; /* Colore di sfondo per i risultati */
+  border: 1px solid #ccc; /* Bordo per i risultati */
+  box-shadow: 2px 2px 5px #0d0d0d;
+  max-height: 300px; /* Altezza massima per evitare che i risultati superino la vista */
+  overflow-y: auto; /* Aggiungi lo scrolling verticale se i risultati eccedono l'altezza massima */
+}
+
+.search-item {
+  background: white !important;
+  color: #000 !important;
+}
+
+.search-item:hover {
+  background: #000 !important;
+  color: white !important;
+}

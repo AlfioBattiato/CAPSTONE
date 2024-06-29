@@ -1,29 +1,24 @@
 import React, { useState } from "react";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { Link, useNavigate } from "react-router-dom";
 import { BiSolidLogIn } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { LOGOUT, RESET_CHATS } from "../redux/actions";
+import { LOGOUT, RESET_CHATS } from "../../redux/actions";
 import { IoSettingsOutline } from "react-icons/io5";
-import { MdFirstPage } from "react-icons/md";
+import { MdFirstPage, MdOutlineTravelExplore } from "react-icons/md";
 import { FaStreetView } from "react-icons/fa";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { TiMessages } from "react-icons/ti";
-import { MdOutlineTravelExplore } from "react-icons/md";
-import { Button, Form, FormControl, ListGroup } from "react-bootstrap";
+import { Button, Navbar, Container, Nav } from "react-bootstrap";
 import Footer from "./Footer";
+import SearchUsers from "./SearchUsers";
 
 function MyNavbar() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [allUsers, setAllUsers] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const logout = () => {
     axios.post("/api/logout").then(() => {
@@ -37,36 +32,6 @@ function MyNavbar() {
     const navbarbtn = document.getElementsByClassName("navbar-toggler")[0];
     navbarbtn.click();
     window.scroll(0, 0);
-  };
-  const handleFormClick = () => {
-    if (allUsers.length === 0) {
-      axios
-        .get(`/api/users`)
-        .then((response) => {
-          setAllUsers(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching users:", error);
-        });
-    }
-  };
-
-  const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-
-    if (query.length > 2) {
-      const filteredUsers = allUsers.filter((user) => user.username.toLowerCase().includes(query.toLowerCase()));
-      setSearchResults(filteredUsers);
-    } else {
-      setSearchResults([]);
-    }
-  };
-
-  const handleUserSelect = (userId) => {
-    setSearchQuery("");
-    setSearchResults([]);
-    navigate(`/profile/${userId}`);
   };
 
   return (
@@ -87,7 +52,7 @@ function MyNavbar() {
             ) : (
               <>
                 <div className="d-flex align-items-center">
-                  <Link to={`/profile/${user.id}`} className="nav-link fs-6" onClick={handleclick}>
+                  <Link to={`/profile/${user.id}`} className="nav-link fs-6">
                     <div className="position-relative">
                       <img
                         src={user.profile_img}
@@ -100,28 +65,7 @@ function MyNavbar() {
                       </span>
                     </div>
                   </Link>
-                  <Form
-                    className="d-flex mx-3 position-relative"
-                    onSubmit={(e) => e.preventDefault()}
-                    onClick={handleFormClick}
-                  >
-                    <FormControl
-                      type="search"
-                      placeholder="Cerca utenti"
-                      className="me-2 rounded-pill"
-                      value={searchQuery}
-                      onChange={handleSearchChange}
-                    />
-                    {searchResults.length > 0 && (
-                      <ListGroup className="position-absolute w-100">
-                        {searchResults.map((result) => (
-                          <ListGroup.Item key={result.id} action onClick={() => handleUserSelect(result.id)}>
-                            {result.username}
-                          </ListGroup.Item>
-                        ))}
-                      </ListGroup>
-                    )}
-                  </Form>
+                  <SearchUsers allUsers={allUsers} setAllUsers={setAllUsers} />
                   <Navbar.Toggle
                     aria-controls={`offcanvasNavbar-expand-${expand}`}
                     className="border-0 shadow-0 ms-3"
