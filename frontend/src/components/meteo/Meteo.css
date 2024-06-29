@@ -1,34 +1,50 @@
-.meteocard{
-  backdrop-filter: blur(30px);
-  background-color: rgba(0, 0, 0, 0.856)
-}
-.city {
-  font-weight: 700;
-  font-size: 0.9em;
-  letter-spacing: 1.2px;
-  color: white;
-  
-}
-.date{
-   font-weight: 500;
-  font-size: 0.7em;
-  letter-spacing: 1.2px;
-  color: rgb(197, 197, 197);}
-.temp{
-  font-size: 1.8em;
-  color: white;
-}
-.minmaxContainer { 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* gap:5px; */
-}
-.min{
-  padding-right: 5px;
+/* Meteo.css */
 
+.meteo-card {
+  border-radius: 15px;
+  background-color: rgb(255, 255, 255); /* Colore di sfondo con trasparenza */
+  backdrop-filter: blur(10px); /* Effetto blur per il vetro opaco */
+  border: 1px solid grey; /* Bordo con trasparenza */
+  transition: background-color 0.4s ease-in-out;
+  overflow: hidden; /* Per migliorare l'effetto di glassmorphism */
 }
-.max {
-  padding-left: 5px;
-  border-left: 2px solid white;
+
+.meteo-card:hover {
+  background-color: #FFE87C; /* Cambio colore al passaggio del mouse */
+  cursor: pointer;
+}
+
+.weather-icon img {
+  width: 60px;
+  height: 60px;
+}
+
+.weather-info {
+  text-align: left;
+}
+
+.weather-date,
+.weather-temp,
+.weather-city {
+  margin: 0;
+}
+
+.weather-temp {
+  font-size: 1.6em;
+  font-weight: bold;
+}
+
+.weather-city {
+  font-size: 1em;
+  color: #555;
+}
+
+.card-footer {
+  background-color: rgba(255, 255, 255, 0.15); /* Colore di sfondo con trasparenza per il footer */
+  border-top: 1px solid rgba(255, 255, 255, 0.2); /* Bordo del footer con trasparenza */
+  padding: 10px;
+}
+
+.card-footer div {
+  font-size: 0.9em;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Col, Row } from "react-bootstrap";
 import SetTravel from "../components/maps/SetCityTravel";
@@ -11,8 +11,9 @@ import All_interest_places from "../components/interest_places/All_interest_plac
 import Meteo from "../components/meteo";
 import Modal from "react-bootstrap/Modal";
 import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
-import { removeMeta, setAllreduxTravel } from "../redux/actions";
-import { LOGIN } from "../redux/actions";
+import { removeMeta, setAllreduxTravel, setMetas } from "../redux/actions";
+import "../components/css/btntravel.css";
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 function Homepage() {
   const [show, setShow] = useState(false);
@@ -41,6 +42,7 @@ function Homepage() {
           if (response.ok) {
             const data = await response.json();
             setWeatherData(data.list);
+            // console.log(data.list)
           } else {
             throw new Error("Problema nella chiamata API");
           }
@@ -57,6 +59,16 @@ function Homepage() {
     dispatch(removeMeta(index));
   };
 
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const reorderedMetas = Array.from(metas);
+    const [removed] = reorderedMetas.splice(result.source.index, 1);
+    reorderedMetas.splice(result.destination.index, 0, removed);
+
+    dispatch(setMetas(reorderedMetas));
+  };
+
   const renderMeteo = (data, index) => (
     <Meteo
       key={index}
@@ -66,18 +78,14 @@ function Homepage() {
       min={(data.main.temp_min - 273.15).toFixed(1)}
       max={(data.main.temp_max - 273.15).toFixed(1)}
       temp={(data.main.temp - 273.15).toFixed(1)}
+      humidity={data.main.humidity}
     />
   );
 
   const submit = async (ev) => {
     ev.preventDefault();
     console.log("Submit called with travel data:", infotravels);
-    // const formatDate = (isoDateString) => {
-    //   const date = new Date(isoDateString);
-    //   const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    //   return date.toLocaleDateString('it-IT', options);
-    // };
-
+    
     try {
       const body = {
         start_location: infotravels.setTravel.start_location.city,
@@ -90,10 +98,7 @@ function Homepage() {
         days: infotravels.details.days,
       };
 
-      // console.log("Sending travel data to backend:", body);
       const travelResponse = await axios.post("/api/travel", body);
-      // console.log("Travel created successfully:", travelResponse.data);
-
       for (const meta of infotravels.metas) {
         const metaBody = {
           travel_id: travelResponse.data.id,
@@ -101,7 +106,6 @@ function Homepage() {
           lat: meta.lat,
           lon: meta.lon,
         };
-        // console.log("Sending meta data to backend:", metaBody);
         await axios.post("/api/meta", metaBody);
       }
 
@@ -115,36 +119,54 @@ function Homepage() {
       }
     }
   };
- 
+
   return (
     <div className="container-fluid">
-      <Row className="mt-3 pb-5">
-        <Col md={3} className="border-end">
-          <h5 className="mt-2">Organizza il percorso per il tuo viaggio</h5>
+      <h5 className="mt-2 text-center">Organizza il percorso per il tuo viaggio</h5>
+      <Row className="mt-3 gy-3">
+        <Col md={4} className="border-end">
           <SetTravel />
           <SetTravelSettings />
+          <div className="mt-3">
+            <RouteInstructions />
+          </div>
         </Col>
-        <Col md={7}>
-          <h5 className="my-2 pb-2">maps</h5>
+        <Col md={8} >
           <Maps />
           <All_interest_places />
-          <hr />
-          <p className="fw-bold text-center">Ecco le informazioni meteo previste tra oggi e i prossimi 5 giorni</p>
           {weatherData.length > 0 ? (
-            <Row className="row-cols-2 row-cols-md-3 row-cols-xxl-5 gy-4">
-              {weatherData
-                .slice(0, 33)
-                .filter((_, index) => index % 8 === 0)
-                .map(renderMeteo)}
-            </Row>
+            <div className="p-2 rounded mt-2">
+              <p className="fw-bold">Ecco le informazioni meteo previste tra oggi e i prossimi 5 giorni</p>
+              <Row className="row row-cols-auto justify-content-center gx-2 gy-2">
+                {weatherData
+                  .slice(0, 33)
+                  .filter((_, index) => index % 8 === 0)
+                  .map(renderMeteo)}
+              </Row>
+            </div>
           ) : (
-            <p className="text-center"> Imposta prima la città di partenza</p>
+            <div className="p-2 rounded bg-white mt-2">
+              <p className="fw-bold">Informazioni meteo previste tra oggi e i prossimi 5 giorni</p>
+              <p className="">Imposta prima la città di partenza</p>
+            </div>
           )}
-          <hr />
-          <div className="mt-5 d-flex justify-content-end">
-            <Button variant="success" onClick={handleShow}>
+
+          <div className="newinterestplace mt-3 p-2">
+            <h1 className="display-5 text-center">Hai un luogo che vorresti condividere?</h1>
+            <p className="text-center">Aiuta la community a visitare luoghi inesplorati</p>
+            <Link to="/createInterestPlace" className="me-2">
+              <Button variant="outline-light" className="my-3">
+                Crea nuovo punto di interesse
+              </Button>
+            </Link>
+          </div>
+          <div className="d-flex pe-3">
+            <button className="ms-auto mt-5 btnT" onClick={handleShow}>
               Crea Viaggio
-            </Button>
+            </button>
+          </div>
+
+          <div className="mt-5 d-flex justify-content-end">
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>Riepilogo</Modal.Title>
@@ -167,21 +189,36 @@ function Homepage() {
                   )}
                 </p>
                 <span>Mete:</span>
-
                 {metas.length > 0 ? (
-                  <ul className="list-group mt-1">
-                    {metas.map((meta, index) => (
-                      <div key={index} className="d-flex mt-1 align-items-center ps-0 gap-2">
-                        <FaMapMarkerAlt className="text-danger" />
-                        <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
-                          {meta.city}
-                          <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
-                            <FaTrash />
-                          </button>
-                        </li>
-                      </div>
-                    ))}
-                  </ul>
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="metas">
+                      {(provided) => (
+                        <ul className="list-group mt-1" {...provided.droppableProps} ref={provided.innerRef}>
+                          {metas.map((meta, index) => (
+                            <Draggable key={index} draggableId={`${index}`} index={index}>
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className="d-flex mt-1 align-items-center ps-0 gap-2"
+                                >
+                                  <FaMapMarkerAlt className="text-danger" />
+                                  <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
+                                    {meta.city}
+                                    <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
+                                      <FaTrash />
+                                    </button>
+                                  </li>
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </ul>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
                 ) : (
                   <span className="text-danger ms-1">Inserisci almeno una meta</span>
                 )}
@@ -198,11 +235,10 @@ function Homepage() {
                   {travel.cc_moto ? (
                     <span className="fw-bold">{travel.cc_moto}</span>
                   ) : (
-                    <span className="text-danger">Moto non impostata</span>
+                    <span className="text-danger">Cilindrata non impostata</span>
                   )}
                 </p>
               </Modal.Body>
-
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
                   Close
@@ -213,9 +249,6 @@ function Homepage() {
               </Modal.Footer>
             </Modal>
           </div>
-        </Col>
-        <Col md={2} className="border-start">
-          <RouteInstructions />
         </Col>
       </Row>
     </div>

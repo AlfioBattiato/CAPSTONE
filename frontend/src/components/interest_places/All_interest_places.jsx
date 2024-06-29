@@ -1,32 +1,77 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import Carousel from "react-multi-carousel";
-import { useDispatch, useSelector } from "react-redux";
-import { setInterestPlaces } from "../../redux/actions";
-import Card_Interest_places from "./Card_Interest_places";
-import { Link } from "react-router-dom";
-import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
-import InfoPlace from "./InfoPlace";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import Carousel from 'react-multi-carousel';
+import { setInterestPlaces } from '../../redux/actions';
+import Card_Interest_places from './Card_Interest_places';
+import { Form } from 'react-bootstrap';
+import InfoPlace from './InfoPlace';
+import RangeSlider from 'react-bootstrap-range-slider';
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
+
+// Haversine formula to calculate distance between two lat/lng points
+const haversineDistance = (lat1, lng1, lat2, lng2) => {
+  const toRad = (x) => (x * Math.PI) / 180;
+  const R = 6371; // Radius of Earth in km
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+// Filter function to filter interest places within max distance from the route
+const filterInterestPlaces = (places, routeCoordinates, maxDistance) => {
+  if (!Array.isArray(places) || !Array.isArray(routeCoordinates)) {
+    console.error('Invalid data for filtering:', places, routeCoordinates);
+    return [];
+  }
+
+  return places.filter((place) => {
+    if (!place.lat || !place.lon) {
+      console.error('Invalid place coordinates:', place);
+      return false;
+    }
+
+    const isWithinDistance = routeCoordinates.some((coord) => {
+      const distance = haversineDistance(coord.lat, coord.lng, place.lat, place.lon);
+      return distance <= maxDistance;
+    });
+
+    return isWithinDistance;
+  });
+};
 
 export default function All_interest_places() {
   const dispatch = useDispatch();
-  const reduxplaces = useSelector((state) => state.infotravels.interestPlaces);
-  const [selectedPlace, setSelectedPlace] = useState(null); // State to handle the selected place
-  const [showModal, setShowModal] = useState(false); // State to handle modal visibility
+  const coordinates = useSelector((state) => state.infotravels.map_instructions.coordinates);
+  const [allplace, setAllplace] = useState([]);
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [Km, setKm] = useState(0);
+  const [filteredPlaces, setFilteredPlaces] = useState([]);
 
   useEffect(() => {
-    axios("/api/interest-places")
+    axios('/api/interest-places')
       .then((res) => {
-        // console.log(res);
+        setAllplace(res.data);
         dispatch(setInterestPlaces(res.data));
       })
       .catch((error) => {
-        console.error("Error fetching travels:", error);
+        console.error('Error fetching interest places:', error);
       });
-  }, [dispatch]);
+  }, []);
+
+  useEffect(() => {
+    if (allplace.length > 0 && coordinates?.length > 0) {
+      const places = filterInterestPlaces(allplace, coordinates, Km);
+      setFilteredPlaces(places);
+    }
+  }, [coordinates, Km]);
 
   const handleCardClick = (place) => {
-    // console.log(place)
     setSelectedPlace(place);
     setShowModal(true);
   };
@@ -59,35 +104,47 @@ export default function All_interest_places() {
     },
   };
 
+  const distanceMarks = [0, 2, 5, 10, 20, 50, 100];
+
+  const mapIndexToKm = (index) => distanceMarks[index];
+  const mapKmToIndex = (km) => distanceMarks.indexOf(km);
+
   return (
-    <div className="my-2 ">
-      <p className="my-2 fw-bold">Scopri i luoghi di interesse</p>
+    <div className="my-2">
+      <p className="my-2 fw-bold">Scopri i luoghi di interesse durante il tuo tragitto</p>
+      <Form.Label className="mt-3 fw-bold d-block">Km di distanza dal tragitto:</Form.Label>
+      <div style={{maxWidth:'15rem'}}>
+
+      <RangeSlider
+        value={mapKmToIndex(Km)}
+        onChange={(e) => setKm(mapIndexToKm(e.target.value))}
+        min={0}
+        max={distanceMarks.length - 1}
+        step={1}
+        variant='primary'
+        tooltip='auto'
+        tooltipLabel={(value) => `${distanceMarks[value]} km`}
+        tooltipPlacement='top'
+      />
+
+      </div>
+      <p className='mb-0 '>distanza: {Km === 0 ? 'Nessun tragitto impostato' : Km} km</p>
+
+      <div className="fw-bold text-secondary mb-3">
+        
+      </div>
+
       <Carousel responsive={responsive} className="">
-        {reduxplaces &&
-          reduxplaces.map((place, index) => (
+        {filteredPlaces.length > 0 ? (
+          filteredPlaces.map((place, index) => (
             <div key={index} onClick={() => handleCardClick(place)}>
               <Card_Interest_places place={place} />
             </div>
-          ))}
+          ))
+        ) : (
+          <p>Nessun punto di interesse trovato nel raggio selezionato.</p>
+        )}
       </Carousel>
-
-      <Link to="/createInterestPlace" className="me-2">
-        <Button variant="outline-dark" className="my-3">
-          Crea nuovo punto di interesse
-        </Button>
-      </Link>
-      <OverlayTrigger
-        placement="right"
-        overlay={
-          <Tooltip id="tooltip-help">
-            Aiuta gli altri utenti a scoprire nuovi luoghi da visitare
-          </Tooltip>
-        }
-      >
-        <span style={{ cursor: "pointer" }} className="fw-bold">
-          ?
-        </span>
-      </OverlayTrigger>
 
       {selectedPlace && (
         <InfoPlace

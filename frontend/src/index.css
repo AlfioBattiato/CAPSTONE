@@ -18,6 +18,20 @@
       rgba(255, 65, 65, 1) 65%
     );
   }
+  .active>.page-link, .page-link.active {
+    z-index: 3;
+    color: white;
+    background: rgb(255, 135, 65);
+    background: linear-gradient(
+      250deg,
+      rgba(255, 135, 65, 1) 15%,
+      rgba(255, 65, 65, 1) 65%
+    );
+    border-color:  rgba(255, 135, 65, 1);
+}
+.page-link {
+  color:black;
+}
   
   /* plus sign */
   .sign {
@@ -69,6 +83,7 @@
   .Btn:active {
     transform: translate(2px, 2px);
   }
+
   .placelike:hover{
     color: green;
   }
@@ -77,10 +92,32 @@
     top: 0px;
     z-index: 9999;
   }
+  .sticky2{
+    position: sticky!important;
+    top: 3rem!important;
+    z-index: 9;
+  }
   .modal{
     z-index: 99999999999!important;
   }
   .react-datepicker-popper {
     z-index: 2;
     line-height: 0;
+}
+.newinterestplace{
+  width: 100%!important;
+  height: 30rem;
+  background-image: url('/assets/header2.jpg');
+  background-size: cover;
+  background-position-x: center;
+  background-position-y:center;
+  border-radius: 15px;
+  background-color: rgba(0, 0, 0, 0.534);
+  background-blend-mode: multiply;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+
 }

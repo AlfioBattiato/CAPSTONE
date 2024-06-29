@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Switch from 'react-switch';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,7 +9,7 @@ import axios from 'axios';
 import { setActionTravels } from '../redux/actions';
 import { format } from 'date-fns';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-
+import './css/switch.css'
 
 // Hook per gestire i checkbox
 function useCheckboxes(initialState) {
@@ -33,7 +32,6 @@ export default function FilterTravel({ setTravels }) {
     useEffect(() => {
         axios('/api/v1/travels')
             .then((res) => {
-                // console.log('filter',res.data)
                 dispatch(setActionTravels(res.data));
                 setTravels(res.data);
             })
@@ -71,7 +69,6 @@ export default function FilterTravel({ setTravels }) {
 
         if (startDate) {
             const formattedDate = format(startDate, 'dd/MM/yyyy');
-            // console.log(formattedDate)
             filteredTravels = filteredTravels.filter((travel) => travel.departure_date === formattedDate);
         }
 
@@ -101,21 +98,21 @@ export default function FilterTravel({ setTravels }) {
             });
         }
 
-        setTravels(filteredTravels);
+        setTravels(filteredTravels.reverse());
 
     }, [city, startDate, participants, checkboxes, days, alltravel, setTravels, checkboxes2]);
 
     return (
-        <div className="mt-2">
+        <div className="mt-2 p-3 rounded-25 bg-white">
             <input
                 type="text"
                 required
                 name="city"
-                className="form-control rounded-pill"
+                className="form-control rounded-pill mb-2"
                 placeholder="Città di partenza"
                 onChange={(e) => setCity(e.target.value.toUpperCase())}
             />
-            <hr />
+           
             <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
@@ -124,6 +121,7 @@ export default function FilterTravel({ setTravels }) {
                 dateFormat="dd/MM/yyyy"
                 isClearable
                 placeholderText='Data di partenza'
+                
             />
             <hr />
             <Form.Label className="fw-bold">
@@ -143,21 +141,16 @@ export default function FilterTravel({ setTravels }) {
                 const label =
                     key === 'racebikes' ? 'Race Bikes' : key === 'offroad' ? 'Off Road' : key.charAt(0).toUpperCase() + key.slice(1);
                 return (
-                    <div className="form-check ps-0" key={key}>
-
-                        <Switch
-                            checked={checkboxes[key]}
-                            onChange={(checked) => handleCheckboxChange(key, checked)}
-                            onColor="#86d3ff"
-                            onHandleColor="#2693e6"
-                            handleDiameter={22}
-                            uncheckedIcon={false}
-                            checkedIcon={false}
-                            height={18}
-                            width={40}
-                            className="react-switch"
-                            id={key}
-                        />
+                    <div className="form-check ps-0 checkbox-wrapper-5" key={key}>
+                        <div className="check">
+                            <input
+                                type="checkbox"
+                                id={key}
+                                checked={checkboxes[key]}
+                                onChange={(e) => handleCheckboxChange(key, e.target.checked)}
+                            />
+                            <label htmlFor={key}></label>
+                        </div>
                         <label className="form-check-label ms-2" htmlFor={key}>
                             {label}
                         </label>
@@ -182,20 +175,16 @@ export default function FilterTravel({ setTravels }) {
                 const label =
                     key === 'racebikes' ? 'Race Bikes' : key === 'offroad' ? 'Off Road' : key.charAt(0).toUpperCase() + key.slice(1);
                 return (
-                    <div className="form-check ps-0" key={key}>
-                        <Switch
-                            checked={checkboxes2[key]}
-                            onChange={(checked) => handleCheckboxChange2(key, checked)}
-                            onColor="#86d3ff"
-                            onHandleColor="#2693e6"
-                            handleDiameter={22}
-                            uncheckedIcon={false}
-                            checkedIcon={false}
-                            height={18}
-                            width={40}
-                            className="react-switch"
-                            id={key}
-                        />
+                    <div className="form-check ps-0 checkbox-wrapper-5" key={key}>
+                        <div className="check">
+                            <input
+                                type="checkbox"
+                                id={key}
+                                checked={checkboxes2[key]}
+                                onChange={(e) => handleCheckboxChange2(key, e.target.checked)}
+                            />
+                            <label htmlFor={key}></label>
+                        </div>
                         <label className="form-check-label ms-2" htmlFor={key}>
                             {label}
                         </label>
@@ -214,7 +203,7 @@ export default function FilterTravel({ setTravels }) {
             />
             <p className='mb-0'>Numero partecipanti:</p>
             <div className="fw-bold text-secondary">{participants === 0 ? 'Nessun filtro' : participants}</div>
-            <hr />
+           
             <Form.Label className="mt-3 fw-bold">Giorni in viaggio</Form.Label>
             <Slider
                 min={0}

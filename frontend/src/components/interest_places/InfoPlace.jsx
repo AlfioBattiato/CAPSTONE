@@ -18,9 +18,7 @@ export default function InfoPlace({ show, handleClose, place }) {
                 lon: parseFloat(place.lon)
             }
         ];
-        dispatch(setMetas(updatedMetas));
-    
-        console.log('ottimo');
+        dispatch(setMetas(updatedMetas));      
         handleClose();
     }
     return (

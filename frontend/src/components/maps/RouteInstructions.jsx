@@ -29,7 +29,7 @@ const RouteInstructions = () => {
       const expirationDate = calculateExpirationDate(travel.departure_date, totalTime);
 
       const updatedTravel = {
-       
+
         days: days,
         expiration_date: expirationDate, //.toISOString().split('T')[0] Format as YYYY-MM-DD
       };
@@ -44,21 +44,27 @@ const RouteInstructions = () => {
   }, [map_instructions, travel.departure_date, dispatch]);
 
   return (
-    <div className="bg-white rounded p-3 shadow">
+    <div className="bg-white rounded p-3 shadow" style={{ overflow: 'hidden' }}>
       {map_instructions && map_instructions.instructions ? (
         <React.Fragment>
           <p className="fw-bold">Istruzioni</p>
-          <p>
-            Distanza totale: <Badge bg="primary">{(map_instructions.summary.totalDistance / 1000).toFixed(2)} km</Badge>
-          </p>
-          <p>
-            Tempo totale: <Badge bg="success">{formatTime(map_instructions.summary.totalTime)}</Badge>
-          </p>
+          <div className="d-flex justify-content-between">
+            <p className="mb-0">Distanza totale:</p>
+            <Badge bg="primary">{(map_instructions.summary.totalDistance / 1000).toFixed(2)} km</Badge>
+
+
+          </div>
+          <div className="mt-2 d-flex justify-content-between">
+            <p className="mb-0">Tempo totale: </p>
+            <Badge bg="success">{formatTime(map_instructions.summary.totalTime)}</Badge>
+
+
+          </div>
           <hr />
           <p className="fw-bold">Autostrade:</p>
           <p>{map_instructions.name}</p>
           <hr />
-          <ListGroup style={{ maxHeight: "19.2rem", overflowY: "auto" }}>
+          <ListGroup style={{ maxHeight: "19.2rem", overflowY: "auto", }}>
             <p className="fw-bold">Percorso:</p>
             {map_instructions.instructions.map((instruction, index) => (
               <ListGroup.Item key={index} className="bg-dark text-white">

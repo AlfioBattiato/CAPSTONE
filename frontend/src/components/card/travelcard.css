@@ -1,0 +1,58 @@
+.cardTravel {
+    /* width: 190px;
+    height: 254px; */
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.712);
+    /* box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 ); */
+    backdrop-filter: blur(10px); /* Blur effect */
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    padding: 1rem;
+    border: 2px solid #c3c6ce;
+    transition: 0.5s ease-out;
+
+   }
+   
+ 
+   
+   .cardTravel-button {
+    transform: translate(-50%, 125%);
+    width: 60%;
+    border-radius: 1rem;
+    border: none;
+    background: rgb(255, 135, 65);
+    background: linear-gradient(
+      250deg,
+      rgba(255, 135, 65, 1) 15%,
+      rgba(255, 65, 65, 1) 65%
+    );
+    color: #fff;
+    font-size: 1rem;
+    padding: .2rem 1rem;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    opacity: 0;
+    transition: 0.3s ease-out;
+   }
+   
+   /* .text-body {
+    color: rgb(134, 134, 134);
+   } */
+   
+   /*Text*/
+   /* .text-title {
+    font-size: 1.5em;
+    font-weight: bold;
+   } */
+   
+   /*Hover*/
+   .cardTravel:hover {
+    border-color:  rgba(255, 135, 65, 1);
+    box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+   }
+   
+   .cardTravel:hover .cardTravel-button {
+    transform: translate(-50%, 50%);
+    opacity: 1;
+   }

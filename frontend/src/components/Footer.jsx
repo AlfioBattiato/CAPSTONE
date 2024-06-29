@@ -20,7 +20,7 @@ function Footer() {
             <p className="mb-0">Contatti: info@example.com</p>
             <p className="mb-0">Telefono: +1234567890</p>
             <hr />
-            <p className="mb-0">© 2024 Nome del tuo sito. Tutti i diritti riservati.</p>
+            <p className="mb-0">© 2024 TrailBlazer. Tutti i diritti riservati.</p>
         </div>
     );
 }

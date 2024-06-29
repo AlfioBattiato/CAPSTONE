@@ -107,7 +107,7 @@ function UpdateTravel() {
 
   return (
     <div className="container-fluid">
-      <h1 className="my-4">Modifica viaggio</h1>
+      <p className="my-4 fw-bold">Modifica viaggio</p>
       <Row className="mt-3 pb-5">
         <Col lg={2} className="border-start">
           <RouteInstructions />
@@ -116,7 +116,7 @@ function UpdateTravel() {
 
           <Maps />
           {/* <All_interest_places /> */}
-          <hr />
+        
           <div className="mt-5 d-flex justify-content-end">
 
             <Modal show={show} onHide={handleClose}>
@@ -189,7 +189,7 @@ function UpdateTravel() {
           </div>
         </Col>
 
-        <Col lg={5} className="border-end">
+        <Col lg={5} className="border-end"style={{height:'39rem'}}>
 
           <SetTravel />
           <SetTravelSettings />

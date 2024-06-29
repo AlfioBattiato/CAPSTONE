@@ -1,7 +1,25 @@
 body {
   background-color: #eff3f8 !important;
+ 
+}
+/* .container-fluid {
+  display: flex;
+  flex-direction: column;
 }
 
+.content {
+  flex: 1;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 20px; /* Aggiungi spazio in fondo */
+ 
+.rounded-25{
+  border-radius: 25px!important;
+}
 /* Nascondi la barra di scorrimento solo per WebKit */
 html::-webkit-scrollbar {
   display: none !important;
@@ -39,25 +57,6 @@ html::-webkit-scrollbar {
   height: min-content;
 }
 
-.purple-700 {
-  color: #69359c !important;
-}
-
-.bg-blue {
-  background-color: #05203c !important;
-}
-
-.btn-blue-dark {
-  background-color: #05203c !important;
-}
-
-.bg-blue-light {
-  background-color: #08325f !important;
-}
-
-.btn-blue-dark:hover {
-  background-color: #154679 !important;
-}
 
 .travelCard {
   cursor: pointer;
