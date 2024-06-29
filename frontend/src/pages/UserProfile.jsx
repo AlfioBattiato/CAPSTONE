@@ -113,7 +113,7 @@ const UserProfile = () => {
   const activeTravels = travels.filter((travel) => travel.active && travel.expiration_date >= currentDate);
 
   return (
-    <Container className="mt-5">
+    <Container className="pt-5 bg-light" style={{ height: "100vh" }}>
       <Row className="align-items-center">
         <Col md={3} className="text-center">
           <div
@@ -129,30 +129,48 @@ const UserProfile = () => {
           </div>
         </Col>
         <Col md={9}>
-          <h3>{profileUser.username}</h3>
-          {isOwner && (
-            <Button variant="primary" onClick={() => setShowModal(true)}>
-              Edit Profile
-            </Button>
-          )}
-          {!isOwner && (
-            <>
-              <Button variant="success" onClick={createOrOpenChat}>
-                Inizia Chat
-              </Button>
-              <Button variant="info" onClick={sendFriendRequest} className="ms-2">
-                Aggiungi Amico
-              </Button>
-            </>
-          )}
-          <Button variant="info" onClick={handleShowFriendsModal} className="ms-2">
-            Mostra Amici
-          </Button>
-          {isOwner && (
-            <Button variant="warning" onClick={handleShowRequestsModal} className="ms-2">
-              Visualizza Richieste
-            </Button>
-          )}
+          <Row className="d-flex align-items-center me-5">
+            <Col xs={9}>
+              <h3>{profileUser.username}</h3>
+            </Col>
+            <Col xs={3}>
+              <Row className="gy-2 text-center">
+                {isOwner && (
+                  <Col xs={12}>
+                    <Button onClick={() => setShowModal(true)} className="gradient-orange border-0 rounded-pill">
+                      Edit Profile
+                    </Button>
+                  </Col>
+                )}
+                {!isOwner && (
+                  <Col xs={12}>
+                    <Button onClick={createOrOpenChat} className="gradient-orange border-0 rounded-pill">
+                      Inizia Chat
+                    </Button>
+                  </Col>
+                )}
+                <Col xs={12}>
+                  <Button onClick={handleShowFriendsModal} className="gradient-orange border-0 rounded-pill">
+                    Mostra Amici
+                  </Button>
+                </Col>
+                {!isOwner && (
+                  <Col xs={12}>
+                    <Button onClick={sendFriendRequest} className="gradient-orange border-0 rounded-pill">
+                      Aggiungi Amico
+                    </Button>
+                  </Col>
+                )}
+                {isOwner && (
+                  <Col xs={12}>
+                    <Button onClick={handleShowRequestsModal} className="gradient-orange border-0 rounded-pill">
+                      Visualizza Richieste
+                    </Button>
+                  </Col>
+                )}
+              </Row>
+            </Col>
+          </Row>
         </Col>
       </Row>
 

@@ -1,6 +1,5 @@
 body {
   background-color: #eff3f8 !important;
- 
 }
 /* .container-fluid {
   display: flex;
@@ -16,9 +15,9 @@ body {
   justify-content: center;
   align-items: flex-end;
   padding-bottom: 20px; /* Aggiungi spazio in fondo */
- 
-.rounded-25{
-  border-radius: 25px!important;
+
+.rounded-25 {
+  border-radius: 25px !important;
 }
 /* Nascondi la barra di scorrimento solo per WebKit */
 html::-webkit-scrollbar {
@@ -56,7 +55,6 @@ html::-webkit-scrollbar {
 .vh-100 {
   height: min-content;
 }
-
 
 .travelCard {
   cursor: pointer;
@@ -343,4 +341,14 @@ html::-webkit-scrollbar {
 .friend-list {
   max-height: 300px;
   overflow-y: auto;
+}
+
+/* TEXT */
+
+.text-change {
+  color: #000;
+}
+
+.text-change:hover {
+  color: rgb(255, 135, 65);
 }
