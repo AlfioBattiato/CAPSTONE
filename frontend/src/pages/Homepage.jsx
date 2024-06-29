@@ -136,7 +136,7 @@ function Homepage() {
           <All_interest_places />
           {weatherData.length > 0 ? (
             <div className="p-2 rounded mt-2">
-              <p className="fw-bold">Ecco le informazioni meteo previste tra oggi e i prossimi 5 giorni</p>
+              <p className="fw-bold text-center mt-5">Ecco le informazioni meteo previste tra oggi e i prossimi 5 giorni</p>
               <Row className="row row-cols-auto justify-content-center gx-2 gy-2">
                 {weatherData
                   .slice(0, 33)
