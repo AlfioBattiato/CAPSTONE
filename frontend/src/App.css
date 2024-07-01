@@ -438,3 +438,7 @@ html::-webkit-scrollbar {
 .position-relative:hover .overlay {
   opacity: 1;
 }
+
+.social {
+  color: rgb(255, 113, 65);
+}
