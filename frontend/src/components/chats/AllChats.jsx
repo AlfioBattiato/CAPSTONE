@@ -20,10 +20,7 @@ const AllChats = () => {
     axios
       .get("/api/chats")
       .then((response) => {
-        const uniqueChats = Array.from(new Set(response.data.map((chat) => chat.id))).map((id) => {
-          return response.data.find((chat) => chat.id === id);
-        });
-        dispatch(setChats(uniqueChats));
+        dispatch(setChats(response.data));
       })
       .catch((error) => {
         console.error("Failed to fetch chats", error);
