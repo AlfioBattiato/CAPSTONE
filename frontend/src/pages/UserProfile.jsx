@@ -55,6 +55,7 @@ const UserProfile = () => {
       const existingChat = response.data.find(
         (chat) =>
           chat.type === "private" &&
+          chat.users &&
           chat.users.some((user) => user.id === profileUser.id) &&
           chat.users.some((user) => user.id === loggedInUser.id)
       );

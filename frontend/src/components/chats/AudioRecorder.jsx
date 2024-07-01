@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import { Button } from "react-bootstrap";
 import { HiMicrophone } from "react-icons/hi2";
 
 const AudioRecorder = ({ onAudioRecorded }) => {
