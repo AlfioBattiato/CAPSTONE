@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Modal, Form, Button, ListGroup, Image, Alert } from "react-bootstrap";
+import { Modal, Form, Button, ListGroup, Image, Alert, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setChats } from "../../../redux/actions";
 import { useChannel } from "ably/react";
+import { FaPencil } from "react-icons/fa6";
 
 const CreateGroupModal = ({ show, handleClose }) => {
   const [groupName, setGroupName] = useState("");
@@ -108,72 +109,84 @@ const CreateGroupModal = ({ show, handleClose }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
+    <Modal show={show} onHide={handleClose} centered size="lg">
+      <Modal.Header className="bg-black text-white">
         <Modal.Title>Crea Nuovo Gruppo</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
         <Form onSubmit={handleCreateGroup}>
-          <div className="d-flex align-items-center mb-3">
-            <div
-              className="border rounded-circle overflow-hidden"
-              style={{ width: "100px", height: "100px", margin: "0 auto", cursor: "pointer" }}
-              onClick={() => fileInputRef.current.click()}
-            >
-              <Image
-                src={imagePreview || "default-profile-image-url"}
-                alt="group_img"
-                className="w-100 h-100"
-                style={{ objectFit: "cover" }}
-              />
-            </div>
-            <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleImageChange} />
-          </div>
-          <Form.Group className="mb-3">
-            <Form.Label>Nome Gruppo</Form.Label>
-            <Form.Control
-              type="text"
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
-              placeholder="Inserisci nome gruppo"
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Seleziona Amici</Form.Label>
-            <ListGroup>
-              {friends.map((friend) => (
-                <ListGroup.Item
-                  key={friend.id}
-                  className={`d-flex justify-content-between align-items-center ${
-                    selectedFriends.includes(friend.id) ? "selected-friend" : ""
-                  }`}
-                  onClick={() => handleFriendSelect(friend.id)}
-                >
-                  <div className="d-flex align-items-center">
-                    <Image
-                      src={friend.profile_img || "path/to/default-profile-image.jpg"}
-                      roundedCircle
-                      style={{ width: "40px", height: "40px", marginRight: "10px" }}
-                    />
-                    <span>{friend.username}</span>
-                  </div>
-                  <Button variant={selectedFriends.includes(friend.id) ? "danger" : "primary"}>
-                    {selectedFriends.includes(friend.id) ? "Rimuovi" : "Inserisci"}
-                  </Button>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          </Form.Group>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Annulla
-            </Button>
-            <Button variant="primary" type="submit">
-              Crea
-            </Button>
-          </Modal.Footer>
+          <Row className="mt-4">
+            <Col xs={12} md={4} className="d-flex align-items-center">
+              <div
+                className="position-relative border rounded-circle overflow-hidden"
+                style={{ width: "200px", height: "200px", margin: "0 auto", cursor: "pointer" }}
+                onClick={() => fileInputRef.current.click()}
+              >
+                <img
+                  src={imagePreview || "default-profile-image-url"}
+                  alt="group_img"
+                  className="w-100 h-100"
+                  style={{ objectFit: "cover" }}
+                />
+                <div className="overlay">
+                  <FaPencil className="text-black" style={{ fontSize: "1.5rem" }} />
+                </div>
+              </div>
+              <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleImageChange} />
+            </Col>
+            <Col xs={12} md={8}>
+              <Form.Group className="mb-5">
+                <Form.Label className="fw-bold">Nome Gruppo</Form.Label>
+                <Form.Control
+                  type="text"
+                  className="search-input"
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  placeholder="Inserisci nome gruppo"
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label className="fw-bold">Seleziona Amici</Form.Label>
+                <ListGroup className="custom-scrollbar" style={{ maxHeight: "200px" }}>
+                  {friends.map((friend) => (
+                    <ListGroup.Item
+                      key={friend.id}
+                      className={`d-flex justify-content-between align-items-center ${
+                        selectedFriends.includes(friend.id) ? "bg-black text-white" : ""
+                      }`}
+                      onClick={() => handleFriendSelect(friend.id)}
+                    >
+                      <div className="d-flex align-items-center">
+                        <Image
+                          src={friend.profile_img || "path/to/default-profile-image.jpg"}
+                          roundedCircle
+                          style={{ width: "40px", height: "40px", marginRight: "10px" }}
+                        />
+                        <span>{friend.username}</span>
+                      </div>
+                      <Button
+                        className={`ms-2 border-0 rounded-pill ${
+                          selectedFriends.includes(friend.id) ? "black-white-button" : "gradient-orange"
+                        }`}
+                      >
+                        {selectedFriends.includes(friend.id) ? "Rimuovi" : "Inserisci"}
+                      </Button>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              </Form.Group>
+            </Col>
+            <Modal.Footer>
+              <Button className="black-white-button border-0" onClick={handleClose}>
+                Annulla
+              </Button>
+              <Button className="gradient-orange border-0" type="submit">
+                Crea
+              </Button>
+            </Modal.Footer>
+          </Row>
         </Form>
       </Modal.Body>
     </Modal>

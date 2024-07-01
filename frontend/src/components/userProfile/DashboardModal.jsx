@@ -5,14 +5,14 @@ import Dashboard from "./Dashboard";
 const DashboardModal = ({ show, onClose, onProfileImageUpdate }) => {
   return (
     <Modal show={show} onHide={onClose} centered size="lg">
-      <Modal.Header closeButton>
+      <Modal.Header className="bg-black text-white">
         <Modal.Title>Modifica Profilo</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="px-0">
         <Dashboard onProfileImageUpdate={onProfileImageUpdate} />
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
+        <Button className="gradient-orange border-0" onClick={onClose}>
           Chiudi
         </Button>
       </Modal.Footer>

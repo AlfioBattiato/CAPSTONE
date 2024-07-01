@@ -10,9 +10,8 @@ const FriendsModal = ({ show, onClose, userId }) => {
 
   useEffect(() => {
     if (show && userId) {
-      // Assicurati che userId sia definito prima di fare la chiamata API
       axios
-        .get(`/api/users/${userId}/friends`) // Usa userId per ottenere gli amici
+        .get(`/api/users/${userId}/friends`)
         .then((response) => {
           setFriends(response.data);
           setLoadingFriends(false);
@@ -26,22 +25,40 @@ const FriendsModal = ({ show, onClose, userId }) => {
 
   return (
     <Modal show={show} onHide={onClose} centered size="lg">
-      <Modal.Header closeButton>
+      <Modal.Header className="bg-black text-white">
         <Modal.Title>I miei amici</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="p-4">
         {loadingFriends ? (
           <Spinner animation="border" />
         ) : friends.length > 0 ? (
-          <ListGroup>
+          <ListGroup className="custom-scrollbar" style={{ maxHeight: "300px" }}>
             {friends.map((friend) => (
-              <ListGroup.Item key={friend.id} action onClick={() => navigate(`/profile/${friend.id}`)}>
-                <Image
-                  src={friend.profile_img || "path/to/default-profile-image.jpg"}
-                  roundedCircle
-                  style={{ width: "40px", height: "40px", marginRight: "10px" }}
-                />
-                <span>{friend.username}</span>
+              <ListGroup.Item key={friend.id} className="d-flex justify-content-between align-items-center">
+                <div className="d-flex align-items-center">
+                  <Image
+                    src={friend.profile_img || "path/to/default-profile-image.jpg"}
+                    roundedCircle
+                    style={{ width: "40px", height: "40px" }}
+                  />
+                  <p
+                    className="mb-0"
+                    style={{
+                      textDecoration: "none",
+                      fontSize: "1.2rem",
+                      marginLeft: "2rem",
+                    }}
+                  >
+                    {friend.username}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  className="ms-2 gradient-orange border-0 rounded-pill"
+                  onClick={() => navigate(`/profile/${friend.id}`)}
+                >
+                  Visita il Profilo
+                </Button>
               </ListGroup.Item>
             ))}
           </ListGroup>
@@ -50,7 +67,7 @@ const FriendsModal = ({ show, onClose, userId }) => {
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
+        <Button className="gradient-orange border-0" onClick={onClose}>
           Chiudi
         </Button>
       </Modal.Footer>

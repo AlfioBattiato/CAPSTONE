@@ -1,8 +1,9 @@
-import { useSelector, useDispatch } from "react-redux";
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import { Container, Row, Col, Alert, Spinner, Button } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
 import { LOGIN } from "../../redux/actions";
+import { FaPencil } from "react-icons/fa6";
 
 function Dashboard({ onProfileImageUpdate }) {
   const user = useSelector((state) => state.auth.user);
@@ -58,26 +59,24 @@ function Dashboard({ onProfileImageUpdate }) {
   };
 
   return (
-    <Container className="pt-5">
+    <Container className="pt-2">
       {message && <Alert variant="success">{message}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
-      <Row className="p-5 w-100">
-        <Col xs={12} md={4} className="text-center">
+      <Row className="py-5 px-4 w-100">
+        <Col xs={12} md={4} className="text-center pe-5">
           <div
-            className="border rounded-circle overflow-hidden"
-            style={{ width: "200px", height: "200px", margin: "0 auto" }}
+            className="position-relative border rounded-circle overflow-hidden"
+            style={{ width: "200px", height: "200px", margin: "0 auto", cursor: "pointer" }}
             onClick={() => fileInputRef.current.click()}
           >
-            <img
-              src={user.profile_img}
-              alt="profile_img"
-              className="w-100 h-100"
-              style={{ objectFit: "cover", cursor: "pointer" }}
-            />
+            <img src={user.profile_img} alt="profile_img" className="w-100 h-100" style={{ objectFit: "cover" }} />
+            <div className="overlay">
+              <FaPencil className="text-black" style={{ fontSize: "1.5rem" }} />
+            </div>
           </div>
           <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleImageChange} />
         </Col>
-        <Col xs={12} md={8}>
+        <Col xs={12} md={8} className="ps-4">
           <Row>
             <Col xs={6}>
               <p className="fw-bold">
@@ -85,7 +84,7 @@ function Dashboard({ onProfileImageUpdate }) {
               </p>
             </Col>
             <Col xs={6} className="text-end">
-              <Button variant="link" className="fw-bold text-primary p-0">
+              <Button variant="link" className="fw-bold text-change p-0">
                 Change
               </Button>
             </Col>
@@ -96,7 +95,7 @@ function Dashboard({ onProfileImageUpdate }) {
               </p>
             </Col>
             <Col xs={6} className="text-end">
-              <Button variant="link" className="fw-bold text-primary p-0">
+              <Button variant="link" className="fw-bold text-change p-0">
                 Change
               </Button>
             </Col>
@@ -110,7 +109,7 @@ function Dashboard({ onProfileImageUpdate }) {
               {spinner ? (
                 <Spinner animation="grow" size="sm" />
               ) : (
-                <Button variant="link" className="fw-bold text-primary p-0" onClick={handleResetPassword}>
+                <Button variant="link" className="fw-bold text-change p-0" onClick={handleResetPassword}>
                   Change
                 </Button>
               )}

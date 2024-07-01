@@ -4,7 +4,14 @@ import { Card, Dropdown } from "react-bootstrap";
 import { useChannel, useConnectionStateListener } from "ably/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { openChat, closeChat, incrementUnreadCount, decrementUnreadCount, resetUnreadCount } from "../../redux/actions";
+import {
+  openChat,
+  closeChat,
+  incrementUnreadCount,
+  decrementUnreadCount,
+  resetUnreadCount,
+  setChats,
+} from "../../redux/actions";
 import MessageList from "./MessageList";
 import MessageForm from "./MessageForm";
 import EditGroupModal from "./modals/EditGroupModal";
@@ -15,6 +22,8 @@ const Chat = ({ chat, globalChannel }) => {
   const [messages, setMessages] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
+  const [groupImage, setGroupImage] = useState(chat.image); // Stato per l'immagine del gruppo
+  const [groupName, setGroupName] = useState(chat.name); // Stato per il nome del gruppo
   const messagesEndRef = useRef(null);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -63,6 +72,12 @@ const Chat = ({ chat, globalChannel }) => {
   useConnectionStateListener("connected", () => {
     console.log("Connected to Ably!");
   });
+
+  // Sincronizza lo stato locale con le props
+  useEffect(() => {
+    setGroupImage(chat.image);
+    setGroupName(chat.name);
+  }, [chat]);
 
   useEffect(() => {
     dispatch(openChat(chat.id));
@@ -167,19 +182,27 @@ const Chat = ({ chat, globalChannel }) => {
       });
   };
 
+  const handleImageUpdate = (newImage) => {
+    setGroupImage(newImage);
+  };
+
+  const handleNameUpdate = (newName) => {
+    setGroupName(newName);
+  };
+
   const otherUser = chat.users?.find((u) => u.id !== user.id);
 
   return (
     <Card className="d-flex flex-column h-100 bg-light border-0" style={{ color: "#000" }}>
-      <Card.Header className="bg-dark text-white fs-2 d-flex align-items-center border-bottom rounded-0 justify-content-between">
+      <Card.Header className="bg-black text-white fs-2 d-flex align-items-center border-bottom rounded-0 justify-content-between">
         <div className="d-flex align-items-center">
           <img
-            src={chat.type === "group" ? chat.image : otherUser?.profile_img || "default-profile-image-url"}
+            src={chat.type === "group" ? groupImage : otherUser?.profile_img || "default-profile-image-url"}
             alt="Chat"
             className="rounded-circle me-3"
             style={{ width: "40px", height: "40px", objectFit: "cover" }}
           />
-          {chat.name ||
+          {groupName ||
             (chat.type === "group" ? (
               "Group Chat"
             ) : otherUser ? (
@@ -230,7 +253,13 @@ const Chat = ({ chat, globalChannel }) => {
 
       <ViewMembersModal show={showMembersModal} handleClose={() => setShowMembersModal(false)} chatId={chat.id} />
 
-      <EditGroupModal show={showEditModal} handleClose={() => setShowEditModal(false)} chat={chat} />
+      <EditGroupModal
+        show={showEditModal}
+        handleClose={() => setShowEditModal(false)}
+        chat={chat}
+        onImageUpdate={handleImageUpdate}
+        onNameUpdate={handleNameUpdate}
+      />
     </Card>
   );
 };
