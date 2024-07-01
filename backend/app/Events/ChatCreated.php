@@ -1,15 +1,17 @@
 <?php
 
+// App\Events\ChatCreated.php
+
 namespace App\Events;
 
 use App\Models\Chat;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class ChatCreated implements ShouldBroadcast
 {
@@ -27,10 +29,13 @@ class ChatCreated implements ShouldBroadcast
         return new Channel('chat-list');
     }
 
+    public function broadcastAs()
+    {
+        return 'chat.created';
+    }
+
     public function broadcastWith()
     {
-        Log::info('ChatCreated Event Broadcasting', ['chat' => $this->chat]);
         return ['chat' => $this->chat];
     }
 }
-

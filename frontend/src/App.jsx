@@ -62,7 +62,14 @@ function App() {
               <Route path="/dashboard/:id" element={<Dashboard />} />
               <Route path="/homepage/" element={<Homepage />} />
               <Route path="/createInterestPlace" element={<CreateInterestPlace />} />
-              <Route path="/profile/:id" element={<UserProfile />} />
+              <Route
+                path="/profile/:id"
+                element={
+                  <ChannelProvider channelName="chat-list">
+                    <UserProfile />
+                  </ChannelProvider>
+                }
+              />
               <Route path="/infoTravel/:id" element={<Infotravel />} />
               <Route path="/updateTravel/:id" element={<UpdateTravel />} />
 

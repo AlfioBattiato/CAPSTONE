@@ -8,6 +8,7 @@ import DashboardModal from "../components/userProfile/DashboardModal";
 import FriendsModal from "../components/userProfile/FriendsModal";
 import RequestsModal from "../components/userProfile/RequestsModal";
 import TravelCard from "../components/card/TravelCard";
+import { useChannel } from "ably/react";
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -20,6 +21,7 @@ const UserProfile = () => {
   const [showRequestsModal, setShowRequestsModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { channel: chatListChannel } = useChannel("chat-list");
 
   useEffect(() => {
     axios
@@ -70,6 +72,9 @@ const UserProfile = () => {
         dispatch(setChats(updatedChatsResponse.data));
 
         const updatedChat = updatedChatsResponse.data.find((chat) => chat.id === newChat.id);
+
+        // Pubblica l'evento chat.created su chatListChannel
+        chatListChannel.publish("chat.created", { chat: newChat });
 
         dispatch(setSelectedChat(updatedChat));
         navigate("/lobbies");
