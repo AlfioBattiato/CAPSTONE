@@ -69,7 +69,7 @@ export default function FilterTravel({ setTravels }) {
 
         if (startDate) {
             const formattedDate = format(startDate, 'dd/MM/yyyy');
-            filteredTravels = filteredTravels.filter((travel) => travel.departure_date === formattedDate);
+            filteredTravels = filteredTravels.filter((travel) => format(travel.departure_date, 'dd/MM/yyyy') === formattedDate);
         }
 
         const selectedCcs = Object.keys(checkboxes2).filter(key => checkboxes2[key]);
