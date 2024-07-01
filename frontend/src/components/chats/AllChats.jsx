@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Card, Button, ButtonGroup, Form } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { setChats, setSelectedChat, resetUnreadCount } from "../../redux/actions";
+import { setChats, setSelectedChat, resetUnreadCount, addChat } from "../../redux/actions";
 import ChatList from "./ChatList";
 import CreateGroupModal from "./modals/CreateGroupModal";
+import { useChannel } from "ably/react";
 
 const AllChats = () => {
   const chats = useSelector((state) => state.chats.chats);
@@ -15,15 +16,33 @@ const AllChats = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
+  const fetchChats = () => {
     axios
       .get("/api/chats")
       .then((response) => {
-        dispatch(setChats(response.data));
+        const uniqueChats = Array.from(new Set(response.data.map((chat) => chat.id))).map((id) => {
+          return response.data.find((chat) => chat.id === id);
+        });
+        dispatch(setChats(uniqueChats));
       })
       .catch((error) => {
         console.error("Failed to fetch chats", error);
       });
+  };
+
+  const { channel: chatListChannel } = useChannel("chat-list", (message) => {
+    console.log("Received message on chat-list channel:", message);
+
+    if (message.name === "chat.created") {
+      const newChat = message.data.chat;
+      console.log("New chat received:", newChat);
+      dispatch(addChat(newChat));
+      fetchChats();
+    }
+  });
+
+  useEffect(() => {
+    fetchChats();
   }, [dispatch]);
 
   const handleChatClick = (chat) => {
@@ -89,6 +108,7 @@ const AllChats = () => {
           onChatClick={handleChatClick}
           selectedChat={selectedChat}
           unreadCounts={unreadCounts}
+          chatListChannel={chatListChannel}
         />
       </Card.Body>
 

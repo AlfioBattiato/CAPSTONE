@@ -8,6 +8,7 @@ import {
   DECREMENT_UNREAD_COUNT,
   RESET_UNREAD_COUNT,
   RESET_CHATS,
+  ADD_CHAT,
 } from "../actions";
 
 const initialState = {
@@ -19,6 +20,11 @@ const initialState = {
 
 const chatReducer = (state = initialState, action) => {
   switch (action.type) {
+    case ADD_CHAT:
+      return {
+        ...state,
+        chats: [...state.chats, action.payload],
+      };
     case SET_CHATS:
       return {
         ...state,

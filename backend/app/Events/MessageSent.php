@@ -20,7 +20,7 @@ class MessageSent implements ShouldBroadcast
     public function __construct(Message $message)
     {
         $this->message = $message;
-        Log::info('MessageSent Event Constructed', ['message' => $message]);
+        // Log::info('MessageSent Event Constructed', ['message' => $message]);
     }
 
     public function broadcastOn()

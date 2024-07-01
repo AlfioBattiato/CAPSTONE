@@ -1,7 +1,12 @@
 import React from "react";
 import { ListGroup, Image } from "react-bootstrap";
+import { v4 as uuidv4 } from "uuid";
 
-const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
+const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts, chatListChannel }) => {
+  const generateUniqueKey = (chat) => {
+    return `${chat.id}-${chat.type}-${chat.created_at}-${uuidv4()}`;
+  };
+
   return (
     <ListGroup className="custom-scrollbar chat-list bg-light rounded-0 border-0 flex-grow-1">
       {Array.isArray(chats) && chats.length > 0 ? (
@@ -21,7 +26,7 @@ const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
 
           return (
             <ListGroup.Item
-              key={chat.id}
+              key={generateUniqueKey(chat)} // Usa una chiave unica combinando l'id, il tipo, la data di creazione e un UUID
               onClick={() => onChatClick(chat)}
               className={`chat-item bg-light rounded-0 py-3 border-0 my-1 btn fs-4 text-start ${
                 selectedChat && selectedChat.id === chat.id ? "selected-chat" : "default-chat"

@@ -3,6 +3,7 @@ import { Modal, Form, Button, ListGroup, Image, Alert } from "react-bootstrap";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setChats } from "../../../redux/actions";
+import { useChannel } from "ably/react";
 
 const CreateGroupModal = ({ show, handleClose }) => {
   const [groupName, setGroupName] = useState("");
@@ -15,6 +16,8 @@ const CreateGroupModal = ({ show, handleClose }) => {
   const dispatch = useDispatch();
   const chats = useSelector((state) => state.chats.chats);
   const user = useSelector((state) => state.auth.user);
+
+  const { channel: chatListChannel } = useChannel("chat-list");
 
   useEffect(() => {
     axios
@@ -85,7 +88,13 @@ const CreateGroupModal = ({ show, handleClose }) => {
         },
       })
       .then((response) => {
-        dispatch(setChats([...chats, response.data]));
+        const newChat = response.data;
+
+        dispatch(setChats([...chats, newChat]));
+
+        // Publish to Ably channel
+        chatListChannel.publish("chat.created", { chat: newChat });
+
         handleClose();
         setGroupName("");
         setSelectedImage(null);

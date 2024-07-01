@@ -8,6 +8,8 @@ export const LOGOUT = "logout";
 export const OPEN_CHAT = "OPEN_CHAT";
 export const CLOSE_CHAT = "CLOSE_CHAT";
 
+export const ADD_CHAT = "ADD_CHAT";
+
 export const SET_CHATS = "SET_CHATS";
 export const SET_SELECTED_CHAT = "SET_SELECTED_CHAT";
 export const RESET_CHATS = "RESET_CHATS";
@@ -47,6 +49,12 @@ export const closeChat = (chatId) => {
     payload: chatId,
   };
 };
+
+// ADD
+export const addChat = (chat) => ({
+  type: ADD_CHAT,
+  payload: chat,
+});
 
 // SET
 export const setChats = (chats) => {
