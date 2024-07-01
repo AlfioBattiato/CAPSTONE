@@ -8,11 +8,12 @@ import Maps from "../components/maps/Maps";
 import SetTravelSettings from "../components/maps/SetTravelSettings";
 import RouteInstructions from "../components/maps/RouteInstructions";
 import All_interest_places from "../components/interest_places/All_interest_places";
-import Meteo from "../components/meteo";
 import Modal from "react-bootstrap/Modal";
 import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
 import { removeMeta, setCurrentTravel, setFormData, setMetas } from "../redux/actions";
 import { LOGIN } from "../redux/actions";
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 
 function UpdateTravel() {
   const { id } = useParams();
@@ -69,7 +70,15 @@ function UpdateTravel() {
     dispatch(removeMeta(index));
   };
 
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
 
+    const reorderedMetas = Array.from(infotravels.metas);
+    const [removed] = reorderedMetas.splice(result.source.index, 1);
+    reorderedMetas.splice(result.destination.index, 0, removed);
+
+    dispatch(setMetas(reorderedMetas));
+};
 
   const submit = async (ev) => {
     ev.preventDefault()
@@ -115,7 +124,7 @@ function UpdateTravel() {
         <Col lg={5}>
 
           <Maps />
-          {/* <All_interest_places /> */}
+          <All_interest_places />
         
           <div className="mt-5 d-flex justify-content-end">
 
@@ -143,22 +152,38 @@ function UpdateTravel() {
                 <span>Mete:</span>
 
                 {metas.length > 0 ? (
-                  <ul className="list-group mt-1">
-                    {metas.map((meta, index) => (
-                      <div key={index} className="d-flex mt-1 align-items-center ps-0 gap-2">
-                        <FaMapMarkerAlt className="text-danger" />
-                        <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
-                          {meta.city ? meta.city : meta.name_location}
-                          <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
-                            <FaTrash />
-                          </button>
-                        </li>
-                      </div>
-                    ))}
-                  </ul>
-                ) : (
-                  <span className="text-danger ms-1">Inserisci almeno una meta</span>
-                )}
+  <DragDropContext onDragEnd={onDragEnd}>
+    <Droppable droppableId="metas">
+      {(provided) => (
+        <ul className="list-group mt-1" {...provided.droppableProps} ref={provided.innerRef}>
+          {metas.map((meta, index) => (
+            <Draggable key={index} draggableId={`${index}`} index={index}>
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  className="d-flex mt-1 align-items-center ps-0 gap-2"
+                >
+                  <FaMapMarkerAlt className="text-danger" />
+                  <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
+                    {meta.city ? meta.city : meta.name_location}
+                    <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
+                      <FaTrash />
+                    </button>
+                  </li>
+                </div>
+              )}
+            </Draggable>
+          ))}
+          {provided.placeholder}
+        </ul>
+      )}
+    </Droppable>
+  </DragDropContext>
+) : (
+  <span className="text-danger ms-1">Inserisci almeno una meta</span>
+)}
                 <p className="mt-2">
                   Tipo moto:{" "}
                   {travel.type_moto ? (
@@ -178,12 +203,10 @@ function UpdateTravel() {
               </Modal.Body>
 
               <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                  Close
-                </Button>
-                <Button variant="primary" onClick={submit}>
-                  Modifica
-                </Button>
+                
+                <button className="btnT w-50" onClick={submit}>
+                  Conferma Modifica
+                </button>
               </Modal.Footer>
             </Modal>
           </div>
@@ -193,10 +216,10 @@ function UpdateTravel() {
 
           <SetTravel />
           <SetTravelSettings />
-          <div className="mt-5 d-flex justify-content-start">
-            <Button variant="success" onClick={handleShow}>
+          <div className="my-5 d-flex justify-content-start ">
+            <button className="mb-2 btnT w-50"  onClick={handleShow}>
               Modifica viaggio
-            </Button>
+            </button>
           </div>
         </Col>
       </Row>

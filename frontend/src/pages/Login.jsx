@@ -87,7 +87,7 @@ function Login() {
           <form onSubmit={submitLogin} noValidate>
             <div className="mb-3">
               <label htmlFor="email" className="form-label fw-bold">
-                Email address
+                Email 
               </label>
               <input
                 type="email"
@@ -114,7 +114,7 @@ function Login() {
             </div>
 
             <button type="submit" className="btn gradient-orange text-white border-0">
-              Login
+              Entra
             </button>
           </form>
           <div className="mt-5 pt-5">

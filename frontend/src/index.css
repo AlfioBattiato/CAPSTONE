@@ -121,3 +121,6 @@
   color: white;
 
 }
+.cursor:hover{
+  cursor: pointer;
+}

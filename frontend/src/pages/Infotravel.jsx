@@ -1,12 +1,19 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Col, Row } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import RoutingMachine from '../components/maps/RoutingMachine';
 import { useDispatch, useSelector } from "react-redux";
+import { SiGooglemaps } from "react-icons/si";
+import { FaTrash, FaMotorcycle, FaSuperpowers } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
+import { BsCalendarFill, BsFillCalendar2CheckFill } from "react-icons/bs";
+import { LiaCalendarSolid } from "react-icons/lia";
+import { FaPeopleRobbery } from "react-icons/fa6";
+
 
 function Infotravel() {
   const { id } = useParams();
@@ -79,7 +86,13 @@ function Infotravel() {
         console.error(err);
       });
   };
-
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
   const approveGuest = (user_id) => {
     axios
       .get("/sanctum/csrf-cookie")
@@ -116,8 +129,99 @@ function Infotravel() {
       {travel ? (
         <>
           <Row className="mt-3">
+
             <Col md={6}>
-              <MapContainer center={position} zoom={5} style={{ height: '40rem', width: '100%', borderRadius: '25px' }}>
+              {authUserRole !== 'creator_travel' ? (
+                <div className="mb-2">
+                  <Button disabled={disable} variant="success" onClick={addGuest}>Chiedi di partecipare</Button>
+                  {disable && (<p className="text-success">Richiesta inviata!Attendi di essere accettato dall&apos;amministratore del viaggio</p>)}
+                </div>
+              ) : (
+                <>
+
+                  <div className="d-flex  ">
+                    <div className="  d-flex social cursor align-items-center border-end border-1 border-dark">
+                      <span className="me-2  fs-5" onClick={() => navigate(`/updateTravel/${travel.id}`)}>Modifica    <MdEdit /></span>
+                    </div>
+                    <div className="d-flex text-danger cursor align-items-center ms-2 ">
+                      <span className="me-2 fs-5" onClick={destroy}>Elimina viaggio  <FaTrash /> </span>
+                    </div>
+
+                  </div>
+                  <hr />
+                </>
+              )}
+              <h4>{travel.start_location}</h4>
+              <p><BsCalendarFill /> Data di partenza: <span className="fw-bold">{formatDate(travel.departure_date)}</span> </p>
+              <p><BsFillCalendar2CheckFill /> Data di arrivo: <span className="fw-bold">{formatDate(travel.expiration_date)}</span> </p>
+              <p><LiaCalendarSolid /> Giorni in viaggio: <span className="fw-bold">{travel.days}</span> </p>
+              <p><FaMotorcycle /> Tipologia di Moto: <span className="fw-bold">{travel.type_moto}</span></p>
+              <p><FaSuperpowers /> Cavalli minimi per partecipare: <span className="fw-bold">{travel.cc_moto}</span> </p>
+              <p><FaPeopleRobbery /> Participanti attuali: <span className="fw-bold">{activeParticipants.length}</span> </p>
+
+              {activeParticipants && activeParticipants.length > 0 && (
+                <div className="my-2 gap-2 border rounded p-1 bg-white">
+                  {activeParticipants.map((user, index) => (
+                    <Link className="nav-link" to={`/profile/${user.id}`} key={index}>
+                      <div>
+                        <li className="list-group-item py-2 w-100 gap-2 overflow-hidden ps-2 d-flex align-items-center bg-secondary bg-opacity-10">
+                          <img src={user.profile_img} alt="Profile" className="img_profile" />
+                          <span>{user.username}</span>
+                          <span>{user.pivot.role === 'creator_travel' ? '(Amministratore)' : '(Participante)'}</span>
+                        </li>
+                        <hr className="m-0" />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+
+              {authUserRole === 'creator_travel' && participantsPending.length > 0 && (
+                <>
+                  <p className="fw-bold mb-0 mt-3">Richieste di partecipazione:</p>
+                  {participantsPending.map((user, index) => (
+                    <div key={index} className="d-flex mt-1 align-items-center my-2 gap-2 border rounded p-1">
+                      <Link className="nav-link" to={`/profile/${user.id}`}>
+                        <li className="list-group-item rounded w-100 gap-2 overflow-hidden d-flex align-items-center">
+                          <img src={user.profile_img} alt="Profile" className="img_profile" />
+                          <span>{user.email}</span>
+                          <span>{user.pivot.role === 'creator_travel' ? '(Amministratore)' : '(Participante)'}</span>
+                          <span className="text-success cursor" onClick={() => approveGuest(user.id)}>Accetta</span>
+                          <span className="text-danger cursor" onClick={() => rejectGuest(user.id)}>Rifiuta</span>
+                        </li>
+                      </Link>
+                    </div>
+                  ))}
+                </>
+              )}
+
+
+            </Col>
+            <Col md={6}>
+              {travel.metas && travel.metas.length > 0 && (
+                <div className="my-2 gap-2 border rounded p-3 bg-white">
+                  <p className="fw-bold">Tappe:</p>
+                  <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden mb-2 d-flex gap-2 align-items-center">
+                    1 -  <SiGooglemaps className="text-danger" /> {travel.start_location}
+                  </li>
+                  {travel.metas.map((meta, index) => (
+                    <div key={index}>
+                      <li className="mb-2 list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex gap-2 align-items-center">
+                        {index + 2} :   <SiGooglemaps className="text-danger" /> {meta.name_location}
+                      </li>
+                    </div>
+
+
+
+                  ))}
+                </div>
+              )}
+
+
+            </Col>
+            <Col md={12}>
+              <MapContainer center={position} zoom={5} style={{ height: '40rem', width: '100%', borderRadius: '25px', marginBlock: '1rem' }}>
                 <TileLayer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -143,66 +247,13 @@ function Infotravel() {
                 )}
               </MapContainer>
             </Col>
-            <Col md={6}>
-              <h4>{travel.start_location}</h4>
-              <p>Departure Date: {travel.departure_date}</p>
-              <p>Expiration Date: {travel.expiration_date}</p>
-              <p>Type of Moto: {travel.type_moto}</p>
-              <p>CC of Moto: {travel.cc_moto}</p>
-              <p>Days: {travel.days}</p>
-              <p>Participanti: {activeParticipants.length}</p>
-
-              {activeParticipants && activeParticipants.length > 0 && (
-                <div className="my-2 gap-2 border rounded p-1 bg-white">
-                  {activeParticipants.map((user, index) => (
-
-                  
-                      <li key={index} className="list-group-item py-2 w-100 gap-2 overflow-hidden border-bottom d-flex align-items-center">
-                        <img src={user.profile_img} alt="Profile" className="img_profile" />
-                        <span>{user.username}</span>
-                        <span>{user.pivot.role === 'creator_travel' ? '(Administrator)' : ' (Participant)'}</span>
-                      </li>
-                   
-                 
-                  ))}
-                </div>
-              )}
-
-              {authUserRole === 'creator_travel' && participantsPending.length > 0 && (
-                <>
-                  <p className="fw-bold mb-0 mt-3">Pending Participation Requests:</p>
-                  {participantsPending.map((user, index) => (
-                    <div key={index} className="d-flex mt-1 align-items-center my-2 gap-2 border rounded p-1">
-                      <li className="list-group-item rounded w-100 gap-2 overflow-hidden d-flex align-items-center">
-                        <img src={user.profile_img} alt="Profile" className="img_profile" />
-                        <span>{user.email}</span>
-                        <span>{user.pivot.role === 'creator_travel' ? '(Administrator)' : ' (Participant)'}</span>
-                        <span className="text-success" onClick={() => approveGuest(user.id)}>Accetta</span>
-                        <span className="text-danger" onClick={() => rejectGuest(user.id)}>Rifiuta</span>
-                      </li>
-                    </div>
-                  ))}
-                </>
-              )}
-
-              {authUserRole !== 'creator_travel' ? (
-                <>
-                  <Button disabled={disable} variant="success" onClick={addGuest}>Chiedi di partecipare</Button>
-                  {disable && (<p className="text-success">Richiesta inviata!Attendi di essere accettato dall&apos;amministratore del viaggio</p>)}
-                </>
-              ) : (
-                <>
-                  <Button variant="danger me-2" onClick={destroy}>Elimina viaggio</Button>
-                  <Button variant="warning"onClick={()=>navigate(`/updateTravel/${travel.id}`)}>Modifica</Button>
-                </>
-              )}
-            </Col>
           </Row>
         </>
       ) : (
         <p>Loading travel details...</p>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }
 

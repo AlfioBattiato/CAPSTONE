@@ -48,13 +48,13 @@ const RouteInstructions = () => {
       {map_instructions && map_instructions.instructions ? (
         <React.Fragment>
           <p className="fw-bold">Istruzioni</p>
-          <div className="d-flex justify-content-between">
+          <div className="d-flex flex-wrap justify-content-between">
             <p className="mb-0">Distanza totale:</p>
             <Badge bg="primary">{(map_instructions.summary.totalDistance / 1000).toFixed(2)} km</Badge>
 
 
           </div>
-          <div className="mt-2 d-flex justify-content-between">
+          <div className="mt-2 d-flex flex-wrap justify-content-between">
             <p className="mb-0">Tempo totale: </p>
             <Badge bg="success">{formatTime(map_instructions.summary.totalTime)}</Badge>
 

@@ -1,34 +1,39 @@
-import { useEffect, useState } from 'react';
-import { Marker, Popup } from 'react-leaflet';
+import React, { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { useDispatch, useSelector } from 'react-redux';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
-
+import { useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
 import RoutingMachine from './RoutingMachine';
 import { setCurrentTravel, setFormData } from '../../redux/actions';
 
+// Importa le icone personalizzate
+import startIconUrl from '/assets/maps/ico1.gif';
+import arriveIconUrl from '/assets/maps/blue.png';
+import singolarmetaIconUrl from '/assets/maps/ico20.png';
+import interestUrl from '/assets/maps/ico23.png';
+
 export default function Maps() {
     const travel = useSelector(state => state.infotravels.setTravel);
+    const interestplaces = useSelector(state => state.infotravels.interestPlaces);
     const metas = useSelector(state => state.infotravels.metas);
     const dispatch = useDispatch();
     const [position, setPosition] = useState([41.8933203, 12.4829321]); // Coordinate predefinite
     const [popupInfo, setPopupInfo] = useState(null); // Informazioni per il popup
     const [key, setKey] = useState(metas.length); // Informazioni per il popup
 
- 
-
     useEffect(() => {
         if (travel.start_location.lat && travel.start_location.lon) {
             setPosition([travel.start_location.lat, travel.start_location.lon]);
         }
-    
+
         if (travel.start_location.city) {
             setPopupInfo({ lat: travel.start_location.lat, lng: travel.start_location.lon });
         } else {
             setPopupInfo(null);
         }
         setKey(oldKey => oldKey + 1);
-    }, [travel,metas]);
+    }, [travel, metas]);
 
     const handleClickOnMap = (event) => {
         const { lat, lng } = event.latlng;
@@ -56,6 +61,42 @@ export default function Maps() {
         return null; // Nessun componente visivo, solo gestione eventi
     }
 
+    // Crea l'icona personalizzata per la start location
+    const startIcon = new L.Icon({
+        iconUrl: startIconUrl,
+        iconSize: [40, 40], // Dimensione dell'icona
+        iconAnchor: [18, 30], // Punto dell'icona che corrisponderà alla posizione
+        popupAnchor: [0, -40], // Punto del popup che corrisponderà alla posizione
+        className: 'custom-start-icon' // Aggiungi una classe personalizzata se necessario
+    });
+
+    // Crea l'icona personalizzata per l'ultima meta (arrivo)
+    const arriveIcon = new L.Icon({
+        iconUrl: arriveIconUrl,
+        iconSize: [40, 40], // Dimensione dell'icona
+        iconAnchor: [15, 30], // Punto dell'icona che corrisponderà alla posizione
+        popupAnchor: [0, -30], // Punto del popup che corrisponderà alla posizione
+        className: 'custom-arrive-icon' // Aggiungi una classe personalizzata se necessario
+    });
+
+    // Crea l'icona personalizzata per le singole mete
+    const metaIcon = new L.Icon({
+        iconUrl: singolarmetaIconUrl,
+        iconSize: [40, 40], // Dimensione dell'icona
+        iconAnchor: [15, 30], // Punto dell'icona che corrisponderà alla posizione
+        popupAnchor: [0, -30], // Punto del popup che corrisponderà alla posizione
+        className: 'custom-meta-icon' // Aggiungi una classe personalizzata se necessario
+    });
+
+    // Crea l'icona personalizzata per gli interest places
+    const interestIcon = new L.Icon({
+        iconUrl: interestUrl,
+        iconSize: [40, 40], // Dimensione dell'icona
+        iconAnchor: [15, 30], // Punto dell'icona che corrisponderà alla posizione
+        popupAnchor: [0, -30], // Punto del popup che corrisponderà alla posizione
+        className: 'custom-interest-icon' // Aggiungi una classe personalizzata se necessario
+    });
+
     return (
         <div className='shadow rounded-25'>
             <MapContainer center={position} zoom={5} style={{ height: '38.6rem', width: '100%', borderRadius: '25px' }}>
@@ -65,20 +106,36 @@ export default function Maps() {
                 />
                 <ClickableMap />
 
+                {interestplaces && interestplaces.length > 0 && interestplaces.map((place, index) => (
+                    <Marker key={index} position={[place.lat, place.lon]} icon={interestIcon}>
+                        <Popup>Nome: {place.name_location ? place.name_location : "Sconosciuto"}
+                            <img className='img-fluid' src= {place.location_img} alt="img"  />
+                           
+                        </Popup>
+                    </Marker>
+                ))}
+
                 {travel.start_location.city && travel.start_location.lat && travel.start_location.lon && (
-                    <Marker position={[travel.start_location.lat, travel.start_location.lon]}>
+                    <Marker position={[travel.start_location.lat, travel.start_location.lon]} icon={startIcon}>
                         <Popup>Start Location: {travel.start_location.city}</Popup>
                     </Marker>
                 )}
 
-                {metas.map((meta, index) => (
-                    <Marker key={index} position={[meta.lat, meta.lon]}>
-                        <Popup>Meta: {meta.city}</Popup>
-                    </Marker>
-                ))}
+                {metas.map((meta, index) => {
+                    const isLastMeta = index === metas.length - 1;
+                    return (
+                        <Marker 
+                            key={index} 
+                            position={[meta.lat, meta.lon]} 
+                            icon={isLastMeta ? arriveIcon : metaIcon}
+                        >
+                            <Popup>Meta: {meta.city}</Popup>
+                        </Marker>
+                    );
+                })}
 
                 {popupInfo && (
-                    <Marker position={[popupInfo.lat, popupInfo.lng]}>
+                    <Marker position={[popupInfo.lat, popupInfo.lng]} icon={startIcon}>
                         <Popup>
                             Latitude: {popupInfo.lat}, Longitude: {popupInfo.lng}
                         </Popup>
@@ -92,7 +149,6 @@ export default function Maps() {
                         lon={travel.start_location.lon}
                         metas={metas}
                         dispatch={dispatch}
-                      
                     />
                 )}
             </MapContainer>
