@@ -1,6 +1,5 @@
 body {
   background-color: #eff3f8 !important;
- 
 }
 /* .container-fluid {
   display: flex;
@@ -16,9 +15,9 @@ body {
   justify-content: center;
   align-items: flex-end;
   padding-bottom: 20px; /* Aggiungi spazio in fondo */
- 
-.rounded-25{
-  border-radius: 25px!important;
+
+.rounded-25 {
+  border-radius: 25px !important;
 }
 /* Nascondi la barra di scorrimento solo per WebKit */
 html::-webkit-scrollbar {
@@ -56,7 +55,6 @@ html::-webkit-scrollbar {
 .vh-100 {
   height: min-content;
 }
-
 
 .travelCard {
   cursor: pointer;
@@ -114,14 +112,17 @@ html::-webkit-scrollbar {
   color: white !important;
 }
 
-/* SCROLL BAR */
+.custom-scrollbar {
+  flex-grow: 1;
+  overflow-y: auto;
+}
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #05203c;
+  background-color: #000000;
   border-radius: 4px;
 }
 
@@ -133,9 +134,9 @@ html::-webkit-scrollbar {
   background-color: #f1f1f1;
 }
 
-.bg-red {
-  background-color: #cc0100 !important;
-  color: white !important;
+.chat-list {
+  flex-grow: 1;
+  overflow-y: auto;
 }
 
 .group-item img {
@@ -177,6 +178,18 @@ html::-webkit-scrollbar {
   box-shadow: 5px 5px 10px #d38f8f, -5px -5px 10px #f9f6f6;
 } */
 
+.own-message {
+  background: rgb(255, 113, 65);
+  position: relative;
+  max-width: 70%;
+}
+
+.other-message {
+  background-color: #000;
+  position: relative;
+  max-width: 70%;
+}
+
 .message-header {
   display: flex;
   justify-content: space-between;
@@ -190,23 +203,24 @@ html::-webkit-scrollbar {
 
 .message-time {
   font-size: 0.8rem;
-  color: grey;
+  color: rgb(193, 192, 192);
   position: absolute;
   bottom: 5px;
   right: 10px;
 }
 
+.own-message-time {
+  color: rgb(244, 217, 201);
+}
 .message-delete-button {
-  background: transparent;
-  color: #000;
-  border: none;
-  font-size: 1.2rem;
-  line-height: 1;
-  cursor: pointer;
+  line-height: 20px;
+  width: 15px;
+  height: 15px;
+  color: white !important;
 }
 
 .message-delete-button:hover {
-  color: #ff0000;
+  background: #000 !important;
 }
 
 .message-attachment img,
@@ -297,7 +311,91 @@ html::-webkit-scrollbar {
   font-weight: bold;
 }
 
+.gradient-orange {
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background: rgb(3, 3, 3);
+  background: linear-gradient(160deg, rgb(5, 5, 5) 15%, rgb(9, 9, 9) 65%);
+  cursor: pointer;
+}
+
+.gradient-orange:hover {
+  background: rgb(255, 135, 65);
+  background: linear-gradient(160deg, rgba(255, 135, 65, 1) 15%, rgba(255, 65, 65, 1) 65%);
+}
+
 .date_message {
   background: linear-gradient(165deg, rgb(162, 160, 160) 15%, rgb(114, 113, 113) 65%);
   box-shadow: 0 10px 30px rgba(65, 72, 86, 0.05);
+}
+
+/* modal group */
+
+.friend-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.friend-item:hover {
+  background-color: #f0f0f0;
+}
+
+.friend-image {
+  width: 40px;
+  height: 40px;
+}
+
+.selected-friend {
+  background-color: #007bff;
+  color: white;
+}
+
+.friend-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* TEXT */
+
+.text-change {
+  color: #000;
+}
+
+.text-change:hover {
+  color: rgba(255, 65, 65, 1);
+}
+/* SEARCHUSER*/
+
+.search-users-form {
+  z-index: 1000; /* Assicurati che il modulo di ricerca sia sopra altri elementi */
+}
+
+.search-results {
+  top: 100%; /* Posiziona i risultati direttamente sotto il campo di input */
+  left: 0;
+  z-index: 1000; /* Assicurati che i risultati siano sopra altri elementi */
+  background-color: white; /* Colore di sfondo per i risultati */
+  border: 1px solid #ccc; /* Bordo per i risultati */
+  box-shadow: 2px 2px 5px #0d0d0d;
+  max-height: 300px; /* Altezza massima per evitare che i risultati superino la vista */
+  overflow-y: auto; /* Aggiungi lo scrolling verticale se i risultati eccedono l'altezza massima */
+}
+
+.search-item {
+  background: white !important;
+  color: #000 !important;
+}
+
+.search-item:hover {
+  background: #000 !important;
+  color: white !important;
+}
+
+.dropdown-toggle-icon::after {
+  display: none !important;
+}
+
+.pointer {
+  cursor: pointer;
 }

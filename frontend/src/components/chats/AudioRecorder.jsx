@@ -35,14 +35,12 @@ const AudioRecorder = ({ onAudioRecorded }) => {
       <button
         type="button"
         onClick={isRecording ? stopRecording : startRecording}
-        className={`btn ${isRecording ? "bg-white" : "bg-blue"} p-2 rounded-circle`}
+        className={`btn d-flex align-items-center justify-content-center p-2 rounded-circle ${
+          isRecording ? "bg-white" : "gradient-orange"
+        }`}
         style={{
-          borderRadius: "50%",
           width: "40px",
           height: "40px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
         }}
       >
         {isRecording ? (

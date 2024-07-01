@@ -1,15 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Card } from "react-bootstrap";
+import { Card, Dropdown } from "react-bootstrap";
 import { useChannel, useConnectionStateListener } from "ably/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { openChat, closeChat, incrementUnreadCount, decrementUnreadCount, resetUnreadCount } from "../../redux/actions";
 import MessageList from "./MessageList";
 import MessageForm from "./MessageForm";
+import EditGroupModal from "./modals/EditGroupModal";
+import ViewMembersModal from "./modals/ViewMembersModal";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 const Chat = ({ chat, globalChannel }) => {
   const [messages, setMessages] = useState([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showMembersModal, setShowMembersModal] = useState(false);
   const messagesEndRef = useRef(null);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -122,7 +127,7 @@ const Chat = ({ chat, globalChannel }) => {
       privateChannel.publish("message-sent", messageData);
       globalChannel.publish("message-sent", { chatId: chat.id, senderId: user.id });
     } catch (error) {
-      console.error("Failed to send message:", error);
+      console.error("Failed to send message", error);
     }
   };
 
@@ -144,7 +149,7 @@ const Chat = ({ chat, globalChannel }) => {
       });
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
     } catch (error) {
-      console.error("Failed to delete message:", error);
+      console.error("Failed to delete message", error);
     }
   };
 
@@ -166,23 +171,50 @@ const Chat = ({ chat, globalChannel }) => {
 
   return (
     <Card className="d-flex flex-column h-100 bg-light border-0" style={{ color: "#000" }}>
-      <Card.Header className="bg-dark text-white fs-2 d-flex align-items-center border-bottom rounded-0">
-        <img
-          src={chat.group_chat ? chat.image : otherUser?.profile_img || "default-profile-image-url"}
-          alt="Chat"
-          className="rounded-circle me-3"
-          style={{ width: "40px", height: "40px" }}
-        />
-        {chat.name ||
-          (chat.group_chat ? (
-            "Group Chat"
-          ) : otherUser ? (
-            <Link to={`/profile/${otherUser.id}`} className="text-white">
-              {otherUser.username}
-            </Link>
-          ) : (
-            "Chat with no users"
-          ))}
+      <Card.Header className="bg-dark text-white fs-2 d-flex align-items-center border-bottom rounded-0 justify-content-between">
+        <div className="d-flex align-items-center">
+          <img
+            src={chat.type === "group" ? chat.image : otherUser?.profile_img || "default-profile-image-url"}
+            alt="Chat"
+            className="rounded-circle me-3"
+            style={{ width: "40px", height: "40px", objectFit: "cover" }}
+          />
+          {chat.name ||
+            (chat.type === "group" ? (
+              "Group Chat"
+            ) : otherUser ? (
+              <Link
+                to={`/profile/${otherUser.id}`}
+                className="text-white"
+                style={{
+                  textDecoration: "none",
+                }}
+              >
+                {otherUser.username}
+              </Link>
+            ) : (
+              "Chat with no users"
+            ))}
+        </div>
+        {(chat.type === "group" || chat.type === "travel") && (
+          <Dropdown>
+            <Dropdown.Toggle
+              as="span"
+              variant="dark"
+              id="dropdown-basic"
+              className="border-0 fs-1 dropdown-toggle-icon"
+            >
+              <BsThreeDotsVertical className="pb-2 pointer" />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className="search-results">
+              <Dropdown.Item onClick={() => setShowMembersModal(true)}>Visualizza membri</Dropdown.Item>
+              {chat.type === "group" && (
+                <Dropdown.Item onClick={() => setShowEditModal(true)}>Modifica gruppo</Dropdown.Item>
+              )}
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
       </Card.Header>
       <div className="flex-grow-1 overflow-auto custom-scrollbar">
         <MessageList
@@ -195,6 +227,10 @@ const Chat = ({ chat, globalChannel }) => {
       <Card.Footer className="bg-light text-white mt-2">
         <MessageForm chatId={chat.id} onSendMessage={handleSendMessage} />
       </Card.Footer>
+
+      <ViewMembersModal show={showMembersModal} handleClose={() => setShowMembersModal(false)} chatId={chat.id} />
+
+      <EditGroupModal show={showEditModal} handleClose={() => setShowEditModal(false)} chat={chat} />
     </Card>
   );
 };

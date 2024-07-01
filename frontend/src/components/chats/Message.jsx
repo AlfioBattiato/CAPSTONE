@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
 const Message = ({ message, onDelete }) => {
@@ -31,14 +31,24 @@ const Message = ({ message, onDelete }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`message-content d-inline-block ps-3 pe-5 pb-3 pt-2 rounded-4 ${isOwnMessage ? "own-message" : ""}`}
+        className={`d-inline-block ps-3 pe-5 pb-3 pt-2 rounded-4 text-white ${
+          isOwnMessage ? "own-message" : "other-message"
+        }`}
       >
-        <div className="message-header">
+        <div className="message-header" style={{ minWidth: "65px" }}>
           <strong className="message-username">{senderName}</strong>
           {isOwnMessage && isHovered && (
-            <button className="message-delete-button" onClick={handleDelete}>
-              &times;
-            </button>
+            <OverlayTrigger placement="top" overlay={<Tooltip id={`tooltip-delete`}>Elimina messaggio</Tooltip>}>
+              <button
+                className="message-delete-button btn d-flex align-items-center justify-content-center p-2 rounded-circle"
+                style={{
+                  fontSize: "0.75rem",
+                }}
+                onClick={handleDelete}
+              >
+                &times;
+              </button>
+            </OverlayTrigger>
           )}
         </div>
         {message.file_url && (
@@ -57,7 +67,7 @@ const Message = ({ message, onDelete }) => {
           </div>
         )}
         <div>{message.message}</div>
-        <div className="message-time">{formatTime(message.created_at)}</div>
+        <div className={`message-time ${isOwnMessage ? "own-message-time" : ""}`}>{formatTime(message.created_at)}</div>
       </div>
     </ListGroup.Item>
   );

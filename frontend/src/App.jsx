@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import MyNavbar from "./components/MyNavbar";
+import MyNavbar from "./components/navBar/MyNavbar";
 import Welcome from "./pages/Welcome";
 import { useDispatch } from "react-redux";
 import Login from "./pages/Login";
@@ -63,8 +63,8 @@ function App() {
               <Route path="/homepage/" element={<Homepage />} />
               <Route path="/createInterestPlace" element={<CreateInterestPlace />} />
               <Route path="/profile/:id" element={<UserProfile />} />
-              <Route path="/infoTravel/:id" element={<Infotravel/>} />
-              <Route path="/updateTravel/:id" element={<UpdateTravel/>} />
+              <Route path="/infoTravel/:id" element={<Infotravel />} />
+              <Route path="/updateTravel/:id" element={<UpdateTravel />} />
 
               <Route
                 path="/lobbies"

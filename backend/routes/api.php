@@ -75,6 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('chats', [ChatController::class, 'store']);
     Route::post('chats/private', [ChatController::class, 'createPrivateChat']);
     Route::post('chats/group', [ChatController::class, 'createGroupChat']);
+    Route::post('chats/group/{chat}/update', [ChatController::class, 'updateGroupChat']);
     Route::put('chats/{chat}', [ChatController::class, 'update']);
     Route::delete('chats/{chat}', [ChatController::class, 'destroy']);
 

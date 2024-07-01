@@ -1,12 +1,17 @@
 import React from "react";
-import { ListGroup, Badge, Image } from "react-bootstrap";
+import { ListGroup, Image } from "react-bootstrap";
+import { v4 as uuidv4 } from "uuid";
 
-const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
+const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts, chatListChannel }) => {
+  const generateUniqueKey = (chat) => {
+    return `${chat.id}-${chat.type}-${chat.created_at}-${uuidv4()}`;
+  };
+
   return (
-    <ListGroup className="custom-scrollbar bg-light rounded-0 border-0 chat-list">
+    <ListGroup className="custom-scrollbar chat-list bg-light rounded-0 border-0 flex-grow-1">
       {Array.isArray(chats) && chats.length > 0 ? (
         chats.map((chat) => {
-          const otherUsers = chat.users.filter((user) => user.id !== chat.pivot.user_id);
+          const otherUsers = chat.pivot ? chat.users.filter((user) => user.id !== chat.pivot.user_id) : chat.users;
           let chatName = chat.name || "Chat with no users";
           let chatImage = chat.image || "default-group-image-url";
 
@@ -21,16 +26,16 @@ const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
 
           return (
             <ListGroup.Item
-              key={chat.id}
+              key={generateUniqueKey(chat)} // Usa una chiave unica combinando l'id, il tipo, la data di creazione e un UUID
               onClick={() => onChatClick(chat)}
               className={`chat-item bg-light rounded-0 py-3 border-0 my-1 btn fs-4 text-start ${
                 selectedChat && selectedChat.id === chat.id ? "selected-chat" : "default-chat"
               }`}
             >
-              <div className="d-flex align-items-center bg-trasparent">
+              <div className="d-flex align-items-center bg-trasparent ">
                 <Image src={chatImage} roundedCircle className="chat-image bg-black me-3" />
-                <div className="d-flex justify-content-between align-items-center w-100">
-                  <span className="chat-name">{chatName}</span>
+                <div className="text-truncate">
+                  {chatName}
                   {unreadCounts[chat.id] > 0 && (
                     <span className="ms-2 rounded-circle notification">{unreadCounts[chat.id]}</span>
                   )}
