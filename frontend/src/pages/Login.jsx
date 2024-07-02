@@ -81,17 +81,18 @@ function Login() {
   return (
     <>
       <Container className="d-flex justify-content-center align-items-start mt-5" style={{ height: "100vh" }}>
-        <div className="w-75 p-5 mt-5 lobbies bg-light">
+        <div className="w-50 p-5 mt-5 lobbies bg-light">
+          <h1 className="fw-bold mb-3">Login</h1>
           {message && <Alert variant="success">{message}</Alert>}
           {error && <Alert variant="danger">{error}</Alert>}
           <form onSubmit={submitLogin} noValidate>
             <div className="mb-3">
               <label htmlFor="email" className="form-label fw-bold">
-                Email 
+                Email
               </label>
               <input
                 type="email"
-                className="form-control search-input"
+                className="form-control search-input w-75"
                 id="email"
                 name="email"
                 onChange={updateInputValue}
@@ -105,7 +106,7 @@ function Login() {
               </label>
               <input
                 type="password"
-                className="form-control search-input"
+                className="form-control search-input w-75"
                 id="password"
                 name="password"
                 onChange={updateInputValue}
@@ -113,11 +114,13 @@ function Login() {
               />
             </div>
 
-            <button type="submit" className="btn gradient-orange text-white border-0">
-              Entra
-            </button>
+            <div className="pt-3">
+              <button type="submit" className="btn gradient-orange text-white border-0">
+                Entra
+              </button>
+            </div>
           </form>
-          <div className="mt-5 pt-5">
+          <div className="mt-3 pt-3 text-end">
             <p className="fw-bold text-secondary" onClick={handleShow}>
               Password dimenticata?
             </p>
@@ -126,9 +129,9 @@ function Login() {
               Crea nuovo account?
             </Link>
 
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose} start size="md" className="pt-5 mt-5">
               <Modal.Header closeButton>
-                <Modal.Title>Reset password</Modal.Title>
+                <h1 className="fw-bold mb-3 fs-1">Reset password</h1>
               </Modal.Header>
               <Modal.Body>
                 <form>
@@ -137,15 +140,21 @@ function Login() {
                   </label>
                   <input
                     type="email"
-                    className="form-control"
+                    className="form-control search-input w-75"
                     id="reset-email"
                     name="reset-email"
                     onChange={handleResetEmailChange}
                     value={resetEmail}
                   />
-                  <Button variant="primary" onClick={handleResetPassword} className="mt-2" disabled={spinner}>
-                    {spinner ? "Please wait..." : "Reset Password"}
-                  </Button>
+                  <div className="text-end py-2">
+                    <Button
+                      onClick={handleResetPassword}
+                      className="mt-2 btn gradient-orange text-white border-0"
+                      disabled={spinner}
+                    >
+                      {spinner ? "Please wait..." : "Reset Password"}
+                    </Button>
+                  </div>
                 </form>
               </Modal.Body>
               <Modal.Footer></Modal.Footer>

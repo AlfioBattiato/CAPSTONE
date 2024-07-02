@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { LOGIN } from "../redux/actions";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
 const Register = () => {
@@ -64,7 +64,8 @@ const Register = () => {
   return (
     // <form method="POST" action="....." novalidate enctype='multipart/form-data'> // se fatto in Blade
     <Container className="d-flex justify-content-center align-items-start mt-5" style={{ height: "100vh" }}>
-      <div className="w-75 p-5 mt-5 lobbies bg-light">
+      <div className="w-50 p-5 mt-5 lobbies bg-light">
+        <h1 className="fw-bold mb-3">Registrati</h1>
         <form onSubmit={(ev) => submitLogin(ev)} noValidate>
           <div className="mb-3">
             <label htmlFor="username" className="form-label fw-bold">
@@ -72,7 +73,7 @@ const Register = () => {
             </label>
             <input
               type="text"
-              className="form-control search-input rounded-pill"
+              className="form-control search-input w-75"
               id="username"
               name="username"
               onChange={(ev) => updateInputValue(ev)}
@@ -85,7 +86,7 @@ const Register = () => {
             </label>
             <input
               type="email"
-              className="form-control search-input rounded-pill"
+              className="form-control search-input w-75"
               id="email"
               name="email"
               onChange={(ev) => updateInputValue(ev)}
@@ -98,7 +99,7 @@ const Register = () => {
             </label>
             <input
               type="password"
-              className="form-control search-input rounded-pill"
+              className="form-control search-input w-75"
               id="password"
               name="password"
               onChange={(ev) => updateInputValue(ev)}
@@ -111,7 +112,7 @@ const Register = () => {
             </label>
             <input
               type="password"
-              className="form-control search-input rounded-pill"
+              className="form-control search-input w-75"
               id="password_confirmation"
               name="password_confirmation"
               onChange={(ev) => updateInputValue(ev)}
@@ -123,7 +124,7 @@ const Register = () => {
               Profile image
             </label>
             <input
-              className="form-control search-input rounded-pill"
+              className="form-control search-input w-75"
               type="file"
               id="profile_img"
               name="profile_img"
@@ -131,10 +132,18 @@ const Register = () => {
               value={formData.profile_img}
             />
           </div>
-          <button type="submit" className="btn gradient-orange text-white border-0">
-            Register
-          </button>
+          <div className="pt-3">
+            <button type="submit" className="btn gradient-orange text-white border-0">
+              Register
+            </button>
+          </div>
         </form>
+        <div className="mt-3 pt-3 text-end">
+          <hr />
+          <Link to={`/Login/`} className="fw-bold text-change">
+            Già registrato?
+          </Link>
+        </div>
       </div>
     </Container>
   );
