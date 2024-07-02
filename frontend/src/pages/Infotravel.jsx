@@ -189,9 +189,9 @@ function Infotravel() {
               {authUserRole !== "creator_travel" ? (
                 <div className="d-flex justify-content-between">
                   <div className="mb-2">
-                    <Button disabled={disable} variant="outline-success" onClick={addGuest}>
+                    <button disabled={disable} onClick={addGuest}>
                       Chiedi di partecipare
-                    </Button>
+                    </button>
                     {disable && (
                       <p className="text-success">
                         Richiesta inviata! Attendi di essere accettato dall&apos;amministratore del viaggio
@@ -199,7 +199,7 @@ function Infotravel() {
                     )}
                   </div>
                   <div className="d-flex">
-                    <Button className="btnT ms-auto shadow-0" onClick={goToChat} disabled={loadingChat}>
+                    <button className="btnT ms-auto shadow-0" onClick={goToChat} disabled={loadingChat}>
                       {loadingChat ? (
                         <Spinner animation="border" size="sm" />
                       ) : (
@@ -207,7 +207,7 @@ function Infotravel() {
                           <BsFillPeopleFill /> Chat viaggio
                         </>
                       )}
-                    </Button>
+                    </button>
                   </div>
                 </div>
               ) : (
@@ -225,7 +225,7 @@ function Infotravel() {
                         Elimina viaggio <FaTrash />
                       </Button>
                     </div>
-                    <Button className="btnT ms-auto shadow-0" onClick={goToChat} disabled={loadingChat}>
+                    <button className="btnT ms-auto shadow-0" onClick={goToChat} disabled={loadingChat}>
                       {loadingChat ? (
                         <Spinner animation="border" size="sm" />
                       ) : (
@@ -233,7 +233,7 @@ function Infotravel() {
                           <BsFillPeopleFill /> Chat viaggio
                         </>
                       )}
-                    </Button>
+                    </button>
                   </div>
                   <hr />
                 </>
