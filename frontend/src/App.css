@@ -442,3 +442,7 @@ html::-webkit-scrollbar {
 .social {
   color: rgb(255, 113, 65);
 }
+
+.offcavnvas-background {
+  background-color: #1a1d20 !important;
+}
