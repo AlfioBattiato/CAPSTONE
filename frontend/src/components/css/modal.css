@@ -1,0 +1,65 @@
+.modal {
+    background: rgba(255, 255, 255, 0.082) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+
+.delModal .modal-content  {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    color: var(--bs-modal-color);
+    pointer-events: auto;
+    background: rgba(255,255,255,.05)!important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.25)!important;
+    backdrop-filter: blur(10px)!important;
+    background-clip: padding-box;
+    border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
+    border-radius: var(--bs-modal-border-radius);
+   
+}
+
+/* .createTravelmodal .modal-content  {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    color: var(--bs-modal-color);
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.863)!important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.25)!important;
+    backdrop-filter: blur(10px)!important;
+    background-clip: padding-box;
+    border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
+    border-radius: var(--bs-modal-border-radius);
+   
+} */
+
+/* modal delete travel */
+.deletemodal {
+  background:  rgba(230, 228, 227, 0.884);
+  border: 2px solid  rgb(253, 121, 45);
+  font-size: 19px;
+  padding: 30px 20px;
+  color:rgb(253, 121, 45);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.App-button {
+  padding: 5px 20px;
+  background-color: transparent;
+  color: rgb(253, 121, 45);
+  font-size: 15px;
+  border: 2px solid rgb(253, 121, 45);
+  border-radius: 5px;
+  margin-top: 20px;
+  transition: 0.2s;
+}
+
+.App-button:hover {
+  color: white;
+  background-color: rgb(253, 121, 45);
+}

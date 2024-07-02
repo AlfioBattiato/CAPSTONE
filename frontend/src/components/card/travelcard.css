@@ -14,14 +14,24 @@
 
 
 }
-
 .cardTravel_body {
   background: rgba(255, 255, 255, 0.815);
   border-radius: 20px;
 }
-/* .badgecard{
-  background-color:rgba(255, 135, 65, 0.315)!important ;
-} */
+.resumeTravel {
+  transition: 0.5s ease-out;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position-x: right;
+
+
+}
+
+.resumeTravel_body {
+  background: rgba(255, 255, 255, 0.815);
+  border-radius: 20px;
+}
+
 .black-and-white {
   filter: grayscale(0%);
 }

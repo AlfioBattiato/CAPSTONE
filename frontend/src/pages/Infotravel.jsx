@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Modal, Row } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -13,6 +13,13 @@ import { MdEdit } from "react-icons/md";
 import { BsCalendarFill, BsFillCalendar2CheckFill } from "react-icons/bs";
 import { LiaCalendarSolid } from "react-icons/lia";
 import { FaPeopleRobbery } from "react-icons/fa6";
+import L from 'leaflet';
+import { CgDanger } from "react-icons/cg";
+import { BsFillPeopleFill } from "react-icons/bs";
+
+import startIconUrl from '/assets/maps/ico1.gif';
+import arriveIconUrl from '/assets/maps/blue.png';
+import singolarmetaIconUrl from '/assets/maps/ico20.png';
 
 
 function Infotravel() {
@@ -124,29 +131,75 @@ function Infotravel() {
       });
   };
 
+  // Crea l'icona personalizzata per la start location
+  const startIcon = new L.Icon({
+    iconUrl: startIconUrl,
+    iconSize: [40, 40], // Dimensione dell'icona
+    iconAnchor: [18, 30], // Punto dell'icona che corrisponderà alla posizione
+    popupAnchor: [0, -40], // Punto del popup che corrisponderà alla posizione
+    className: 'custom-start-icon' // Aggiungi una classe personalizzata se necessario
+  });
+
+  // Crea l'icona personalizzata per l'ultima meta (arrivo)
+  const arriveIcon = new L.Icon({
+    iconUrl: arriveIconUrl,
+    iconSize: [40, 40], // Dimensione dell'icona
+    iconAnchor: [15, 30], // Punto dell'icona che corrisponderà alla posizione
+    popupAnchor: [0, -30], // Punto del popup che corrisponderà alla posizione
+    className: 'custom-arrive-icon' // Aggiungi una classe personalizzata se necessario
+  });
+
+  // Crea l'icona personalizzata per le singole mete
+  const metaIcon = new L.Icon({
+    iconUrl: singolarmetaIconUrl,
+    iconSize: [40, 40], // Dimensione dell'icona
+    iconAnchor: [15, 30], // Punto dell'icona che corrisponderà alla posizione
+    popupAnchor: [0, -30], // Punto del popup che corrisponderà alla posizione
+    className: 'custom-meta-icon' // Aggiungi una classe personalizzata se necessario
+  });
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const groupchat=()=>{
+    
+  }
+
   return (
     <div className="container">
       {travel ? (
         <>
-          <Row className="mt-3">
+          <Row className="mt-5">
 
             <Col md={6}>
               {authUserRole !== 'creator_travel' ? (
-                <div className="mb-2">
-                  <Button disabled={disable} variant="success" onClick={addGuest}>Chiedi di partecipare</Button>
-                  {disable && (<p className="text-success">Richiesta inviata!Attendi di essere accettato dall&apos;amministratore del viaggio</p>)}
+                <div className="d-flex justify-content-between">
+                  <div className="mb-2">
+                    <Button disabled={disable} variant="outline-success" onClick={addGuest}>Chiedi di partecipare</Button>
+                    {disable && (<p className="text-success">Richiesta inviata!Attendi di essere accettato dall&apos;amministratore del viaggio</p>)}
+                  </div>
+                  <div className="d-flex">
+                    <button className="btnT ms-auto shadow-0" onClick={groupchat}><BsFillPeopleFill /> Chat viaggio</button>
+                  </div>
+
                 </div>
+
               ) : (
                 <>
+                  <div className="d-flex justify-content-between">
+                    <div className="d-flex  ">
+                      <div className="  d-flex social cursor align-items-center border-end border-1 border-dark">
+                        <Button variant="outline-dark" className="me-2" onClick={() => navigate(`/updateTravel/${travel.id}`)}>Modifica    <MdEdit /></Button>
+                      </div>
+                      <div className="d-flex text-danger cursor align-items-center ms-2 ">
+                        <Button variant="outline-danger" className="me-2" onClick={() => setShow(true)}>Elimina viaggio  <FaTrash /> </Button>
+                      </div>
 
-                  <div className="d-flex  ">
-                    <div className="  d-flex social cursor align-items-center border-end border-1 border-dark">
-                      <span className="me-2  fs-5" onClick={() => navigate(`/updateTravel/${travel.id}`)}>Modifica    <MdEdit /></span>
-                    </div>
-                    <div className="d-flex text-danger cursor align-items-center ms-2 ">
-                      <span className="me-2 fs-5" onClick={destroy}>Elimina viaggio  <FaTrash /> </span>
                     </div>
 
+                    <div className=" d-flex">
+                    <button className="btnT ms-auto shadow-0" onClick={groupchat}><BsFillPeopleFill /> Chat viaggio</button>
+                  </div>
                   </div>
                   <hr />
                 </>
@@ -227,15 +280,25 @@ function Infotravel() {
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
                 {travel.start_location && travel.lat && travel.lon && (
-                  <Marker position={[travel.lat, travel.lon]}>
+                  <Marker position={[travel.lat, travel.lon]} icon={startIcon}>
                     <Popup>Start Location: {travel.start_location.city}</Popup>
                   </Marker>
                 )}
-                {travel.metas.map((meta, index) => (
-                  <Marker key={index} position={[meta.lat, meta.lon]}>
-                    <Popup>Meta: {meta.city}</Popup>
-                  </Marker>
-                ))}
+                {travel.metas.map((meta, index) => {
+                  const isLastMeta = index === travel.metas.length - 1;
+                  return (
+                    <Marker
+                      key={index}
+                      position={[meta.lat, meta.lon]}
+                      icon={isLastMeta ? arriveIcon : metaIcon}
+                    >
+                      <Popup>Meta: {meta.city}</Popup>
+                    </Marker>
+                  )
+                }
+
+
+                )}
                 {travel.lon && (
                   <RoutingMachine
                     lat={travel.lat}
@@ -253,6 +316,31 @@ function Infotravel() {
         <p>Loading travel details...</p>
       )
       }
+
+
+      {/* modale elimina viaggio */}
+      <Modal show={show} onHide={handleClose} centered size="lg" className="delModal">
+        <div className="deletemodal rounded">
+          <Modal.Header closeButton>
+          </Modal.Header>
+          <Modal.Body>
+            <p className="text-center mb-0"><CgDanger /> Sei sicuro di voler eliminare il viaggio in modo definitivo?</p>
+            <p className="fs-6 text-center text-secondary">questa azione eliminerà il viaggio anche per gli altri partecipanti</p>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <button className="App-button" onClick={() => destroy}>
+              Elimina
+            </button>
+          </Modal.Footer>
+
+
+        </div>
+      </Modal>
+
+
+
+
     </div >
   );
 }

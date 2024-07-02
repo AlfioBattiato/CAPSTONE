@@ -125,14 +125,14 @@ export default function All_interest_places() {
         min={0}
         max={distanceMarks.length - 1}
         step={1}
-        variant='primary'
+        variant='dark'
         tooltip='auto'
         tooltipLabel={(value) => `${distanceMarks[value]} km`}
         tooltipPlacement='top'
       />
 
       </div>
-      <p className='mb-0 '>distanza: {Km === 0 ? 'Nessun tragitto impostato' : Km} km</p>
+      <p className='mb-0 '>distanza: {Km === 0 ? 'Nessun tragitto impostato' : Km + ' Km'} </p>
 
       <div className="fw-bold text-secondary mb-3">
         
