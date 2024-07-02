@@ -24,7 +24,7 @@ const Message = ({ message, onDelete }) => {
 
   return (
     <ListGroup.Item
-      className={`message-item px-5 py-2 d-flex bg-light border-0 ${
+      className={`message-item px-1 px-md-3 px-lg-5 py-2 d-flex bg-light border-0 ${
         isOwnMessage ? "justify-content-end" : "justify-content-start"
       }`}
       onMouseEnter={() => setIsHovered(true)}

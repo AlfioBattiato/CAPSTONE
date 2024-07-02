@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, Col, Image } from "react-bootstrap";
+import { Form, Button, Col, Image, Row } from "react-bootstrap";
 import { MdAttachFile } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
 import AudioRecorder from "./AudioRecorder";
@@ -76,42 +76,46 @@ const MessageForm = ({ chatId, onSendMessage }) => {
         </div>
       )}
       <Form.Group controlId="messageInput" className="d-flex align-items-center">
-        <Col xs={6} sm={7} md={8} lg={8} xl={9} className="p-1">
-          <TextareaAutosize
-            minRows={1}
-            maxRows={5}
-            placeholder="Scrivi un messaggio..."
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            className="search-input form-control custom-scrollbar"
-            style={{ backgroundColor: "#FFF", color: "#000", resize: "none" }}
-          />
-        </Col>
-        <Col xs={6} sm={5} md={4} lg={4} xl={3} className="p-1 d-flex align-items-center justify-content-around">
-          <label
-            htmlFor="fileInput"
-            className="mb-0 d-flex align-items-center justify-content-center fs-3 gradient-orange"
-            style={{
-              borderRadius: "50%",
-              width: "40px",
-              height: "40px",
-            }}
-          >
-            <MdAttachFile className="" />
-            <input id="fileInput" type="file" onChange={handleFileChange} className="d-none" />
-          </label>
+        <Col>
+          <Row>
+            <Col xs={12} sm={7} md={8} lg={8} xl={9} className="p-1">
+              <TextareaAutosize
+                minRows={1}
+                maxRows={5}
+                placeholder="Scrivi un messaggio..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                className="search-input form-control custom-scrollbar"
+                style={{ backgroundColor: "#FFF", color: "#000", resize: "none" }}
+              />
+            </Col>
+            <Col xs={12} sm={5} md={4} lg={4} xl={3} className="p-1 d-flex align-items-center justify-content-evenly">
+              <label
+                htmlFor="fileInput"
+                className="mb-0 d-flex align-items-center justify-content-center fs-3 gradient-orange"
+                style={{
+                  borderRadius: "50%",
+                  width: "40px",
+                  height: "40px",
+                }}
+              >
+                <MdAttachFile className="" />
+                <input id="fileInput" type="file" onChange={handleFileChange} className="d-none" />
+              </label>
 
-          <AudioRecorder onAudioRecorded={handleAudioRecorded} />
+              <AudioRecorder onAudioRecorded={handleAudioRecorded} />
 
-          <Button
-            variant="light"
-            type="submit"
-            className="d-flex align-items-center justify-content-center gradient-orange"
-            style={{ height: "38px" }}
-            disabled={!newMessage.trim() && !file}
-          >
-            <p className="m-0 text-white fs-5">Invia</p>
-          </Button>
+              <Button
+                variant="light"
+                type="submit"
+                className="d-flex align-items-center justify-content-center gradient-orange"
+                style={{ height: "38px" }}
+                disabled={!newMessage.trim() && !file}
+              >
+                <p className="m-0 text-white fs-5">Invia</p>
+              </Button>
+            </Col>
+          </Row>
         </Col>
       </Form.Group>
     </Form>

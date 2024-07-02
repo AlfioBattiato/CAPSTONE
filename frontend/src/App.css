@@ -190,6 +190,20 @@ html::-webkit-scrollbar {
   max-width: 70%;
 }
 
+@media screen and (max-width: 750px) {
+  .own-message,
+  .other-message {
+    max-width: 90%;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .own-message,
+  .other-message {
+    max-width: 100%;
+  }
+}
+
 .message-header {
   display: flex;
   justify-content: space-between;
@@ -224,10 +238,17 @@ html::-webkit-scrollbar {
 }
 
 .message-attachment img,
-.message-attachment video,
-.message-attachment audio {
-  max-width: 400px;
+.message-attachment video {
+  max-width: 100%;
   max-height: 400px;
+}
+
+.message-attachment audio {
+  /* Ensure the audio controls take the full width of the container */
+  max-width: 100%; /* Set a max width for the audio controls */
+  max-height: 100px; /* Set a fixed height for the audio controls */
+  display: block;
+  margin: 0 auto; /* Center the audio controls */
 }
 
 .message-date {
