@@ -22,6 +22,7 @@ class ChatSeeder extends Seeder
                 'name' => 'Group Chat',
                 'active' => true,
                 'type' => 'group',
+                'image' => '/assets/profiles/group-of-people.svg',
             ]);
             $groupChat->users()->attach([$user1->id, $user2->id, $user3->id]);
         } else {

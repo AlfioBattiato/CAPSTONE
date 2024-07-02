@@ -194,17 +194,28 @@ const Chat = ({ chat, globalChannel }) => {
 
   return (
     <Card className="d-flex flex-column h-100 bg-light border-0" style={{ color: "#000" }}>
-      <Card.Header className="bg-black text-white fs-2 d-flex align-items-center border-bottom rounded-0 justify-content-between">
+      <Card.Header
+        className="bg-black text-white fs-2 d-flex py-4 align-items-center border-bottom rounded-0 justify-content-between"
+        style={{ maxHeight: "80px" }}
+      >
         <div className="d-flex align-items-center">
           <img
-            src={chat.type === "group" ? groupImage : otherUser?.profile_img || "default-profile-image-url"}
+            src={
+              chat.type === "group"
+                ? groupImage
+                : chat.type === "travel"
+                ? chat.image
+                : otherUser?.profile_img || "default-profile-image-url"
+            }
             alt="Chat"
-            className="rounded-circle me-3"
-            style={{ width: "40px", height: "40px", objectFit: "cover" }}
+            className="rounded-circle bg-white me-3"
+            style={{ width: "50px", height: "50px", objectFit: "cover" }}
           />
           {groupName ||
             (chat.type === "group" ? (
               "Group Chat"
+            ) : chat.type === "travel" ? (
+              chat.name
             ) : otherUser ? (
               <Link
                 to={`/profile/${otherUser.id}`}

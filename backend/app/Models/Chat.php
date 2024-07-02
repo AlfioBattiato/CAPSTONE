@@ -52,7 +52,7 @@ class Chat extends Model
     {
         static::creating(function ($chat) {
             if (is_null($chat->image)) {
-                $chat->image = 'http://localhost:8000/storage/profiles/group-of-people.svg';
+                $chat->image = url('/assets/profiles/group-of-people.svg');
             }
         });
 
@@ -67,7 +67,7 @@ class Chat extends Model
 
         static::updating(function ($chat) {
             if (is_null($chat->image)) {
-                $chat->image = 'http://localhost:8000/storage/profiles/group-of-people.svg';
+                $chat->image = url('/assets/profiles/group-of-people.svg');
             }
         });
 

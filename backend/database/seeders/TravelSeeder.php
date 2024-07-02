@@ -19,14 +19,14 @@ class TravelSeeder extends Seeder
         Travel::factory(10)->create()->each(function ($travel) use ($users) {
             // Seleziona un utente casuale come creatore
             $creatorUser = $users->random();
-            
+
             // Associa l'utente creatore al viaggio
             $travel->users()->syncWithoutDetaching([$creatorUser->id => ['role' => 'creator_travel', 'active' => true]]);
             Log::info('Users associated with travel: ' . json_encode([$creatorUser->id]));
 
-            // Aggiungi altri utenti al viaggio
+            // Aggiungi altri utenti al viaggio come partecipanti
             $travelUsers = $users->where('id', '!=', $creatorUser->id)->random(rand(0, 2))->pluck('id')->toArray();
-            $travel->users()->syncWithoutDetaching($travelUsers);
+            $travel->users()->syncWithoutDetaching(array_fill_keys($travelUsers, ['role' => 'guest', 'active' => true]));
         });
     }
 }

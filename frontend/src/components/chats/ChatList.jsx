@@ -33,7 +33,7 @@ const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts, chatListChan
               }`}
             >
               <div className="d-flex align-items-center bg-trasparent ">
-                <Image src={chatImage} roundedCircle className="chat-image bg-black me-3" />
+                <Image src={chatImage} roundedCircle className="chat-image bg-white me-3" />
                 <div className="text-truncate">
                   {chatName}
                   {unreadCounts[chat.id] > 0 && (

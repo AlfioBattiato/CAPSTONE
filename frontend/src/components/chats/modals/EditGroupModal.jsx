@@ -99,7 +99,7 @@ const EditGroupModal = ({ show, handleClose, chat, onImageUpdate, onNameUpdate }
         {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
         <Form onSubmit={handleUpdateGroup}>
           <Row className="mt-4 d-flex align-items-center">
-            <Col xs={12} md={4} className="d-flex align-items-center">
+            <Col xs={12} lg={4} className="d-flex align-items-center">
               <div
                 className="position-relative border rounded-circle overflow-hidden"
                 style={{ width: "200px", height: "200px", margin: "0 auto", cursor: "pointer" }}
@@ -112,12 +112,14 @@ const EditGroupModal = ({ show, handleClose, chat, onImageUpdate, onNameUpdate }
                   style={{ objectFit: "cover" }}
                 />
                 <div className="overlay">
-                  <FaPencil className="text-black" style={{ fontSize: "1.5rem" }} />
+                  <div className="p-2 rounded-circle bg-white">
+                    <FaPencil className="text-black" style={{ fontSize: "1.5rem" }} />
+                  </div>
                 </div>
               </div>
               <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleImageChange} />
             </Col>
-            <Col xs={12} md={8}>
+            <Col xs={12} lg={8}>
               <Form.Group className="mb-5">
                 <Form.Label>Nome del gruppo</Form.Label>
                 <Form.Control

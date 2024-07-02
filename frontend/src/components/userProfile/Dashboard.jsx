@@ -63,7 +63,7 @@ function Dashboard({ onProfileImageUpdate }) {
       {message && <Alert variant="success">{message}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
       <Row className="py-5 px-4 w-100">
-        <Col xs={12} md={4} className="text-center pe-5">
+        <Col xs={12} lg={4} className="text-center pe-5 pb-5 pb-lg-0">
           <div
             className="position-relative border rounded-circle overflow-hidden"
             style={{ width: "200px", height: "200px", margin: "0 auto", cursor: "pointer" }}
@@ -71,12 +71,14 @@ function Dashboard({ onProfileImageUpdate }) {
           >
             <img src={user.profile_img} alt="profile_img" className="w-100 h-100" style={{ objectFit: "cover" }} />
             <div className="overlay">
-              <FaPencil className="text-black" style={{ fontSize: "1.5rem" }} />
+              <div className="p-2 rounded-circle bg-white">
+                <FaPencil className="text-black" style={{ fontSize: "1.5rem" }} />
+              </div>
             </div>
           </div>
           <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleImageChange} />
         </Col>
-        <Col xs={12} md={8} className="ps-4">
+        <Col xs={12} lg={8} className="ps-4">
           <Row>
             <Col xs={6}>
               <p className="fw-bold">

@@ -5,11 +5,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { setChats } from "../../../redux/actions";
 import { useChannel } from "ably/react";
 import { FaPencil } from "react-icons/fa6";
+import DEFAULT_GROUP_IMAGE from "../../../assets/profiles/group-of-people.svg"; // Assicurati che il percorso sia corretto
 
 const CreateGroupModal = ({ show, handleClose }) => {
   const [groupName, setGroupName] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(DEFAULT_GROUP_IMAGE);
   const [friends, setFriends] = useState([]);
   const [selectedFriends, setSelectedFriends] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -39,7 +40,7 @@ const CreateGroupModal = ({ show, handleClose }) => {
       if (!validImageTypes.includes(fileType)) {
         setErrorMessage("Tipo di file non supportato. Si prega di caricare un'immagine JPEG o PNG.");
         setSelectedImage(null);
-        setImagePreview(null);
+        setImagePreview(DEFAULT_GROUP_IMAGE);
         return;
       }
       setSelectedImage(file);
@@ -99,12 +100,15 @@ const CreateGroupModal = ({ show, handleClose }) => {
         handleClose();
         setGroupName("");
         setSelectedImage(null);
-        setImagePreview(null);
+        setImagePreview(DEFAULT_GROUP_IMAGE);
         setSelectedFriends([]);
         setErrorMessage(null);
       })
       .catch((error) => {
         console.error("Failed to create group", error);
+        if (error.response && error.response.data && error.response.data.errors) {
+          setErrorMessage(error.response.data.errors.image?.[0]);
+        }
       });
   };
 
@@ -117,25 +121,22 @@ const CreateGroupModal = ({ show, handleClose }) => {
         {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
         <Form onSubmit={handleCreateGroup}>
           <Row className="mt-4">
-            <Col xs={12} md={4} className="d-flex align-items-center">
+            <Col xs={12} lg={4} className="d-flex align-items-center">
               <div
                 className="position-relative border rounded-circle overflow-hidden"
                 style={{ width: "200px", height: "200px", margin: "0 auto", cursor: "pointer" }}
                 onClick={() => fileInputRef.current.click()}
               >
-                <img
-                  src={imagePreview || "default-profile-image-url"}
-                  alt="group_img"
-                  className="w-100 h-100"
-                  style={{ objectFit: "cover" }}
-                />
+                <img src={imagePreview} alt="group_img" className="w-100 h-100" style={{ objectFit: "cover" }} />
                 <div className="overlay">
-                  <FaPencil className="text-black" style={{ fontSize: "1.5rem" }} />
+                  <div className="p-2 rounded-circle bg-white">
+                    <FaPencil className="text-black" style={{ fontSize: "1.5rem" }} />
+                  </div>
                 </div>
               </div>
               <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleImageChange} />
             </Col>
-            <Col xs={12} md={8}>
+            <Col xs={12} lg={8}>
               <Form.Group className="mb-5">
                 <Form.Label className="fw-bold">Nome Gruppo</Form.Label>
                 <Form.Control
@@ -179,7 +180,7 @@ const CreateGroupModal = ({ show, handleClose }) => {
               </Form.Group>
             </Col>
             <Modal.Footer>
-              <Button className="black-white-button border-0" onClick={handleClose}>
+              <Button className=" black-white-button border-0" onClick={handleClose}>
                 Annulla
               </Button>
               <Button className="gradient-orange border-0" type="submit">

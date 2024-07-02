@@ -49,27 +49,42 @@ class Travel extends Model
         static::created(function ($travel) {
             Log::info('Travel created with ID: ' . $travel->id);
 
-            // Controlla se c'è un utente autenticato
+            // Se c'è un utente autenticato, impostalo come creatore
             if (auth()->check()) {
-                $creatorUserId = auth()->user()->id;
-                $travel->users()->syncWithoutDetaching([$creatorUserId => ['role' => 'creator_travel', 'active' => true]]);
-                Log::info('Users associated with travel: ' . json_encode([$creatorUserId]));
+                $creatorUser = auth()->user();
+            } else {
+                // Altrimenti, prendi il primo utente come creatore (utile nei seed)
+                $creatorUser = User::first();
             }
 
-            // Crea la chat per il viaggio
-            $chat = Chat::create([
-                'name' => 'Chat for travel ' . $travel->id,
-                'travel_id' => $travel->id,
-                'active' => true,
-                'type' => 'travel',
-            ]);
+            if ($creatorUser) {
+                $creatorUserId = $creatorUser->id;
+                $creatorUsername = $creatorUser->username;
+                $travel->users()->syncWithoutDetaching([$creatorUserId => ['role' => 'creator_travel', 'active' => true]]);
+                Log::info('Users associated with travel: ' . json_encode([$creatorUserId]));
 
-            if ($chat) {
-                Log::info('Chat created for travel with ID: ' . $travel->id);
-                $chat->addUsersFromTravel($travel);
-                Log::info('Chat users after adding from travel: ' . json_encode($chat->users->pluck('id')->toArray()));
+                // Determina l'immagine in base al tipo di moto
+                $chatImage = $travel->getImageSource($travel->type_moto);
+
+                // Crea la chat per il viaggio con il nome desiderato
+                $chatName = 'viaggio di ' . $creatorUsername;
+                $chat = Chat::create([
+                    'name' => $chatName,
+                    'travel_id' => $travel->id,
+                    'active' => true,
+                    'type' => 'travel',
+                    'image' => $chatImage,
+                ]);
+
+                if ($chat) {
+                    Log::info('Chat created for travel with ID: ' . $travel->id);
+                    $chat->addUsersFromTravel($travel);
+                    Log::info('Chat users after adding from travel: ' . json_encode($chat->users->pluck('id')->toArray()));
+                } else {
+                    Log::error('Failed to create chat for travel with ID: ' . $travel->id);
+                }
             } else {
-                Log::error('Failed to create chat for travel with ID: ' . $travel->id);
+                Log::error('No users found to assign as creator for travel ID: ' . $travel->id);
             }
         });
 
@@ -97,5 +112,23 @@ class Travel extends Model
     public function setExpirationDateAttribute($value)
     {
         $this->attributes['expiration_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+    public function getImageSource($vehicleType)
+    {
+        switch ($vehicleType) {
+            case "Race Bikes":
+                return "/assets/moto/moto3.png";
+            case "Motocross":
+                return "/assets/moto/motocross3.png";
+            case "Scooter":
+                return "/assets/moto/vespa3.png";
+            case "Off Road":
+                return "/assets/moto/offroad3.png";
+            case "Harley":
+                return "/assets/moto/harley3.png";
+            default:
+                return "/assets/moto/moto.png";
+        }
     }
 }
