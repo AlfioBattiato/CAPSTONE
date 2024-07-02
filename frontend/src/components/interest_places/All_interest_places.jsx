@@ -54,22 +54,26 @@ export default function All_interest_places() {
   const [filteredPlaces, setFilteredPlaces] = useState([]);
 
   useEffect(() => {
-    axios('/api/interest-places')
-      .then((res) => {
-        setAllplace(res.data);
-        dispatch(setInterestPlaces(res.data));
-      })
-      .catch((error) => {
-        console.error('Error fetching interest places:', error);
-      });
-  }, []);
+    if (Km === 0) {
+      console.log('Fetching all interest places...');
+      axios.get('/api/interest-places')
+        .then((res) => {
+          setAllplace(res.data);
+          dispatch(setInterestPlaces(res.data));
+        })
+        .catch((error) => {
+          console.error('Error fetching interest places:', error);
+        });
+    }
+  }, [Km]);
 
   useEffect(() => {
-    if (allplace.length > 0 && coordinates?.length > 0) {
+    if (allplace.length > 0 && coordinates?.length > 0 && Km !== 0) {
       const places = filterInterestPlaces(allplace, coordinates, Km);
       setFilteredPlaces(places);
+      dispatch(setInterestPlaces(places));
     }
-  }, [coordinates, Km]);
+  }, [allplace, coordinates, Km, dispatch]);
 
   const handleCardClick = (place) => {
     setSelectedPlace(place);

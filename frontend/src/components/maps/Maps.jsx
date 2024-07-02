@@ -6,6 +6,7 @@ import { useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import RoutingMachine from './RoutingMachine';
 import { setCurrentTravel, setFormData } from '../../redux/actions';
+import InfoPlace from '../interest_places/InfoPlace'; // Importa InfoPlace
 
 // Importa le icone personalizzate
 import startIconUrl from '/assets/maps/ico1.gif';
@@ -21,6 +22,9 @@ export default function Maps() {
     const [position, setPosition] = useState([41.8933203, 12.4829321]); // Coordinate predefinite
     const [popupInfo, setPopupInfo] = useState(null); // Informazioni per il popup
     const [key, setKey] = useState(metas.length); // Informazioni per il popup
+
+    // State per gestire il place selezionato
+    const [selectedPlace, setSelectedPlace] = useState(null);
 
     useEffect(() => {
         if (travel.start_location.lat && travel.start_location.lon) {
@@ -97,6 +101,11 @@ export default function Maps() {
         className: 'custom-interest-icon' // Aggiungi una classe personalizzata se necessario
     });
 
+    // Gestore del click su un marker di interest place
+    const handleInterestPlaceClick = (place) => {
+        setSelectedPlace(place);
+    };
+
     return (
         <div className='shadow rounded-25'>
             <MapContainer center={position} zoom={5} style={{ height: '38.6rem', width: '100%', borderRadius: '25px' }}>
@@ -108,9 +117,16 @@ export default function Maps() {
 
                 {interestplaces && interestplaces.length > 0 && interestplaces.map((place, index) => (
                     <Marker key={index} position={[place.lat, place.lon]} icon={interestIcon}>
-                        <Popup>Nome: {place.name_location ? place.name_location : "Sconosciuto"}
-                            <img className='img-fluid' src= {place.location_img} alt="img"  />
-                           
+                        <Popup>
+                            <div>
+                                <p>Località: {place.name_location ? place.name_location : "Sconosciuto"}</p>
+                                <img
+                                    className='img-fluid cursor'
+                                    src={place.location_img}
+                                    alt="img"
+                                    onClick={() => handleInterestPlaceClick(place)} // Gestione del click sull'immagine
+                                />
+                            </div>
                         </Popup>
                     </Marker>
                 ))}
@@ -140,6 +156,15 @@ export default function Maps() {
                             Latitude: {popupInfo.lat}, Longitude: {popupInfo.lng}
                         </Popup>
                     </Marker>
+                )}
+
+                {/* Mostra InfoPlace se un place è stato selezionato */}
+                {selectedPlace && (
+                    <InfoPlace
+                        show={true} // Mostra InfoPlace
+                        handleClose={() => setSelectedPlace(null)} // Chiudi InfoPlace
+                        place={selectedPlace} // Passa il place selezionato
+                    />
                 )}
 
                 {travel.start_location.lat !== 0 && metas.length > 0 && (

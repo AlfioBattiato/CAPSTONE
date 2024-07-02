@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "./travelcard.css";
 import { SiGooglemaps } from "react-icons/si";
 
-export default function TravelCard({ travel, showParticipants }) {
+export default function TravelCard({ travel, showParticipants, nobutton }) {
   const getImageSource = (vehicleType) => {
     switch (vehicleType) {
       case "Race Bikes":
@@ -22,6 +22,8 @@ export default function TravelCard({ travel, showParticipants }) {
       case "Off Road":
         return "/assets/moto/offroad3.png";
       case "Harley":
+        return "/assets/moto/harley3.png";
+      case "harley":
         return "/assets/moto/harley3.png";
       default:
         return "/assets/moto/moto.png";
@@ -43,49 +45,47 @@ export default function TravelCard({ travel, showParticipants }) {
     : 0;
 
   return (
-    <div className="cardTravel position-relative" style={{ width: "" }}>
+    <div className="cardTravel position-relative" style={{ backgroundImage: `url(${getImageSource(travel.type_moto)})` }}>
       {travel && (
         <>
-          <div className="d-flex justify-content-end ">
-            <img
-              src={getImageSource(travel.type_moto)}
-              alt="mototype"
-              className="img-fluid d-block"
-              style={{ width: "70px", height: "70px", objectFit: "contain" }}
-            />
-          </div>
-          <div className="d-flex gap-2 align-items-center my-3 start-25 top-0 position-absolute">
-            <SiGooglemaps className="text-danger" />
-            <p className="fw-bold mb-0 ">{travel.start_location}</p>
-          </div>
-          <div className="d-flex flex-wrap gap-2">
-            <BsCalendarDate className="me-1" />
-            <p className="fs-12 fw-bold me-2 mb-0">{formatDate(travel.departure_date)}</p>
-          </div>
-          <div className="d-flex flex-column mt-2 gap-1">
-            <div>
-              <Badge bg="dark" text="white">
-                {travel.type_moto}
-              </Badge>
+
+          <div className="cardTravel_body pe-3 ps-2 py-3">
+
+
+            <div className="d-flex gap-2 align-items-center mb-3 ">
+              <SiGooglemaps className="text-danger" />
+              <p className="fw-semibold mb-0 fs-5">{travel.start_location}</p>
             </div>
-            <div>
-              <Badge bg="dark" text="white">
-                Cc: {travel.cc_moto}
-              </Badge>
+            <div className="d-flex flex-wrap gap-2">
+              <BsCalendarDate className="me-1" />
+              <p className="fs-12 fw-bold me-2 mb-0">{formatDate(travel.departure_date)}</p>
             </div>
+            <div className="d-flex flex-column mt-2 gap-1">
+              <div>
+                <Badge bg="dark" text="white" className="badgecard">
+                  {travel.type_moto}
+                </Badge>
+              </div>
+              <div>
+                <Badge bg="dark" text="white" className="badgecard">
+                  Cc: {travel.cc_moto}
+                </Badge>
+              </div>
+            </div>
+            {showParticipants && (
+              <>
+                <p className="m-0 fs-12 text-secondary">Partecipanti attuali:</p>
+                <BsFillPeopleFill className="me-2 text-success" />
+                <Badge bg="light" text="dark">
+                  {participantsCount}
+                </Badge>
+              </>
+            )}
           </div>
-          {showParticipants && (
-            <>
-              <p className="m-0 fs-12 text-secondary">Partecipanti attuali:</p>
-              <BsFillPeopleFill className="me-2 text-success" />
-              <Badge bg="light" text="dark">
-                {participantsCount}
-              </Badge>
-            </>
-          )}
-          <button className="cardTravel-button" onClick={() => navigate(`/infoTravel/${travel.id}`)}>
+          {nobutton ? '' : <button className="cardTravel-button" onClick={() => navigate(`/infoTravel/${travel.id}`)}>
             Vedi
-          </button>
+          </button>}
+
         </>
       )}
     </div>

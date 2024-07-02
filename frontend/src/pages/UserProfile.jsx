@@ -9,6 +9,8 @@ import FriendsModal from "../components/userProfile/FriendsModal";
 import RequestsModal from "../components/userProfile/RequestsModal";
 import TravelCard from "../components/card/TravelCard";
 import { useChannel } from "ably/react";
+import Carousel from 'react-multi-carousel';
+
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -118,6 +120,30 @@ const UserProfile = () => {
   const currentDate = new Date().toISOString().split("T")[0];
   const activeTravels = travels.filter((travel) => travel.active && travel.expiration_date >= currentDate);
 
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 1400 },
+      items: 5,
+      slidesToSlide: 5,
+    },
+    desktop: {
+      breakpoint: { max: 1400, min: 900 },
+      items: 4,
+      slidesToSlide: 3,
+    },
+    tablet: {
+      breakpoint: { max: 900, min: 555 },
+      items: 3,
+      slidesToSlide: 2,
+    },
+    mobile: {
+      breakpoint: { max: 555, min: 0 },
+      items: 2,
+      slidesToSlide: 2,
+    },
+  };
+
+
   return (
     <Container className="pt-5 bg-light" style={{ height: "100vh" }}>
       <Row className="align-items-center">
@@ -182,15 +208,19 @@ const UserProfile = () => {
 
       <Row className="mt-5">
         <Col>
-          <h3>I miei viaggi in programma</h3>
+          <h3>Le mie partenze</h3>
           {activeTravels.length > 0 ? (
-            <Row>
+
+            <Carousel responsive={responsive} className="">
               {activeTravels.map((travel) => (
-                <Col md={4} key={travel.id} className="mb-4">
-                  <TravelCard travel={travel} showParticipants={false} />
-                </Col>
+                <div className="mx-2 cursor" key={travel.id}  onClick={() => navigate(`/infoTravel/${travel.id}`)}>
+                  <TravelCard nobutton={true} travel={travel} showParticipants={false} />
+
+                </div>
               ))}
-            </Row>
+            </Carousel>
+
+
           ) : (
             <p>Nessun viaggio trovato.</p>
           )}
