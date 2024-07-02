@@ -180,7 +180,7 @@ const CreateGroupModal = ({ show, handleClose }) => {
               </Form.Group>
             </Col>
             <Modal.Footer>
-              <Button className="black-white-button border-0" onClick={handleClose}>
+              <Button className=" black-white-button border-0" onClick={handleClose}>
                 Annulla
               </Button>
               <Button className="gradient-orange border-0" type="submit">

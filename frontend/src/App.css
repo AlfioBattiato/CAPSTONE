@@ -338,6 +338,7 @@ html::-webkit-scrollbar {
 .black-white-button:hover {
   background: #000 !important;
   color: white !important;
+  border-color: rgb(255, 135, 65) !important;
 }
 
 /* modal group */

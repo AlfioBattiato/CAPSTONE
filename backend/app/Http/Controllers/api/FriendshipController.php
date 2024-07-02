@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Friendship;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -52,9 +51,9 @@ class FriendshipController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $friendship->update(['status' => 'declined']);
+        $friendship->delete();
 
-        return response()->json($friendship);
+        return response()->json(['message' => 'Friendship request declined']);
     }
 
     public function getPendingRequests()
@@ -66,5 +65,25 @@ class FriendshipController extends Controller
             ->get();
 
         return response()->json($pendingRequests);
+    }
+
+    public function checkFriendshipStatus(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'friend_id' => 'required|exists:users,id',
+        ]);
+
+        $status = Friendship::where(function ($query) use ($request) {
+                $query->where('requester_id', $request->user_id)
+                      ->where('addressee_id', $request->friend_id);
+            })
+            ->orWhere(function ($query) use ($request) {
+                $query->where('requester_id', $request->friend_id)
+                      ->where('addressee_id', $request->user_id);
+            })
+            ->value('status');
+
+        return response()->json(['status' => $status]);
     }
 }
