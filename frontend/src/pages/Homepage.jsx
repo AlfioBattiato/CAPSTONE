@@ -91,7 +91,28 @@ function Homepage() {
       humidity={data.main.humidity}
     />
   );
-
+  const getImageSource = (vehicleType) => {
+    switch (vehicleType) {
+      case "Race Bikes":
+        return "/assets/moto/moto3.png";
+      case "racebikes":
+        return "/assets/moto/moto3.png";
+      case "Motocross":
+        return "/assets/moto/motocross3.png";
+      case "Scooter":
+        return "/assets/moto/vespa3.png";
+      case "scooter":
+        return "/assets/moto/vespa3.png";
+      case "Off Road":
+        return "/assets/moto/offroad3.png";
+      case "Harley":
+        return "/assets/moto/harley3.png";
+      case "harley":
+        return "/assets/moto/harley3.png";
+      default:
+        return "/assets/moto/moto.png";
+    }
+  };
   const submit = async (ev) => {
     ev.preventDefault();
 
@@ -175,15 +196,13 @@ function Homepage() {
           </div>
 
           <div className="travelmodal">
-            <Modal show={show} onHide={handleClose} centered size="lg" >
-              <div className="card-modal">
-                <div className="circle-modal"></div>
-                <div className="circle-modal"></div>
-                <div className="card-modal-inner">
+            <Modal  show={show} onHide={handleClose} centered size="lg" className="createTravelmodal">
+           
                   <Modal.Header closeButton>
                     <Modal.Title>Riepilogo</Modal.Title>
                   </Modal.Header>
-                  <Modal.Body >
+                  <div className="resumeTravel" style={{ backgroundImage: `url(${getImageSource(travel.type_moto)})` }}>
+                  <Modal.Body  className=' resumeTravel_body' >
                     <p>
                       Citta partenza:{" "}
                       {travel.start_location.city ? (
@@ -251,6 +270,8 @@ function Homepage() {
                       )}
                     </p>
                   </Modal.Body>
+
+                  </div>
                   <hr />
                   <div className="d-flex py-3">
 
@@ -258,10 +279,6 @@ function Homepage() {
                       Completa creazione
                     </button>
                   </div>
-                </div>
-              </div>
-
-
             </Modal>
           </div>
         </Col>

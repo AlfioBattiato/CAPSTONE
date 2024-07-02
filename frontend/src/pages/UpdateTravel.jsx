@@ -113,6 +113,28 @@ function UpdateTravel() {
       console.error("There was an error!", error);
     }
   };
+  const getImageSource = (vehicleType) => {
+    switch (vehicleType) {
+      case "Race Bikes":
+        return "/assets/moto/moto3.png";
+      case "racebikes":
+        return "/assets/moto/moto3.png";
+      case "Motocross":
+        return "/assets/moto/motocross3.png";
+      case "Scooter":
+        return "/assets/moto/vespa3.png";
+      case "scooter":
+        return "/assets/moto/vespa3.png";
+      case "Off Road":
+        return "/assets/moto/offroad3.png";
+      case "Harley":
+        return "/assets/moto/harley3.png";
+      case "harley":
+        return "/assets/moto/harley3.png";
+      default:
+        return "/assets/moto/moto.png";
+    }
+  };
 
   return (
     <div className="container-fluid">
@@ -129,91 +151,88 @@ function UpdateTravel() {
           <div className="mt-5 d-flex justify-content-end">
 
             <Modal show={show} onHide={handleClose} centered size="lg">
-              <div className="card-modal">
-                <div className="circle-modal"></div>
-                <div className="circle-modal"></div>
-                <div className="card-modal-inner">
-                  <Modal.Header closeButton>
-                    <Modal.Title>Riepilogo</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <p>
-                      Citta partenza:{" "}
-                      {travel.start_location.city ? (
-                        <span className="fw-bold">{travel.start_location.city}</span>
-                      ) : (
-                        <span className="text-danger">Non impostata</span>
-                      )}
-                    </p>
-                    <p>
-                      Data partenza:{" "}
-                      {travel.departure_date ? (
-                        <span className="fw-bold">{travel.departure_date}</span>
-                      ) : (
-                        <span className="text-danger">Inserisci una data</span>
-                      )}
-                    </p>
-                    <span>Mete:</span>
 
-                    {metas.length > 0 ? (
-                      <DragDropContext onDragEnd={onDragEnd}>
-                        <Droppable droppableId="metas">
-                          {(provided) => (
-                            <ul className="list-group mt-1" {...provided.droppableProps} ref={provided.innerRef}>
-                              {metas.map((meta, index) => (
-                                <Draggable key={index} draggableId={`${index}`} index={index}>
-                                  {(provided) => (
-                                    <div
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      className="d-flex mt-1 align-items-center ps-0 gap-2"
-                                    >
-                                      <FaMapMarkerAlt className="text-danger" />
-                                      <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
-                                        {meta.city ? meta.city : meta.name_location}
-                                        <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
-                                          <FaTrash />
-                                        </button>
-                                      </li>
-                                    </div>
-                                  )}
-                                </Draggable>
-                              ))}
-                              {provided.placeholder}
-                            </ul>
-                          )}
-                        </Droppable>
-                      </DragDropContext>
+              <Modal.Header closeButton>
+                <Modal.Title>Riepilogo</Modal.Title>
+              </Modal.Header>
+              <div className="resumeTravel" style={{ backgroundImage: `url(${getImageSource(travel.type_moto)})` }}>
+                <Modal.Body className=' resumeTravel_body'>
+                  <p>
+                    Citta partenza:{" "}
+                    {travel.start_location.city ? (
+                      <span className="fw-bold">{travel.start_location.city}</span>
                     ) : (
-                      <span className="text-danger ms-1">Inserisci almeno una meta</span>
+                      <span className="text-danger">Non impostata</span>
                     )}
-                    <p className="mt-2">
-                      Tipo moto:{" "}
-                      {travel.type_moto ? (
-                        <span className="fw-bold">{travel.type_moto}</span>
-                      ) : (
-                        <span className="text-danger">Moto non impostata</span>
-                      )}
-                    </p>
-                    <p>
-                      Cilindrata:{" "}
-                      {travel.cc_moto ? (
-                        <span className="fw-bold">{travel.cc_moto}</span>
-                      ) : (
-                        <span className="text-danger">Moto non impostata</span>
-                      )}
-                    </p>
-                  </Modal.Body>
+                  </p>
+                  <p>
+                    Data partenza:{" "}
+                    {travel.departure_date ? (
+                      <span className="fw-bold">{travel.departure_date}</span>
+                    ) : (
+                      <span className="text-danger">Inserisci una data</span>
+                    )}
+                  </p>
+                  <span>Mete:</span>
 
-                  <Modal.Footer>
-
-                    <button className="btnT " onClick={submit}>
-                      Conferma Modifica
-                    </button>
-                  </Modal.Footer>
-                </div>
+                  {metas.length > 0 ? (
+                    <DragDropContext onDragEnd={onDragEnd}>
+                      <Droppable droppableId="metas">
+                        {(provided) => (
+                          <ul className="list-group mt-1" {...provided.droppableProps} ref={provided.innerRef}>
+                            {metas.map((meta, index) => (
+                              <Draggable key={index} draggableId={`${index}`} index={index}>
+                                {(provided) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className="d-flex mt-1 align-items-center ps-0 gap-2"
+                                  >
+                                    <FaMapMarkerAlt className="text-danger" />
+                                    <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
+                                      {meta.city ? meta.city : meta.name_location}
+                                      <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
+                                        <FaTrash />
+                                      </button>
+                                    </li>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </ul>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
+                  ) : (
+                    <span className="text-danger ms-1">Inserisci almeno una meta</span>
+                  )}
+                  <p className="mt-2">
+                    Tipo moto:{" "}
+                    {travel.type_moto ? (
+                      <span className="fw-bold">{travel.type_moto}</span>
+                    ) : (
+                      <span className="text-danger">Moto non impostata</span>
+                    )}
+                  </p>
+                  <p>
+                    Cilindrata:{" "}
+                    {travel.cc_moto ? (
+                      <span className="fw-bold">{travel.cc_moto}</span>
+                    ) : (
+                      <span className="text-danger">Moto non impostata</span>
+                    )}
+                  </p>
+                </Modal.Body>
               </div>
+              <Modal.Footer>
+
+                <button className="btnT " onClick={submit}>
+                  Conferma Modifica
+                </button>
+              </Modal.Footer>
+
             </Modal>
           </div>
         </Col>
