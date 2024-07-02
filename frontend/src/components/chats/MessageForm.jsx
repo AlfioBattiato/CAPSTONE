@@ -3,6 +3,7 @@ import { Form, Button, Col, Image } from "react-bootstrap";
 import { MdAttachFile } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
 import AudioRecorder from "./AudioRecorder";
+import TextareaAutosize from "react-textarea-autosize";
 
 const MessageForm = ({ chatId, onSendMessage }) => {
   const [newMessage, setNewMessage] = useState("");
@@ -75,17 +76,18 @@ const MessageForm = ({ chatId, onSendMessage }) => {
         </div>
       )}
       <Form.Group controlId="messageInput" className="d-flex align-items-center">
-        <Col xs={8} md={9} xl={10} className="p-1">
-          <Form.Control
-            type="text"
+        <Col xs={6} sm={7} md={8} lg={8} xl={9} className="p-1">
+          <TextareaAutosize
+            minRows={1}
+            maxRows={5}
             placeholder="Scrivi un messaggio..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            className="rounded-pill search-input"
-            style={{ backgroundColor: "#FFF", color: "#000" }}
+            className="search-input form-control custom-scrollbar"
+            style={{ backgroundColor: "#FFF", color: "#000", resize: "none" }}
           />
         </Col>
-        <Col xs={4} md={3} xl={2} className="p-1 d-flex align-items-center justify-content-around">
+        <Col xs={6} sm={5} md={4} lg={4} xl={3} className="p-1 d-flex align-items-center justify-content-around">
           <label
             htmlFor="fileInput"
             className="mb-0 d-flex align-items-center justify-content-center fs-3 gradient-orange"

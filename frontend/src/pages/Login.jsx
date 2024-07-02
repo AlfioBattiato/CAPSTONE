@@ -91,7 +91,7 @@ function Login() {
               </label>
               <input
                 type="email"
-                className="form-control search-input rounded-pill"
+                className="form-control search-input"
                 id="email"
                 name="email"
                 onChange={updateInputValue}
@@ -105,7 +105,7 @@ function Login() {
               </label>
               <input
                 type="password"
-                className="form-control search-input rounded-pill"
+                className="form-control search-input"
                 id="password"
                 name="password"
                 onChange={updateInputValue}

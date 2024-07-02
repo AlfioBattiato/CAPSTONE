@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Row, Col, Container } from "react-bootstrap";
+import { Row, Col, Container, Button, Offcanvas } from "react-bootstrap";
 import AllChats from "../components/chats/AllChats";
 import Chat from "../components/chats/Chat";
 import { ChannelProvider, useChannel } from "ably/react";
 import { setUnreadCount, incrementUnreadCount, decrementUnreadCount, setChats } from "../redux/actions";
 import axios from "axios";
+import { FaBars } from "react-icons/fa";
 
 const Lobbies = () => {
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
   const selectedChat = useSelector((state) => state.chats.selectedChat);
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -69,23 +71,43 @@ const Lobbies = () => {
   return (
     <Container className="mt-4 lobbies overflow-hidden" style={{ height: "90vh" }}>
       <Row className="h-100">
-        <Col md={3} className="h-100 p-0">
+        <Col lg={4} xl={3} className="h-100 m-0 p-0 d-none d-lg-block">
           <ChannelProvider channelName="chat-list">
             <AllChats globalChannel={globalChannel} />
           </ChannelProvider>
         </Col>
-        <Col md={9} className="h-100 p-0">
+        <Col
+          xs={2}
+          md={1}
+          className="h-100 m-0 p-0 d-flex align-items-start justify-content-center bg-black d-md-flex d-lg-none"
+        >
+          <Button variant="outline-light" className="mt-3" onClick={() => setShowOffcanvas(true)}>
+            <FaBars size={24} />
+          </Button>
+        </Col>
+        <Col xs={10} md={11} lg={8} xl={9} className="h-100 p-0">
           {selectedChat ? (
             <ChannelProvider channelName={`private-chat.${selectedChat.id}`}>
               <Chat chat={selectedChat} globalChannel={globalChannel} />
             </ChannelProvider>
           ) : (
             <div className="d-flex align-items-center justify-content-center h-100">
-              <h4>Select a chat to start messaging</h4>
+              <h4>Seleziona una chat ed inizia a messaggiare!</h4>
             </div>
           )}
         </Col>
       </Row>
+
+      <Offcanvas show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="start">
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>All Chats</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <ChannelProvider channelName="chat-list">
+            <AllChats globalChannel={globalChannel} />
+          </ChannelProvider>
+        </Offcanvas.Body>
+      </Offcanvas>
     </Container>
   );
 };
