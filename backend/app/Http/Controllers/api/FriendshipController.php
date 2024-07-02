@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Friendship;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -68,22 +69,43 @@ class FriendshipController extends Controller
     }
 
     public function checkFriendshipStatus(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'friend_id' => 'required|exists:users,id',
+    ]);
+
+    $status = Friendship::where(function ($query) use ($request) {
+            $query->where('requester_id', $request->user_id)
+                  ->where('addressee_id', $request->friend_id);
+        })
+        ->orWhere(function ($query) use ($request) {
+            $query->where('requester_id', $request->friend_id)
+                  ->where('addressee_id', $request->user_id);
+        })
+        ->value('status');
+
+    Log::info("Friendship status between {$request->user_id} and {$request->friend_id}: {$status}");
+
+    return response()->json(['status' => $status]);
+}
+
+
+    public function removeFriend($friendId)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'friend_id' => 'required|exists:users,id',
-        ]);
+        $friendship = Friendship::where(function ($query) use ($friendId) {
+            $query->where('requester_id', Auth::id())
+                  ->where('addressee_id', $friendId);
+        })->orWhere(function ($query) use ($friendId) {
+            $query->where('addressee_id', Auth::id())
+                  ->where('requester_id', $friendId);
+        })->first();
 
-        $status = Friendship::where(function ($query) use ($request) {
-                $query->where('requester_id', $request->user_id)
-                      ->where('addressee_id', $request->friend_id);
-            })
-            ->orWhere(function ($query) use ($request) {
-                $query->where('requester_id', $request->friend_id)
-                      ->where('addressee_id', $request->user_id);
-            })
-            ->value('status');
+        if ($friendship) {
+            $friendship->delete();
+            return response()->json(['message' => 'Friendship removed'], 200);
+        }
 
-        return response()->json(['status' => $status]);
+        return response()->json(['error' => 'Friendship not found'], 404);
     }
 }

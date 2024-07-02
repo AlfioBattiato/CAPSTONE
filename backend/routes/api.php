@@ -66,7 +66,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/friendships/{friendshipId}/accept', [FriendshipController::class, 'acceptRequest']);
     Route::post('/friendships/{friendshipId}/decline', [FriendshipController::class, 'declineRequest']);
     Route::get('/friendships/requests', [FriendshipController::class, 'getPendingRequests']);
-    Route::post('/friendships/status', [FriendshipController::class, 'getFriendshipStatus']);
+    Route::post('/friendships/status', [FriendshipController::class, 'checkFriendshipStatus']);
+    Route::delete('/friendships/remove/{friendId}', [FriendshipController::class, 'removeFriend']);
 
     // ***************************************CHAT***************************************
 

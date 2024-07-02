@@ -9,8 +9,7 @@ import FriendsModal from "../components/userProfile/FriendsModal";
 import RequestsModal from "../components/userProfile/RequestsModal";
 import TravelCard from "../components/card/TravelCard";
 import { useChannel } from "ably/react";
-import Carousel from 'react-multi-carousel';
-
+import Carousel from "react-multi-carousel";
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -21,6 +20,9 @@ const UserProfile = () => {
   const [showModal, setShowModal] = useState(false);
   const [showFriendsModal, setShowFriendsModal] = useState(false);
   const [showRequestsModal, setShowRequestsModal] = useState(false);
+  const [friendshipStatus, setFriendshipStatus] = useState(null); // Stato per gestire lo stato della richiesta di amicizia
+  const [loadingFriendRequest, setLoadingFriendRequest] = useState(false); // Stato per gestire lo spinner
+  const [loadingRemoveFriend, setLoadingRemoveFriend] = useState(false); // Stato per gestire lo spinner durante la rimozione dell'amicizia
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { channel: chatListChannel } = useChannel("chat-list");
@@ -31,6 +33,7 @@ const UserProfile = () => {
       .then((response) => {
         setProfileUser(response.data);
         setLoadingProfile(false);
+        checkFriendshipStatus(response.data.id); // Controlla lo stato della richiesta di amicizia
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
@@ -46,6 +49,22 @@ const UserProfile = () => {
         console.error("Error fetching travels:", error);
       });
   }, [id, dispatch]);
+
+  const checkFriendshipStatus = async (friendId) => {
+    try {
+      setLoadingProfile(true); // Mostra lo spinner durante il caricamento della verifica dello stato
+      const response = await axios.post("/api/friendships/status", {
+        user_id: loggedInUser.id,
+        friend_id: friendId,
+      });
+      console.log("Friendship status response:", response.data);
+      setFriendshipStatus(response.data.status);
+    } catch (error) {
+      console.error("Error checking friendship status:", error);
+    } finally {
+      setLoadingProfile(false); // Nasconde lo spinner
+    }
+  };
 
   const handleProfileImageUpdate = (updatedUser) => {
     setProfileUser(updatedUser);
@@ -89,10 +108,27 @@ const UserProfile = () => {
 
   const sendFriendRequest = async () => {
     try {
+      setLoadingFriendRequest(true); // Mostra lo spinner
       await axios.post("/api/friendships/send", { addressee_id: profileUser.id });
       alert("Richiesta di amicizia inviata!");
+      setFriendshipStatus("pending"); // Imposta lo stato della richiesta come 'pending'
     } catch (error) {
       console.error("Error sending friend request:", error);
+    } finally {
+      setLoadingFriendRequest(false); // Nasconde lo spinner
+    }
+  };
+
+  const removeFriend = async () => {
+    try {
+      setLoadingRemoveFriend(true); // Mostra lo spinner
+      await axios.delete(`/api/friendships/remove/${profileUser.id}`);
+      alert("Amicizia rimossa!");
+      setFriendshipStatus(null); // Imposta lo stato della richiesta come null dopo la rimozione
+    } catch (error) {
+      console.error("Error removing friend:", error);
+    } finally {
+      setLoadingRemoveFriend(false); // Nasconde lo spinner
     }
   };
 
@@ -143,7 +179,6 @@ const UserProfile = () => {
     },
   };
 
-
   return (
     <Container className="pt-5 bg-light" style={{ height: "100vh" }}>
       <Row className="align-items-center">
@@ -170,7 +205,7 @@ const UserProfile = () => {
                 {isOwner && (
                   <Col xs={12}>
                     <Button onClick={() => setShowModal(true)} className="gradient-orange border-0 rounded-pill">
-                      Edit Profile
+                      Modifica Profilo
                     </Button>
                   </Col>
                 )}
@@ -186,10 +221,24 @@ const UserProfile = () => {
                     Mostra Amici
                   </Button>
                 </Col>
-                {!isOwner && (
+                {!isOwner && friendshipStatus !== "pending" && friendshipStatus !== "accepted" && (
                   <Col xs={12}>
                     <Button onClick={sendFriendRequest} className="gradient-orange border-0 rounded-pill">
-                      Aggiungi Amico
+                      {loadingFriendRequest ? <Spinner animation="border" size="sm" /> : "Aggiungi Amico"}
+                    </Button>
+                  </Col>
+                )}
+                {!isOwner && friendshipStatus === "pending" && (
+                  <Col xs={12}>
+                    <Button disabled className="gradient-orange border-0 rounded-pill">
+                      Richiesta Inviata
+                    </Button>
+                  </Col>
+                )}
+                {friendshipStatus === "accepted" && (
+                  <Col xs={12}>
+                    <Button onClick={removeFriend} className="gradient-orange border-0 rounded-pill">
+                      {loadingRemoveFriend ? <Spinner animation="border" size="sm" /> : "Rimuovi Amico"}
                     </Button>
                   </Col>
                 )}
@@ -210,17 +259,13 @@ const UserProfile = () => {
         <Col>
           <h3>Le mie partenze</h3>
           {activeTravels.length > 0 ? (
-
             <Carousel responsive={responsive} className="">
               {activeTravels.map((travel) => (
-                <div className="mx-2 cursor" key={travel.id}  onClick={() => navigate(`/infoTravel/${travel.id}`)}>
+                <div className="mx-2 cursor" key={travel.id} onClick={() => navigate(`/infoTravel/${travel.id}`)}>
                   <TravelCard nobutton={true} travel={travel} showParticipants={false} />
-
                 </div>
               ))}
             </Carousel>
-
-
           ) : (
             <p>Nessun viaggio trovato.</p>
           )}
