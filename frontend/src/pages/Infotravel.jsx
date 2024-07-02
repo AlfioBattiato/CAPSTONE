@@ -15,6 +15,7 @@ import { LiaCalendarSolid } from "react-icons/lia";
 import { FaPeopleRobbery } from "react-icons/fa6";
 import L from 'leaflet';
 import { CgDanger } from "react-icons/cg";
+import { BsFillPeopleFill } from "react-icons/bs";
 
 import startIconUrl from '/assets/maps/ico1.gif';
 import arriveIconUrl from '/assets/maps/blue.png';
@@ -160,31 +161,45 @@ function Infotravel() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  // Crea l'icona personalizzata per gli interest places
+  const groupchat=()=>{
+    
+  }
 
   return (
     <div className="container">
       {travel ? (
         <>
-          <Row className="mt-3">
+          <Row className="mt-5">
 
             <Col md={6}>
               {authUserRole !== 'creator_travel' ? (
-                <div className="mb-2">
-                  <Button disabled={disable} variant="success" onClick={addGuest}>Chiedi di partecipare</Button>
-                  {disable && (<p className="text-success">Richiesta inviata!Attendi di essere accettato dall&apos;amministratore del viaggio</p>)}
+                <div className="d-flex justify-content-between">
+                  <div className="mb-2">
+                    <Button disabled={disable} variant="outline-success" onClick={addGuest}>Chiedi di partecipare</Button>
+                    {disable && (<p className="text-success">Richiesta inviata!Attendi di essere accettato dall&apos;amministratore del viaggio</p>)}
+                  </div>
+                  <div className="d-flex">
+                    <button className="btnT ms-auto shadow-0" onClick={groupchat}><BsFillPeopleFill /> Chat viaggio</button>
+                  </div>
+
                 </div>
+
               ) : (
                 <>
+                  <div className="d-flex justify-content-between">
+                    <div className="d-flex  ">
+                      <div className="  d-flex social cursor align-items-center border-end border-1 border-dark">
+                        <Button variant="outline-dark" className="me-2" onClick={() => navigate(`/updateTravel/${travel.id}`)}>Modifica    <MdEdit /></Button>
+                      </div>
+                      <div className="d-flex text-danger cursor align-items-center ms-2 ">
+                        <Button variant="outline-danger" className="me-2" onClick={() => setShow(true)}>Elimina viaggio  <FaTrash /> </Button>
+                      </div>
 
-                  <div className="d-flex  ">
-                    <div className="  d-flex social cursor align-items-center border-end border-1 border-dark">
-                      <Button variant="outline-dark" className="me-2" onClick={() => navigate(`/updateTravel/${travel.id}`)}>Modifica    <MdEdit /></Button>
-                    </div>
-                    <div className="d-flex text-danger cursor align-items-center ms-2 ">
-                      <Button variant="outline-danger" className="me-2" onClick={() => setShow(true)}>Elimina viaggio  <FaTrash /> </Button>
                     </div>
 
+                    <div className=" d-flex">
+                    <button className="btnT ms-auto shadow-0" onClick={groupchat}><BsFillPeopleFill /> Chat viaggio</button>
+                  </div>
                   </div>
                   <hr />
                 </>
