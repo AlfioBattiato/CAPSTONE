@@ -15,6 +15,7 @@ class ChatFactory extends Factory
             'name' => $this->faker->sentence,
             'active' => true,
             'type' => 'group',
+            'image' => '/assets/profiles/group-of-people.svg',
         ];
     }
 }

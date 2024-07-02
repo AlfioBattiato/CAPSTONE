@@ -35,7 +35,7 @@ class InterestPlaceController extends Controller
         $request->validate([
             'name_location' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'location_img' => 'required|image|max:1024',
+            'location_img' => 'required|image|max:2048',
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',
             'user_id' => 'required|exists:users,id',

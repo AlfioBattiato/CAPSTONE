@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Travel;
 use Illuminate\Database\Seeder;
 
@@ -14,23 +13,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         $this->call([
             UserSeeder::class,
-            // InterestPlaceSeeder::class,
             TravelSeeder::class,
             MetaSeeder::class,
             ChatSeeder::class,
         ]);
-        
+
         $travels = Travel::all();
         $users = User::all();
 
         foreach ($travels as $travel) {
-            $randomUsers = $users->random(rand(1, $users->count()));
-            $userIds = $randomUsers->pluck('id')->toArray();
-            $travel->users()->sync($userIds);
+            // Seleziona un utente casuale come creatore
+            $creatorUser = $users->random();
+
+            // Associa l'utente creatore al viaggio
+            $travel->users()->syncWithoutDetaching([$creatorUser->id => ['role' => 'creator_travel', 'active' => true]]);
+
+            // Aggiungi altri utenti al viaggio come partecipanti
+            $otherUsers = $users->where('id', '!=', $creatorUser->id)->random(rand(0, $users->count() - 1));
+            $otherUserIds = $otherUsers->pluck('id')->toArray();
+            $travel->users()->syncWithoutDetaching(array_fill_keys($otherUserIds, ['role' => 'guest', 'active' => true]));
 
             if ($travel->chat) {
                 $travel->chat->addUsersFromTravel($travel);
