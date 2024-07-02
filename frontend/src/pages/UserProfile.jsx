@@ -108,27 +108,27 @@ const UserProfile = () => {
 
   const sendFriendRequest = async () => {
     try {
-      setLoadingFriendRequest(true); // Mostra lo spinner
+      setLoadingFriendRequest(true);
       await axios.post("/api/friendships/send", { addressee_id: profileUser.id });
       alert("Richiesta di amicizia inviata!");
-      setFriendshipStatus("pending"); // Imposta lo stato della richiesta come 'pending'
+      setFriendshipStatus("pending");
     } catch (error) {
       console.error("Error sending friend request:", error);
     } finally {
-      setLoadingFriendRequest(false); // Nasconde lo spinner
+      setLoadingFriendRequest(false);
     }
   };
 
   const removeFriend = async () => {
     try {
-      setLoadingRemoveFriend(true); // Mostra lo spinner
+      setLoadingRemoveFriend(true);
       await axios.delete(`/api/friendships/remove/${profileUser.id}`);
       alert("Amicizia rimossa!");
-      setFriendshipStatus(null); // Imposta lo stato della richiesta come null dopo la rimozione
+      setFriendshipStatus(null);
     } catch (error) {
       console.error("Error removing friend:", error);
     } finally {
-      setLoadingRemoveFriend(false); // Nasconde lo spinner
+      setLoadingRemoveFriend(false);
     }
   };
 
