@@ -55,7 +55,7 @@ export default function All_interest_places() {
 
   useEffect(() => {
     if (Km === 0) {
-      console.log('Fetching all interest places...');
+      // console.log('Fetching all interest places...');
       axios.get('/api/interest-places')
         .then((res) => {
           setAllplace(res.data);

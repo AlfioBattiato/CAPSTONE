@@ -22,22 +22,23 @@ export default function Maps() {
     const [position, setPosition] = useState([41.8933203, 12.4829321]); // Coordinate predefinite
     const [popupInfo, setPopupInfo] = useState(null); // Informazioni per il popup
     const [key, setKey] = useState(metas.length); // Informazioni per il popup
-
-    // State per gestire il place selezionato
-    const [selectedPlace, setSelectedPlace] = useState(null);
+    const [selectedPlace, setSelectedPlace] = useState(null); // State per gestire il place selezionato
 
     useEffect(() => {
-        if (travel.start_location.lat && travel.start_location.lon) {
-            setPosition([travel.start_location.lat, travel.start_location.lon]);
-        }
+        // Ottieni la posizione dell'utente al caricamento della mappa
+        navigator.geolocation.getCurrentPosition(
+            (geoLocation) => {
+                const { latitude, longitude } = geoLocation.coords;
+                setPosition([latitude, longitude]);
+                setPopupInfo({ lat: latitude, lng: longitude });
+            },
+            (error) => {
+                console.error('Error getting user location:', error);
+            }
+        );
 
-        if (travel.start_location.city) {
-            setPopupInfo({ lat: travel.start_location.lat, lng: travel.start_location.lon });
-        } else {
-            setPopupInfo(null);
-        }
-        setKey(oldKey => oldKey + 1);
-    }, [travel, metas]);
+        setKey(oldKey => oldKey + 1); // Aggiorna la chiave per forzare il re-render dei marker
+    }, []);
 
     const handleClickOnMap = (event) => {
         const { lat, lng } = event.latlng;
@@ -65,40 +66,37 @@ export default function Maps() {
         return null; // Nessun componente visivo, solo gestione eventi
     }
 
-    // Crea l'icona personalizzata per la start location
+    // Crea le icone personalizzate per i marker
     const startIcon = new L.Icon({
         iconUrl: startIconUrl,
-        iconSize: [40, 40], // Dimensione dell'icona
-        iconAnchor: [18, 30], // Punto dell'icona che corrisponderà alla posizione
-        popupAnchor: [0, -40], // Punto del popup che corrisponderà alla posizione
-        className: 'custom-start-icon' // Aggiungi una classe personalizzata se necessario
+        iconSize: [40, 40],
+        iconAnchor: [18, 30],
+        popupAnchor: [0, -40],
+        className: 'custom-start-icon'
     });
 
-    // Crea l'icona personalizzata per l'ultima meta (arrivo)
     const arriveIcon = new L.Icon({
         iconUrl: arriveIconUrl,
-        iconSize: [40, 40], // Dimensione dell'icona
-        iconAnchor: [15, 30], // Punto dell'icona che corrisponderà alla posizione
-        popupAnchor: [0, -30], // Punto del popup che corrisponderà alla posizione
-        className: 'custom-arrive-icon' // Aggiungi una classe personalizzata se necessario
+        iconSize: [40, 40],
+        iconAnchor: [15, 30],
+        popupAnchor: [0, -30],
+        className: 'custom-arrive-icon'
     });
 
-    // Crea l'icona personalizzata per le singole mete
     const metaIcon = new L.Icon({
         iconUrl: singolarmetaIconUrl,
-        iconSize: [40, 40], // Dimensione dell'icona
-        iconAnchor: [15, 30], // Punto dell'icona che corrisponderà alla posizione
-        popupAnchor: [0, -30], // Punto del popup che corrisponderà alla posizione
-        className: 'custom-meta-icon' // Aggiungi una classe personalizzata se necessario
+        iconSize: [40, 40],
+        iconAnchor: [15, 30],
+        popupAnchor: [0, -30],
+        className: 'custom-meta-icon'
     });
 
-    // Crea l'icona personalizzata per gli interest places
     const interestIcon = new L.Icon({
         iconUrl: interestUrl,
-        iconSize: [40, 40], // Dimensione dell'icona
-        iconAnchor: [15, 30], // Punto dell'icona che corrisponderà alla posizione
-        popupAnchor: [0, -30], // Punto del popup che corrisponderà alla posizione
-        className: 'custom-interest-icon' // Aggiungi una classe personalizzata se necessario
+        iconSize: [40, 40],
+        iconAnchor: [15, 30],
+        popupAnchor: [0, -30],
+        className: 'custom-interest-icon'
     });
 
     // Gestore del click su un marker di interest place
@@ -108,7 +106,7 @@ export default function Maps() {
 
     return (
         <div className='shadow rounded-25'>
-            <MapContainer center={position} zoom={5} style={{ height: '38.6rem', width: '100%', borderRadius: '25px' }}>
+            <MapContainer center={position} zoom={13} style={{ height: '38.6rem', width: '100%', borderRadius: '25px' }}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -137,18 +135,15 @@ export default function Maps() {
                     </Marker>
                 )}
 
-                {metas.map((meta, index) => {
-                    const isLastMeta = index === metas.length - 1;
-                    return (
-                        <Marker 
-                            key={index} 
-                            position={[meta.lat, meta.lon]} 
-                            icon={isLastMeta ? arriveIcon : metaIcon}
-                        >
-                            <Popup>Meta: {meta.city}</Popup>
-                        </Marker>
-                    );
-                })}
+                {metas.map((meta, index) => (
+                    <Marker
+                        key={index}
+                        position={[meta.lat, meta.lon]}
+                        icon={index === metas.length - 1 ? arriveIcon : metaIcon}
+                    >
+                        <Popup>Meta: {meta.city}</Popup>
+                    </Marker>
+                ))}
 
                 {popupInfo && (
                     <Marker position={[popupInfo.lat, popupInfo.lng]} icon={startIcon}>
@@ -161,15 +156,16 @@ export default function Maps() {
                 {/* Mostra InfoPlace se un place è stato selezionato */}
                 {selectedPlace && (
                     <InfoPlace
-                        show={true} // Mostra InfoPlace
-                        handleClose={() => setSelectedPlace(null)} // Chiudi InfoPlace
-                        place={selectedPlace} // Passa il place selezionato
+                        show={true}
+                        handleClose={() => setSelectedPlace(null)}
+                        place={selectedPlace}
                     />
                 )}
 
+                {/* Mostra la routing machine se ci sono metas e la posizione iniziale è diversa da zero */}
                 {travel.start_location.lat !== 0 && metas.length > 0 && (
                     <RoutingMachine
-                        key={key} // Usare key per forzare il render di una nuova istanza di RoutingMachine
+                        key={key}
                         lat={travel.start_location.lat}
                         lon={travel.start_location.lon}
                         metas={metas}

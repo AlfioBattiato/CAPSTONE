@@ -22,6 +22,10 @@
 /* .badgecard{
   background-color:rgba(255, 135, 65, 0.315)!important ;
 } */
+.black-and-white {
+  filter: grayscale(0%);
+}
+
 .cardTravel-button {
   transform: translate(-50%, 125%);
   width: 60%;
