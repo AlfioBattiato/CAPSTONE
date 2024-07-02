@@ -79,32 +79,10 @@ const travelsReducer = (state = initialState, action) => {
         ...state,
         details: action.payload,
       };
-    case SET_ALL:
+      case SET_ALL:
       return {
-        alltravels: [],
-        setTravel: {
-          start_location: {
-            city: "",
-            lat: 0,
-            lon: 0,
-          },
-          departure_date: null,
-          cc_moto: null,
-          participants: null,
-          type_moto: null,
-          inputDisable: false,
-        },
-        map_instructions: [],
-        formData: {
-          query: "",
-          metaQuery: "",
-        },
-        interestPlaces: [],
-        metas: [],
-        details: {
-          days: null,
-          expiration_date: null,
-        },
+        ...initialState,
+        interestPlaces: [...state.interestPlaces],
       };
     default:
       return state;

@@ -11,9 +11,9 @@ export default function Sponsor() {
   return (
     <>
       {sponsors.map((sponsor, index) => (
-        <div key={index} className='mb-2 p-2 rounded border bg-white' style={{ width: '100%' }}>
+        <div key={index} className='mb-2 overflow-hidden rounded border bg-white' style={{ width: '50%' }}>
               <img src={sponsor} alt="sponsor" className='img-fluid'  />
-            <a href="">Another Link</a>
+            {/* <a href="">Another Link</a> */}
         </div>
       ))}
     </>

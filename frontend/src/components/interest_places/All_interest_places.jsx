@@ -132,7 +132,7 @@ export default function All_interest_places() {
       />
 
       </div>
-      <p className='mb-0 '>distanza: {Km === 0 ? 'Nessun tragitto impostato' : Km} km</p>
+      <p className='mb-0 '>distanza: {Km === 0 ? 'Nessun tragitto impostato' : Km + ' Km'} </p>
 
       <div className="fw-bold text-secondary mb-3">
         

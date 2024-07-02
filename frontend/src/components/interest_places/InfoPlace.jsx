@@ -22,7 +22,7 @@ export default function InfoPlace({ show, handleClose, place }) {
         handleClose();
     }
     return (
-        <Modal show={show} onHide={handleClose} className="infoPlace" >
+        <Modal show={show} onHide={handleClose} centered size="lg" className="infoPlace" >
             <Modal.Header closeButton className="bg-dark text-white">
                 <Modal.Title >{place.name_location ? place.name_location : "Nome luogo sconosciuto"} </Modal.Title>
 

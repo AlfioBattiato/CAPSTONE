@@ -198,8 +198,8 @@ export default function FilterTravel({ setTravels }) {
                 step={1}
                 value={participants}
                 onChange={(value) => setParticipants(value)}
-                trackStyle={{ backgroundColor: '#86d3ff' }}
-                handleStyle={{ borderColor: '#2693e6', backgroundColor: '#2693e6' }}
+                trackStyle={{ backgroundColor: '#FF8741' }}
+                handleStyle={{ borderColor: '#FF8741', backgroundColor: '#FF8741' }}
             />
             <p className='mb-0'>Numero partecipanti:</p>
             <div className="fw-bold text-secondary">{participants === 0 ? 'Nessun filtro' : participants}</div>
@@ -211,8 +211,8 @@ export default function FilterTravel({ setTravels }) {
                 step={1}
                 value={days}
                 onChange={(value) => setDays(value)}
-                trackStyle={{ backgroundColor: '#86d3ff' }}
-                handleStyle={{ borderColor: '#2693e6', backgroundColor: '#2693e6' }}
+                trackStyle={{ backgroundColor: '#FF8741' }}
+                handleStyle={{ borderColor: '#FF8741', backgroundColor: '#FF8741' }}
             />
             <p className='mb-0'>Giorni in viaggio:</p>
             <div className="fw-bold text-secondary">{days === 0 ? 'Nessun filtro' : days}</div>
