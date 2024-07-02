@@ -60,6 +60,7 @@ class Travel extends Model
             if ($creatorUser) {
                 $creatorUserId = $creatorUser->id;
                 $creatorUsername = $creatorUser->username;
+                $travelId = $travel->id;
                 $travel->users()->syncWithoutDetaching([$creatorUserId => ['role' => 'creator_travel', 'active' => true]]);
                 Log::info('Users associated with travel: ' . json_encode([$creatorUserId]));
 
@@ -67,7 +68,7 @@ class Travel extends Model
                 $chatImage = $travel->getImageSource($travel->type_moto);
 
                 // Crea la chat per il viaggio con il nome desiderato
-                $chatName = 'viaggio di ' . $creatorUsername;
+                $chatName = 'viaggio ' . $travelId;
                 $chat = Chat::create([
                     'name' => $chatName,
                     'travel_id' => $travel->id,

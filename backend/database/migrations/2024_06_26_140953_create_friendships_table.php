@@ -13,7 +13,7 @@ return new class extends Migration
             $table->unsignedBigInteger('requester_id');
             $table->unsignedBigInteger('addressee_id');
             // enum permette di avere tanti tipi fissi di valore
-            $table->enum('status', ['pending', 'accepted', 'declined'])->default('pending');
+            $table->enum('status', ['pending', 'accepted'])->default('pending');
             $table->timestamps();
 
             // colleghiamo il requester_id a uno degli user_id esterni

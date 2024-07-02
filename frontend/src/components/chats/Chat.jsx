@@ -204,7 +204,7 @@ const Chat = ({ chat, globalChannel }) => {
               chat.type === "group"
                 ? groupImage
                 : chat.type === "travel"
-                ? chat.image
+                ? groupImage // Update this line to use groupImage
                 : otherUser?.profile_img || "default-profile-image-url"
             }
             alt="Chat"
@@ -240,12 +240,9 @@ const Chat = ({ chat, globalChannel }) => {
             >
               <BsThreeDotsVertical className="pb-2 pointer" />
             </Dropdown.Toggle>
-
             <Dropdown.Menu className="search-results">
               <Dropdown.Item onClick={() => setShowMembersModal(true)}>Visualizza membri</Dropdown.Item>
-              {chat.type === "group" && (
-                <Dropdown.Item onClick={() => setShowEditModal(true)}>Modifica gruppo</Dropdown.Item>
-              )}
+              <Dropdown.Item onClick={() => setShowEditModal(true)}>Modifica gruppo</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         )}

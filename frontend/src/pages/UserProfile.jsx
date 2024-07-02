@@ -7,9 +7,8 @@ import { setSelectedChat, setChats, setActionTravels } from "../redux/actions";
 import DashboardModal from "../components/userProfile/DashboardModal";
 import FriendsModal from "../components/userProfile/FriendsModal";
 import RequestsModal from "../components/userProfile/RequestsModal";
-import TravelCard from "../components/card/TravelCard";
+import TravelCardMap from "../components/userProfile/TravelCardMap";
 import { useChannel } from "ably/react";
-import Carousel from "react-multi-carousel";
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -20,9 +19,9 @@ const UserProfile = () => {
   const [showModal, setShowModal] = useState(false);
   const [showFriendsModal, setShowFriendsModal] = useState(false);
   const [showRequestsModal, setShowRequestsModal] = useState(false);
-  const [friendshipStatus, setFriendshipStatus] = useState(null); // Stato per gestire lo stato della richiesta di amicizia
-  const [loadingFriendRequest, setLoadingFriendRequest] = useState(false); // Stato per gestire lo spinner
-  const [loadingRemoveFriend, setLoadingRemoveFriend] = useState(false); // Stato per gestire lo spinner durante la rimozione dell'amicizia
+  const [friendshipStatus, setFriendshipStatus] = useState(null);
+  const [loadingFriendRequest, setLoadingFriendRequest] = useState(false);
+  const [loadingRemoveFriend, setLoadingRemoveFriend] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { channel: chatListChannel } = useChannel("chat-list");
@@ -33,7 +32,7 @@ const UserProfile = () => {
       .then((response) => {
         setProfileUser(response.data);
         setLoadingProfile(false);
-        checkFriendshipStatus(response.data.id); // Controlla lo stato della richiesta di amicizia
+        checkFriendshipStatus(response.data.id);
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
@@ -52,17 +51,16 @@ const UserProfile = () => {
 
   const checkFriendshipStatus = async (friendId) => {
     try {
-      setLoadingProfile(true); // Mostra lo spinner durante il caricamento della verifica dello stato
+      setLoadingProfile(true);
       const response = await axios.post("/api/friendships/status", {
         user_id: loggedInUser.id,
         friend_id: friendId,
       });
-      console.log("Friendship status response:", response.data);
       setFriendshipStatus(response.data.status);
     } catch (error) {
       console.error("Error checking friendship status:", error);
     } finally {
-      setLoadingProfile(false); // Nasconde lo spinner
+      setLoadingProfile(false);
     }
   };
 
@@ -76,7 +74,6 @@ const UserProfile = () => {
       const existingChat = response.data.find(
         (chat) =>
           chat.type === "private" &&
-          chat.users &&
           chat.users.some((user) => user.id === profileUser.id) &&
           chat.users.some((user) => user.id === loggedInUser.id)
       );
@@ -95,7 +92,6 @@ const UserProfile = () => {
 
         const updatedChat = updatedChatsResponse.data.find((chat) => chat.id === newChat.id);
 
-        // Pubblica l'evento chat.created su chatListChannel
         chatListChannel.publish("chat.created", { chat: newChat });
 
         dispatch(setSelectedChat(updatedChat));
@@ -156,29 +152,6 @@ const UserProfile = () => {
   const currentDate = new Date().toISOString().split("T")[0];
   const activeTravels = travels.filter((travel) => travel.active && travel.expiration_date >= currentDate);
 
-  const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 1400 },
-      items: 5,
-      slidesToSlide: 5,
-    },
-    desktop: {
-      breakpoint: { max: 1400, min: 900 },
-      items: 4,
-      slidesToSlide: 3,
-    },
-    tablet: {
-      breakpoint: { max: 900, min: 555 },
-      items: 3,
-      slidesToSlide: 2,
-    },
-    mobile: {
-      breakpoint: { max: 555, min: 0 },
-      items: 2,
-      slidesToSlide: 2,
-    },
-  };
-
   return (
     <Container className="pt-5 bg-light" style={{ height: "100vh" }}>
       <Row className="align-items-center">
@@ -195,77 +168,75 @@ const UserProfile = () => {
             />
           </div>
         </Col>
-        <Col md={9}>
-          <Row className="d-flex align-items-center me-5">
-            <Col xs={9}>
+
+        <Col xs={9}>
+          <Row className="gy-2">
+            <Col xs={12}>
               <h3>{profileUser.username}</h3>
             </Col>
-            <Col xs={3}>
-              <Row className="gy-2 text-center">
-                {isOwner && (
-                  <Col xs={12}>
-                    <Button onClick={() => setShowModal(true)} className="gradient-orange border-0 rounded-pill">
-                      Modifica Profilo
-                    </Button>
-                  </Col>
-                )}
-                {!isOwner && (
-                  <Col xs={12}>
-                    <Button onClick={createOrOpenChat} className="gradient-orange border-0 rounded-pill">
-                      Inizia Chat
-                    </Button>
-                  </Col>
-                )}
-                <Col xs={12}>
-                  <Button onClick={handleShowFriendsModal} className="gradient-orange border-0 rounded-pill">
-                    Mostra Amici
-                  </Button>
-                </Col>
-                {!isOwner && friendshipStatus !== "pending" && friendshipStatus !== "accepted" && (
-                  <Col xs={12}>
-                    <Button onClick={sendFriendRequest} className="gradient-orange border-0 rounded-pill">
-                      {loadingFriendRequest ? <Spinner animation="border" size="sm" /> : "Aggiungi Amico"}
-                    </Button>
-                  </Col>
-                )}
-                {!isOwner && friendshipStatus === "pending" && (
-                  <Col xs={12}>
-                    <Button disabled className="gradient-orange border-0 rounded-pill">
-                      Richiesta Inviata
-                    </Button>
-                  </Col>
-                )}
-                {friendshipStatus === "accepted" && (
-                  <Col xs={12}>
-                    <Button onClick={removeFriend} className="gradient-orange border-0 rounded-pill">
-                      {loadingRemoveFriend ? <Spinner animation="border" size="sm" /> : "Rimuovi Amico"}
-                    </Button>
-                  </Col>
-                )}
-                {isOwner && (
-                  <Col xs={12}>
-                    <Button onClick={handleShowRequestsModal} className="gradient-orange border-0 rounded-pill">
-                      Visualizza Richieste
-                    </Button>
-                  </Col>
-                )}
-              </Row>
+
+            {isOwner && (
+              <Col xs={2}>
+                <Button onClick={() => setShowModal(true)} className="gradient-orange border-0 rounded-pill">
+                  Modifica Profilo
+                </Button>
+              </Col>
+            )}
+            {!isOwner && (
+              <Col xs={2}>
+                <Button onClick={createOrOpenChat} className="gradient-orange border-0 rounded-pill">
+                  Inizia Chat
+                </Button>
+              </Col>
+            )}
+
+            <Col xs={2}>
+              <Button onClick={handleShowFriendsModal} className="gradient-orange border-0 rounded-pill">
+                Mostra Amici
+              </Button>
             </Col>
+
+            {!isOwner && friendshipStatus !== "pending" && friendshipStatus !== "accepted" && (
+              <Col xs={2}>
+                <Button onClick={sendFriendRequest} className="gradient-orange border-0 rounded-pill">
+                  {loadingFriendRequest ? <Spinner animation="border" size="sm" /> : "Aggiungi Amico"}
+                </Button>
+              </Col>
+            )}
+            {!isOwner && friendshipStatus === "pending" && (
+              <Col xs={2}>
+                <Button disabled className="gradient-orange border-0 rounded-pill">
+                  Richiesta Inviata
+                </Button>
+              </Col>
+            )}
+            {friendshipStatus === "accepted" && (
+              <Col xs={2}>
+                <Button onClick={removeFriend} className="gradient-orange border-0 rounded-pill">
+                  {loadingRemoveFriend ? <Spinner animation="border" size="sm" /> : "Rimuovi Amico"}
+                </Button>
+              </Col>
+            )}
+            {isOwner && (
+              <Col xs={3}>
+                <Button onClick={handleShowRequestsModal} className="gradient-orange border-0 rounded-pill">
+                  Visualizza Richieste
+                </Button>
+              </Col>
+            )}
           </Row>
         </Col>
       </Row>
 
       <Row className="mt-5">
         <Col>
-          <h3>Le mie partenze</h3>
+          <h3 className="ps-5">Parteze in programma</h3>
           {activeTravels.length > 0 ? (
-            <Carousel responsive={responsive} className="">
-              {activeTravels.map((travel) => (
-                <div className="mx-2 cursor" key={travel.id} onClick={() => navigate(`/infoTravel/${travel.id}`)}>
-                  <TravelCard nobutton={true} travel={travel} showParticipants={false} />
-                </div>
-              ))}
-            </Carousel>
+            activeTravels.map((travel) => (
+              <div className="mx-2 cursor" key={travel.id} onClick={() => navigate(`/infoTravel/${travel.id}`)}>
+                <TravelCardMap nobutton={true} travel={travel} showParticipants={false} />
+              </div>
+            ))
           ) : (
             <p>Nessun viaggio trovato.</p>
           )}
