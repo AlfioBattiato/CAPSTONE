@@ -37,7 +37,7 @@ function MyNavbar() {
   return (
     <>
       {[false].map((expand) => (
-        <Navbar key={expand} expand={expand} className="bg-dark pt-3 sticky" data-bs-theme="dark">
+        <Navbar key={expand} expand={expand} className="bg-dark-subtle pt-3 sticky" data-bs-theme="dark">
           <Container>
             <Link to="/" className="navbar-brand text-white">
               TrailBlazers
@@ -74,7 +74,7 @@ function MyNavbar() {
                     id={`offcanvasNavbar-expand-${expand}`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
                     placement="end"
-                    className="bg-dark text-white"
+                    className="offcavnvas-background text-white"
                   >
                     <Offcanvas.Header closeButton>
                       <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`} className="fs-3">
