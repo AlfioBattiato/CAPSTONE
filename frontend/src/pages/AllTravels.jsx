@@ -55,7 +55,7 @@ function AllTravels() {
               <p className="text-dark mb-0">
                 Pagina {currentPage} di {totalPages}
               </p>
-              <Pagination className="justify-content-center m-0 mt-4 ">
+              <Pagination className="justify-content-center m-0 mt-4 mb-2 ">
                 <Pagination.First onClick={() => handlePageChange(1)} />
                 <Pagination.Prev onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : 1)} />
                 {Array.from({ length: totalPages }, (_, index) => (

@@ -49,7 +49,7 @@ const Register = () => {
       })
       .then(() => axios.get("/api/user"))
       .then((res) => {
-        navigate("/");
+        navigate("/homepage/");
         dispatch({
           type: LOGIN,
           payload: res.data,

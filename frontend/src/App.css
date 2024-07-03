@@ -5,6 +5,7 @@ body {
 .rounded-25 {
   border-radius: 25px !important;
 }
+
 /* Nascondi la barra di scorrimento solo per WebKit */
 html::-webkit-scrollbar {
   display: none !important;
@@ -19,7 +20,7 @@ html::-webkit-scrollbar {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-
+  object-fit: cover;
   margin-right: 5px;
 }
 
@@ -67,7 +68,7 @@ html::-webkit-scrollbar {
   color: white !important;
 }
 
-.travelCard > * {
+.travelCard>* {
   position: relative;
   z-index: 2;
 }
@@ -157,7 +158,8 @@ html::-webkit-scrollbar {
   color: #000;
   background: #f8f9fa;
   box-shadow: inset 5px 5px 13px #d5d5d5, inset -5px -5px 13px #f8f9fa;
-  position: relative; /* Ensure the content is relatively positioned */
+  position: relative;
+  /* Ensure the content is relatively positioned */
 }
 
 /* .message-content.own-message {
@@ -181,6 +183,7 @@ html::-webkit-scrollbar {
 }
 
 @media screen and (max-width: 750px) {
+
   .own-message,
   .other-message {
     max-width: 90%;
@@ -188,6 +191,7 @@ html::-webkit-scrollbar {
 }
 
 @media screen and (max-width: 400px) {
+
   .own-message,
   .other-message {
     max-width: 100%;
@@ -216,6 +220,7 @@ html::-webkit-scrollbar {
 .own-message-time {
   color: rgb(244, 217, 201);
 }
+
 .message-delete-button {
   line-height: 20px;
   width: 15px;
@@ -235,10 +240,13 @@ html::-webkit-scrollbar {
 
 .message-attachment audio {
   /* Ensure the audio controls take the full width of the container */
-  max-width: 100%; /* Set a max width for the audio controls */
-  max-height: 100px; /* Set a fixed height for the audio controls */
+  max-width: 100%;
+  /* Set a max width for the audio controls */
+  max-height: 100px;
+  /* Set a fixed height for the audio controls */
   display: block;
-  margin: 0 auto; /* Center the audio controls */
+  margin: 0 auto;
+  /* Center the audio controls */
 }
 
 .message-date {
@@ -303,7 +311,8 @@ html::-webkit-scrollbar {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: calc(100% - 30px); /* Adjust as needed */
+  max-width: calc(100% - 30px);
+  /* Adjust as needed */
   display: inline-block;
   vertical-align: middle;
 }
@@ -390,21 +399,29 @@ html::-webkit-scrollbar {
 .text-change:hover {
   color: rgba(255, 65, 65, 1) !important;
 }
+
 /* SEARCHUSER*/
 
 .search-users-form {
-  z-index: 1000; /* Assicurati che il modulo di ricerca sia sopra altri elementi */
+  z-index: 1000;
+  /* Assicurati che il modulo di ricerca sia sopra altri elementi */
 }
 
 .search-results {
-  top: 100%; /* Posiziona i risultati direttamente sotto il campo di input */
+  top: 100%;
+  /* Posiziona i risultati direttamente sotto il campo di input */
   left: 0;
-  z-index: 1000; /* Assicurati che i risultati siano sopra altri elementi */
-  background-color: white; /* Colore di sfondo per i risultati */
-  border: 1px solid #ccc; /* Bordo per i risultati */
+  z-index: 1000;
+  /* Assicurati che i risultati siano sopra altri elementi */
+  background-color: white;
+  /* Colore di sfondo per i risultati */
+  border: 1px solid #ccc;
+  /* Bordo per i risultati */
   box-shadow: 2px 2px 5px #0d0d0d;
-  max-height: 300px; /* Altezza massima per evitare che i risultati superino la vista */
-  overflow-y: auto; /* Aggiungi lo scrolling verticale se i risultati eccedono l'altezza massima */
+  max-height: 300px;
+  /* Altezza massima per evitare che i risultati superino la vista */
+  overflow-y: auto;
+  /* Aggiungi lo scrolling verticale se i risultati eccedono l'altezza massima */
 }
 
 .search-item {
@@ -448,6 +465,7 @@ html::-webkit-scrollbar {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
+
 .position-relative:hover .overlay {
   opacity: 1;
 }
@@ -459,9 +477,11 @@ html::-webkit-scrollbar {
 .offcavnvas-background {
   background-color: #1a1d20 !important;
 }
+
 .formlogin {
   width: 50% !important;
 }
+
 @media screen and (max-width: 790px) {
   .formlogin {
     width: 100% !important;

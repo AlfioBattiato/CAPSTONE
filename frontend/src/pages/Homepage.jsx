@@ -31,13 +31,10 @@ function Homepage() {
 
   const [weatherData, setWeatherData] = useState([]);
 
-  useEffect(() => {
-    dispatch(setAllreduxTravel())
-  }, [dispatch]);
 
   useEffect(() => {
     if (query === '') {
-      dispatch(setAllreduxTravel())
+      // dispatch(setAllreduxTravel())
       setWeatherData([])
     }
   }, [query]);
@@ -140,7 +137,7 @@ function Homepage() {
         };
         await axios.post("/api/meta", metaBody);
       }
-
+      dispatch(setAllreduxTravel())
       navigate("/AllTravels/");
     } catch (error) {
       console.error("There was an error!", error);

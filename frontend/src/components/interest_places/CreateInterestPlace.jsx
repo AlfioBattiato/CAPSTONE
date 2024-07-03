@@ -152,7 +152,7 @@ export default function CreateInterestPlace() {
                 </Col>
                 {/* ******************************************** */}
                 <Col xs={12} md={6}>
-                    <MapContainer center={position} zoom={10} style={{ height: "40rem", width: "100%", borderRadius: "25px" }}>
+                    <MapContainer center={position} zoom={6} style={{ height: "40rem", width: "100%", borderRadius: "25px" }}>
                         <TileLayer
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
