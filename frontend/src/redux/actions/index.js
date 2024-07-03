@@ -9,7 +9,7 @@ export const OPEN_CHAT = "OPEN_CHAT";
 export const CLOSE_CHAT = "CLOSE_CHAT";
 
 export const ADD_CHAT = "ADD_CHAT";
-
+export const SET_CHAT_FILTER = "SET_CHAT_FILTER";
 export const SET_CHATS = "SET_CHATS";
 export const SET_SELECTED_CHAT = "SET_SELECTED_CHAT";
 export const RESET_CHATS = "RESET_CHATS";
@@ -32,6 +32,11 @@ export const SET_EXPIRATION = "SET_EXPIRATION";
 export const SET_ALL = "SET_ALL";
 
 // chat////////
+
+export const setChatFilter = (filter) => ({
+  type: SET_CHAT_FILTER,
+  payload: filter,
+});
 
 // OPEN
 export const openChat = (chatId) => {

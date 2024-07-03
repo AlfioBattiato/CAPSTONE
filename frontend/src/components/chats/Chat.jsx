@@ -3,7 +3,7 @@ import axios from "axios";
 import { Card, Dropdown } from "react-bootstrap";
 import { useChannel, useConnectionStateListener } from "ably/react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   openChat,
   closeChat,
@@ -23,11 +23,12 @@ const Chat = ({ chat, globalChannel }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [groupImage, setGroupImage] = useState(chat.image); // Stato per l'immagine del gruppo
-  const [groupName, setGroupName] = useState(chat.name); // Stato per il nome del gruppo
+  const [groupName, setGroupName] = useState(chat.name); // Stato per il nome del gruppo o del viaggio
   const messagesEndRef = useRef(null);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const openChats = useSelector((state) => state.chats.openChats);
+  const navigate = useNavigate();
 
   const { channel: privateChannel } = useChannel(`private-chat.${chat.id}`, (message) => {
     const receivedMessage = message.data;
@@ -193,9 +194,9 @@ const Chat = ({ chat, globalChannel }) => {
   const handleLeaveGroup = async () => {
     try {
       await axios.post(`/api/chats/${chat.id}/leave`);
-      // Puoi aggiungere ulteriori azioni dopo che l'utente ha lasciato il gruppo, come aggiornare la lista delle chat
+      window.location.reload(); // Refresh the page to navigate to the lobbies
     } catch (error) {
-      console.error("Error leaving the group:", error);
+      console.error("Error leaving the group", error);
     }
   };
 
@@ -213,31 +214,40 @@ const Chat = ({ chat, globalChannel }) => {
               chat.type === "group"
                 ? groupImage
                 : chat.type === "travel"
-                ? groupImage // Update this line to use groupImage
+                ? groupImage
                 : otherUser?.profile_img || "default-profile-image-url"
             }
             alt="Chat"
             className="rounded-circle bg-white me-3"
             style={{ width: "50px", height: "50px", objectFit: "cover" }}
           />
-          {groupName ||
-            (chat.type === "group" ? (
-              "Group Chat"
-            ) : chat.type === "travel" ? (
-              chat.name
-            ) : otherUser ? (
-              <Link
-                to={`/profile/${otherUser.id}`}
-                className="text-white"
-                style={{
-                  textDecoration: "none",
-                }}
-              >
-                {otherUser.username}
-              </Link>
-            ) : (
-              "Chat with no users"
-            ))}
+          {chat.type === "group" ? (
+            groupName
+          ) : chat.type === "travel" ? (
+            <Link
+              to={`/infoTravel/${chat.travel_id}`}
+              className="text-white"
+              style={{
+                textDecoration: "none",
+                marginLeft: "10px", // Add some margin to separate it from the image
+              }}
+            >
+              {groupName}
+            </Link>
+          ) : otherUser ? (
+            <Link
+              to={`/profile/${otherUser.id}`}
+              className="text-white"
+              style={{
+                textDecoration: "none",
+                marginLeft: "10px", // Add some margin to separate it from the image
+              }}
+            >
+              {otherUser.username}
+            </Link>
+          ) : (
+            "Chat with no users"
+          )}
         </div>
         {(chat.type === "group" || chat.type === "travel") && (
           <Dropdown>

@@ -312,9 +312,10 @@ html::-webkit-scrollbar {
   display: inline-block;
   width: 30px;
   height: 30px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  /* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199); */
   background: rgb(255, 135, 65);
-  background: linear-gradient(145deg, rgba(255, 135, 65, 1) 15%, rgba(255, 65, 65, 1) 65%);
+  background: linear-gradient(145deg, rgb(255, 160, 65) 15%, rgb(255, 113, 65) 65%);
+  /* background: rgb(255, 113, 65); */
   color: white;
   text-align: center;
   line-height: 1.85rem;

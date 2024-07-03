@@ -7,13 +7,10 @@ const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
     return `${chat.id}-${chat.type}-${chat.created_at}-${uuidv4()}`;
   };
 
-  // Ordina le chat in base al campo `last_message_time`
-  const sortedChats = [...chats].sort((a, b) => new Date(b.last_message_time) - new Date(a.last_message_time));
-
   return (
     <ListGroup className="custom-scrollbar chat-list bg-light rounded-0 border-0 flex-grow-1">
-      {Array.isArray(sortedChats) && sortedChats.length > 0 ? (
-        sortedChats.map((chat) => {
+      {Array.isArray(chats) && chats.length > 0 ? (
+        chats.reverse().map((chat) => {
           const otherUsers = chat.pivot ? chat.users.filter((user) => user.id !== chat.pivot.user_id) : chat.users;
           let chatName = chat.name || "Chat with no users";
           let chatImage = chat.image || "default-group-image-url";
@@ -48,8 +45,8 @@ const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
           );
         })
       ) : (
-        <ListGroup.Item className="bg-light border-0 py-2">
-          <h5>Nessuna chat disponibile</h5>
+        <ListGroup.Item className="bg-light border-0 py-2 h-100 d-flex justify-content-center align-items-center">
+          <h4>Nessuna chat disponibile</h4>
         </ListGroup.Item>
       )}
     </ListGroup>
