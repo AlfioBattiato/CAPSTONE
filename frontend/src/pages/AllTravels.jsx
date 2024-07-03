@@ -41,7 +41,7 @@ function AllTravels() {
         <Col md={9} className="">
           <h5 className="my-2 pb-2">Viaggi programmati da altri utenti</h5>
 
-          <Row className="gy-3 ">
+          <Row className="gy-3"style={{minHeight:'75vh'}}>
             {activeTravels && activeTravels.length > 0 ? (
               activeTravels.map((travel, index) => (
                 <Col key={index} xs={12} sm={6} lg={4} xl={3}>
@@ -53,7 +53,7 @@ function AllTravels() {
             )}
           </Row>
 
-          <div className="d-flex justify-content-between align-items-center ">
+          <div className="d-flex justify-content-between flex-wrap align-items-center ">
             <p className="text-dark mb-0">
               Pagina {currentPage} di {totalPages}
             </p>
