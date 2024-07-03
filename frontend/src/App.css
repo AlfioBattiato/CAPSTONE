@@ -1,24 +1,7 @@
 body {
   background-color: #eff3f8 !important;
 }
-.container-fluid {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
 
-.row {
-  flex-grow: 1;
-}
-
-.col-md-9 {
-  display: flex;
-  flex-direction: column;
-}
-
-.mt-auto {
-  margin-top: auto;
-}
 
 .rounded-25 {
   border-radius: 25px !important;
