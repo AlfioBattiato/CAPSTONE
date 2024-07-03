@@ -40,7 +40,7 @@ function MyNavbar() {
       {[false].map((expand) => (
         <Navbar key={expand} expand={expand} className="bg-dark-subtle pt-3 sticky" data-bs-theme="dark">
           <Container>
-            <Link to="/" className="navbar-brand text-white">
+            <Link to="/homepage/" className="navbar-brand text-white">
               TrailBlazers
             </Link>
 
