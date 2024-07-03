@@ -52,9 +52,11 @@ const MessageForm = ({ chatId, onSendMessage }) => {
     <Form onSubmit={handleSendMessage} className="w-100 bg-trasparent text-end ">
       {filePreview && (
         <div className="mb-3 position-relative pe-5">
-          {file.type.startsWith("image/") && <Image src={filePreview} fluid />}
+          {file.type.startsWith("image/") && (
+            <Image src={filePreview} fluid style={{ width: "auto", maxHeight: "300px" }} />
+          )}
           {file.type.startsWith("video/") && (
-            <video controls width="100%">
+            <video controls style={{ width: "auto", maxHeight: "300px" }}>
               <source src={filePreview} type={file.type} />
             </video>
           )}
@@ -76,9 +78,9 @@ const MessageForm = ({ chatId, onSendMessage }) => {
         </div>
       )}
       <Form.Group controlId="messageInput" className="d-flex align-items-center">
-        <Col>
-          <Row>
-            <Col xs={12} sm={7} md={8} lg={8} xl={9} className="p-1">
+        <Col xs={12} className="p-0 m-0">
+          <Row className="p-0 m-0 d-flex align-items-end">
+            <Col xs={12} sm={7} md={8} xl={9} xxl={10} className="p-1">
               <TextareaAutosize
                 minRows={1}
                 maxRows={5}
@@ -89,7 +91,7 @@ const MessageForm = ({ chatId, onSendMessage }) => {
                 style={{ backgroundColor: "#FFF", color: "#000", resize: "none" }}
               />
             </Col>
-            <Col xs={12} sm={5} md={4} lg={4} xl={3} className="p-1 d-flex align-items-center justify-content-evenly">
+            <Col xs={12} sm={5} md={4} xl={3} xxl={2} className="p-1 d-flex align-items-center justify-content-evenly">
               <label
                 htmlFor="fileInput"
                 className="mb-0 d-flex align-items-center justify-content-center fs-3 gradient-orange"

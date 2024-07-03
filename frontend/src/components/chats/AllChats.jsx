@@ -95,7 +95,7 @@ const AllChats = () => {
       <Card.Body className="p-0 d-flex flex-column flex-grow-1 overflow-hidden bg-light">
         {(filter === "all" || filter === "group") && (
           <div className="d-flex justify-content-end mt-2 me-3 bg-transparent">
-            <Button className="rounded-pill gradient-orange border-0" onClick={() => setShowModal(true)}>
+            <Button className="rounded-pill gradient-orange border-0 mb-1" onClick={() => setShowModal(true)}>
               Nuovo Gruppo
             </Button>
           </div>

@@ -80,6 +80,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('chats/group/{chat}/update', [ChatController::class, 'updateGroupChat']);
     Route::put('chats/{chat}', [ChatController::class, 'update']);
     Route::delete('chats/{chat}', [ChatController::class, 'destroy']);
+    Route::post('chats/{chat}/leave', [ChatController::class, 'leaveGroup']);
+
 
     // Routes to add and remove users from chats
     Route::post('chats/{chat}/add-user', [ChatController::class, 'addUserToChat']);
