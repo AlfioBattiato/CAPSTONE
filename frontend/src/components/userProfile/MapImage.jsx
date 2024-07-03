@@ -13,7 +13,7 @@ const CustomMap = ({ travel }) => {
 
     const startMarker = L.marker([travel.lat, travel.lon], {
       icon: L.icon({
-        iconUrl: "/assets/maps/ico1.gif",
+        iconUrl: "/assets/maps/ico22.png",
         iconSize: [40, 40],
       }),
     }).addTo(map);
