@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BiSolidLogIn } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { LOGOUT, RESET_CHATS } from "../../redux/actions";
+import { LOGOUT, RESET_CHATS, setAllreduxTravel } from "../../redux/actions";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdFirstPage, MdOutlineTravelExplore } from "react-icons/md";
 import { FaStreetView } from "react-icons/fa";
@@ -24,6 +24,7 @@ function MyNavbar() {
     axios.post("/api/logout").then(() => {
       dispatch({ type: LOGOUT });
       dispatch({ type: RESET_CHATS });
+      dispatch(setAllreduxTravel())
       navigate("/");
     });
   };
