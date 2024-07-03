@@ -85,22 +85,14 @@ function Dashboard({ onProfileImageUpdate }) {
                 User: <span className="text-dark">{user.username}</span>
               </p>
             </Col>
-            <Col xs={6} className="text-end">
-              <Button variant="link" className="fw-bold text-change p-0">
-                Change
-              </Button>
-            </Col>
+            <Col xs={6} className="text-end"></Col>
             <hr className="w-100" />
             <Col xs={6}>
               <p className="fw-bold">
                 Email: <span className="text-dark">{user.email}</span>
               </p>
             </Col>
-            <Col xs={6} className="text-end">
-              <Button variant="link" className="fw-bold text-change p-0">
-                Change
-              </Button>
-            </Col>
+            <Col xs={6} className="text-end"></Col>
             <hr className="w-100" />
             <Col xs={6}>
               <p className="fw-bold">
