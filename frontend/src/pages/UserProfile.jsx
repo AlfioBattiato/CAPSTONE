@@ -159,7 +159,7 @@ const UserProfile = () => {
   return (
     <Container className="pt-5 bg-light">
       <Row className="align-items-center">
-        <Col md={3} className="text-center">
+        <Col xs={12} md={4} lg={3} className="text-center">
           <div
             className="border rounded-circle overflow-hidden"
             style={{ width: "200px", height: "200px", margin: "0 auto" }}
@@ -173,7 +173,7 @@ const UserProfile = () => {
           </div>
         </Col>
 
-        <Col xs={9}>
+        <Col xs={12} md={8} lg={9}>
           <Row className="gy-2">
             <Col xs={12}>
               <h3>{profileUser.username}</h3>
@@ -224,7 +224,7 @@ const UserProfile = () => {
         <Col>
           <h3 className="m-2 my-5 m-md-3 m-lg-5">Partenze in programma</h3>
           {activeTravels.length > 0 ? (
-            activeTravels.map((travel) => (
+            activeTravels.reverse().map((travel) => (
               <div className="mx-2 cursor" key={travel.id} onClick={() => navigate(`/infoTravel/${travel.id}`)}>
                 <TravelCardMap nobutton={true} travel={travel} showParticipants={false} />
               </div>
