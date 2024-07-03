@@ -14,6 +14,7 @@ function AllTravels() {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+    window.scroll(0, 0);
   };
 
   useEffect(() => {
