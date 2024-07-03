@@ -23,6 +23,11 @@ const FriendsModal = ({ show, onClose, userId }) => {
     }
   }, [show, userId]);
 
+  const handleVisitProfile = (friendId) => {
+    navigate(`/profile/${friendId}`);
+    onClose();
+  };
+
   return (
     <Modal show={show} onHide={onClose} centered size="lg">
       <Modal.Header className="bg-black text-white">
@@ -55,7 +60,7 @@ const FriendsModal = ({ show, onClose, userId }) => {
                 <Button
                   size="sm"
                   className="ms-2 gradient-orange border-0 rounded-pill"
-                  onClick={() => navigate(`/profile/${friend.id}`)}
+                  onClick={() => handleVisitProfile(friend.id)}
                 >
                   Visita il Profilo
                 </Button>
