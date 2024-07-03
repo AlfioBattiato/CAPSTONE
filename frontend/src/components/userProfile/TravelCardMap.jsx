@@ -59,7 +59,7 @@ export default function TravelCardMap({ travel, showParticipants, nobutton }) {
               <div className=" pe-3 ps-2 py-3 h-100">
                 <div className="d-flex gap-2 align-items-center mb-3">
                   <SiGooglemaps className="text-danger" />
-                  <p className="fw-semibold mb-0 fs-5">{travel.start_location.city}</p>
+                  <p className="fw-semibold mb-0 fs-5 fs-md-2">{travel.start_location}</p>
                 </div>
                 <div className="d-flex flex-wrap gap-2">
                   <BsCalendarDate className="me-1" />
