@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { LOGIN } from "../redux/actions";
+import { LOGIN, LOGOUT, RESET_CHATS } from "../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Modal, Button, Alert } from "react-bootstrap";
+
 
 function Login() {
   const dispatch = useDispatch();
@@ -57,19 +58,17 @@ function Login() {
 
   const submitLogin = async (ev) => {
     ev.preventDefault();
-
     try {
       await axios.post("/api/login", formData);
       const res = await axios.get("/api/user");
-
-      // Salvare i dati dello user nel Redux state
       dispatch({
         type: LOGIN,
         payload: res.data,
       });
+  
       navigate("/homepage/");
     } catch (err) {
-      setError(err.response.data.message);
+      setError(err.response?.data?.message || "An error occurred");
       setMessage(null);
       setFormData({
         email: "",
@@ -77,6 +76,7 @@ function Login() {
       });
     }
   };
+  
 
   return (
     <>
