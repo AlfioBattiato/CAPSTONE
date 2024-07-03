@@ -145,7 +145,11 @@ const UserProfile = () => {
   };
 
   if (loadingProfile || !profileUser) {
-    return <Spinner animation="border" />;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <Spinner animation="border" />
+      </div>
+    );
   }
 
   const isOwner = loggedInUser && profileUser.id === loggedInUser.id;
@@ -153,9 +157,9 @@ const UserProfile = () => {
   const activeTravels = travels.filter((travel) => travel.active && travel.expiration_date >= currentDate);
 
   return (
-    <Container className="pt-5 bg-light" style={{ height: "100vh" }}>
+    <Container className="pt-5 bg-light">
       <Row className="align-items-center">
-        <Col md={3} className="text-center">
+        <Col xs={12} md={4} lg={3} className="text-center">
           <div
             className="border rounded-circle overflow-hidden"
             style={{ width: "200px", height: "200px", margin: "0 auto" }}
@@ -169,70 +173,58 @@ const UserProfile = () => {
           </div>
         </Col>
 
-        <Col xs={9}>
+        <Col xs={12} md={8} lg={9}>
           <Row className="gy-2">
             <Col xs={12}>
               <h3>{profileUser.username}</h3>
             </Col>
 
-            {isOwner && (
-              <Col xs={2}>
-                <Button onClick={() => setShowModal(true)} className="gradient-orange border-0 rounded-pill">
+            <Col xs={12}>
+              {isOwner && (
+                <Button onClick={() => setShowModal(true)} className="gradient-orange border-0 rounded-pill m-1">
                   Modifica Profilo
                 </Button>
-              </Col>
-            )}
-            {!isOwner && (
-              <Col xs={2}>
-                <Button onClick={createOrOpenChat} className="gradient-orange border-0 rounded-pill">
+              )}
+              {!isOwner && (
+                <Button onClick={createOrOpenChat} className="gradient-orange border-0 rounded-pill m-1">
                   Inizia Chat
                 </Button>
-              </Col>
-            )}
+              )}
 
-            <Col xs={2}>
-              <Button onClick={handleShowFriendsModal} className="gradient-orange border-0 rounded-pill">
+              <Button onClick={handleShowFriendsModal} className="gradient-orange border-0 rounded-pill m-1">
                 Mostra Amici
               </Button>
-            </Col>
 
-            {!isOwner && friendshipStatus !== "pending" && friendshipStatus !== "accepted" && (
-              <Col xs={2}>
-                <Button onClick={sendFriendRequest} className="gradient-orange border-0 rounded-pill">
+              {!isOwner && friendshipStatus !== "pending" && friendshipStatus !== "accepted" && (
+                <Button onClick={sendFriendRequest} className="gradient-orange border-0 rounded-pill m-1">
                   {loadingFriendRequest ? <Spinner animation="border" size="sm" /> : "Aggiungi Amico"}
                 </Button>
-              </Col>
-            )}
-            {!isOwner && friendshipStatus === "pending" && (
-              <Col xs={2}>
-                <Button disabled className="gradient-orange border-0 rounded-pill">
+              )}
+              {!isOwner && friendshipStatus === "pending" && (
+                <Button disabled className="gradient-orange border-0 rounded-pill m-1">
                   Richiesta Inviata
                 </Button>
-              </Col>
-            )}
-            {friendshipStatus === "accepted" && (
-              <Col xs={2}>
-                <Button onClick={removeFriend} className="gradient-orange border-0 rounded-pill">
+              )}
+              {friendshipStatus === "accepted" && (
+                <Button onClick={removeFriend} className="gradient-orange border-0 rounded-pill m-1">
                   {loadingRemoveFriend ? <Spinner animation="border" size="sm" /> : "Rimuovi Amico"}
                 </Button>
-              </Col>
-            )}
-            {isOwner && (
-              <Col xs={3}>
-                <Button onClick={handleShowRequestsModal} className="gradient-orange border-0 rounded-pill">
+              )}
+              {isOwner && (
+                <Button onClick={handleShowRequestsModal} className="gradient-orange border-0 rounded-pill m-1">
                   Visualizza Richieste
                 </Button>
-              </Col>
-            )}
+              )}
+            </Col>
           </Row>
         </Col>
       </Row>
 
       <Row className="mt-5">
         <Col>
-          <h3 className="ps-5">Parteze in programma</h3>
+          <h3 className="m-2 my-5 m-md-3 m-lg-5">Partenze in programma</h3>
           {activeTravels.length > 0 ? (
-            activeTravels.map((travel) => (
+            activeTravels.reverse().map((travel) => (
               <div className="mx-2 cursor" key={travel.id} onClick={() => navigate(`/infoTravel/${travel.id}`)}>
                 <TravelCardMap nobutton={true} travel={travel} showParticipants={false} />
               </div>

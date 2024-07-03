@@ -2,7 +2,6 @@ body {
   background-color: #eff3f8 !important;
 }
 
-
 .rounded-25 {
   border-radius: 25px !important;
 }
@@ -455,11 +454,44 @@ html::-webkit-scrollbar {
 .offcavnvas-background {
   background-color: #1a1d20 !important;
 }
-.formlogin{
-  width: 50%!important;
+.formlogin {
+  width: 50% !important;
 }
 @media screen and (max-width: 790px) {
-  .formlogin{
-    width: 100%!important;
+  .formlogin {
+    width: 100% !important;
+  }
+}
+
+/* TRAVELCARDMAP */
+
+.font-city {
+  font-size: 2.5rem;
+}
+
+.icon-travelcardmap {
+  width: 40px;
+  height: 40px;
+}
+
+@media screen and (max-width: 775px) {
+  .icon-travelcardmap {
+    width: 35px;
+    height: 35px;
+  }
+
+  .font-city {
+    font-size: 2.5rem;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .icon-travelcardmap {
+    width: 30px;
+    height: 30px;
+  }
+
+  .font-city {
+    font-size: 2rem;
   }
 }

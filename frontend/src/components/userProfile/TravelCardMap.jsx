@@ -52,14 +52,14 @@ export default function TravelCardMap({ travel, showParticipants, nobutton }) {
       {travel && (
         <>
           <Row>
-            <Col xs={7} sm={6} md={5} lg={4} xxl={3} className="p-0" style={{ maxWidth: "57%" }}>
+            <Col xs={12} sm={6} md={5} lg={4} xxl={3} className="p-0">
               <MapImage travel={travel} metas={travel.metas} />
             </Col>
-            <Col xs={5} sm={6} md={7} lg={8} xxl={9} className="cardTravel_body">
+            <Col xs={12} sm={6} md={7} lg={8} xxl={9} className="cardTravel_body">
               <div className=" pe-3 ps-2 py-3 h-100">
                 <div className="d-flex gap-2 align-items-center mb-3">
-                  <SiGooglemaps className="text-danger" />
-                  <p className="fw-semibold mb-0 fs-5">{travel.start_location.city}</p>
+                  <SiGooglemaps className="text-danger icon-travelcardmap" />
+                  <p className="fw-semibold mb-0 font-city">{travel.start_location}</p>
                 </div>
                 <div className="d-flex flex-wrap gap-2">
                   <BsCalendarDate className="me-1" />

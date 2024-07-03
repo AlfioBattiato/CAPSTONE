@@ -45,13 +45,13 @@ export default function TravelCard({ travel, showParticipants, nobutton }) {
     : 0;
 
   return (
-    <div className="cardTravel position-relative" style={{ backgroundImage: `url(${getImageSource(travel.type_moto)})` }}>
+    <div
+      className="cardTravel position-relative"
+      style={{ backgroundImage: `url(${getImageSource(travel.type_moto)})` }}
+    >
       {travel && (
         <>
-
           <div className="cardTravel_body pe-3 ps-2 py-3">
-
-
             <div className="d-flex gap-2 align-items-center mb-3 ">
               <SiGooglemaps className="text-danger fs-3" />
               <p className="fw-semibold mb-0 fs-5">{travel.start_location}</p>
@@ -82,10 +82,13 @@ export default function TravelCard({ travel, showParticipants, nobutton }) {
               </>
             )}
           </div>
-          {nobutton ? '' : <button className="cardTravel-button" onClick={() => navigate(`/infoTravel/${travel.id}`)}>
-            Vedi
-          </button>}
-
+          {nobutton ? (
+            ""
+          ) : (
+            <button className="cardTravel-button" onClick={() => navigate(`/infoTravel/${travel.id}`)}>
+              Vedi
+            </button>
+          )}
         </>
       )}
     </div>

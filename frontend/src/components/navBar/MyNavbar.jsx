@@ -99,10 +99,10 @@ function MyNavbar() {
                           <MdOutlineTravelExplore className="me-2" />
                           Viaggi utenti
                         </Link>
-                        <Link to="/" className="nav-link fs-6" onClick={handleclick}>
+                        {/* <Link to="/" className="nav-link fs-6" onClick={handleclick}>
                           <MdFirstPage className="me-2" />
                           Benvenuto
-                        </Link>
+                        </Link> */}
                         <hr />
                         <Link
                           onClick={() => {

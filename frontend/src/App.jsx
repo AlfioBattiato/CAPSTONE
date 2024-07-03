@@ -52,12 +52,12 @@ function App() {
         <BrowserRouter>
           <MyNavbar></MyNavbar>
           <Routes>
-            <Route path="/" element={<Welcome />} />
+            <Route path="/" element={<Login />} />
             {/* <Route path="/detail/:id" element={<Detail />} /> */}
             <Route path="/login/" element={<Login />} />
             <Route path="/Register/" element={<Register />} />
             <Route path="/AllTravels/" element={<AllTravels />} />
-              <Route path="/password-reset/:token" element={<PasswordReset />} />
+            <Route path="/password-reset/:token" element={<PasswordReset />} />
 
             <Route element={<ProtectedRoutes />}>
               <Route path="/dashboard/:id" element={<Dashboard />} />
