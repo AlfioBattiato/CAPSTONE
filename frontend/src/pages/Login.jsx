@@ -66,7 +66,7 @@ function Login() {
         payload: res.data,
       });
   
-      navigate("/homepage/");
+      navigate("/AllTravels/");
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred");
       setMessage(null);
