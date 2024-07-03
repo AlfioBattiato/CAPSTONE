@@ -184,11 +184,12 @@ function Infotravel() {
     <div className="container">
       {travel ? (
         <>
-          <Row className="mt-5">
+          <Row className="mt-4">
             <Col md={6}>
               {authUserRole !== "creator_travel" ? (
-              
-                  <div className="mb-2 ">
+
+                <div className="mb-2 ">
+                  <div className="d-flex">
                     <Button variant="dark" className="me-2 d-flex align-items-center" onClick={goToChat} disabled={loadingChat}>
                       {loadingChat ? (
                         <Spinner animation="border" size="sm" />
@@ -201,29 +202,31 @@ function Infotravel() {
                     <Button variant="outline-success" disabled={disable} onClick={addGuest}>
                       Chiedi di partecipare
                     </Button>
-                
-                    {disable && (
-                      <p className="text-success">
-                        Richiesta inviata! Attendi di essere accettato dall&apos;amministratore del viaggio
-                      </p>
-                    )}
+
                   </div>
-                  
-                  
-                 
+
+                  {disable && (
+                    <p className="text-success">
+                      Richiesta inviata! Attendi di essere accettato dall&apos;amministratore del viaggio
+                    </p>
+                  )}
+                </div>
+
+
+
               ) : (
                 <>
                   <div className="d-flex justify-content-between">
                     <div className="d-flex">
-                    <Button variant="dark" className="me-2 d-flex align-items-center" onClick={goToChat} disabled={loadingChat}>
-                      {loadingChat ? (
-                        <Spinner animation="border" size="sm" />
-                      ) : (
-                        <>
-                          <BsFillPeopleFill /> Chat viaggio
-                        </>
-                      )}
-                    </Button>
+                      <Button variant="dark" className="me-2 d-flex align-items-center" onClick={goToChat} disabled={loadingChat}>
+                        {loadingChat ? (
+                          <Spinner animation="border" size="sm" />
+                        ) : (
+                          <>
+                            <BsFillPeopleFill /> Chat viaggio
+                          </>
+                        )}
+                      </Button>
                       <Button
                         variant="outline-dark"
                         className="me-2 d-flex align-items-center"
@@ -234,9 +237,9 @@ function Infotravel() {
                       <Button variant="outline-danger" className="me-2 d-flex align-items-center" onClick={handleShow}>
                         Elimina viaggio <FaTrash />
                       </Button>
-                      
+
                     </div>
-                   
+
                   </div>
                   <hr />
                 </>
