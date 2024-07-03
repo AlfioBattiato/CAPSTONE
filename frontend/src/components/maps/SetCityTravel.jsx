@@ -133,6 +133,7 @@ const SetCityTravel = () => {
             },
             inputDisable: false
         };
+        
         dispatch(setCurrentTravel(updatedTravel));
         dispatch(setmapInstructions([]));
         dispatch(setFormData({ query: '', metaQuery: '' }));
@@ -155,10 +156,10 @@ const SetCityTravel = () => {
                     Sei sicuro di voler azzerare le istruzioni?
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={cancelReset}>
+                    <Button variant="ountile-light" onClick={cancelReset}>
                         Annulla
                     </Button>
-                    <Button variant="warning" onClick={confirmReset}>
+                    <Button variant="dark" onClick={confirmReset}>
                         Azzera
                     </Button>
                 </Modal.Footer>
