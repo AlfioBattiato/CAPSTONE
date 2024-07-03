@@ -81,7 +81,7 @@ function Login() {
   return (
     <>
       <Container className="d-flex justify-content-center align-items-start mt-5" style={{ height: "100vh" }}>
-        <div className="w-50 p-5 mt-5 lobbies bg-light">
+        <div className="p-5 mt-5 lobbies bg-light formlogin">
           <h1 className="fw-bold mb-3">Login</h1>
           {message && <Alert variant="success">{message}</Alert>}
           {error && <Alert variant="danger">{error}</Alert>}
@@ -121,7 +121,7 @@ function Login() {
             </div>
           </form>
           <div className="mt-3 pt-3 text-end">
-            <p className="fw-bold text-secondary" onClick={handleShow}>
+            <p className="fw-bold text-secondary cursor" onClick={handleShow}>
               Password dimenticata?
             </p>
             <hr />

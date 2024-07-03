@@ -57,9 +57,9 @@ function App() {
             <Route path="/login/" element={<Login />} />
             <Route path="/Register/" element={<Register />} />
             <Route path="/AllTravels/" element={<AllTravels />} />
+              <Route path="/password-reset/:token" element={<PasswordReset />} />
 
             <Route element={<ProtectedRoutes />}>
-              <Route path="/password-reset/:token" element={<PasswordReset />} />
               <Route path="/dashboard/:id" element={<Dashboard />} />
               <Route path="/homepage/" element={<Homepage />} />
               <Route path="/createInterestPlace" element={<CreateInterestPlace />} />

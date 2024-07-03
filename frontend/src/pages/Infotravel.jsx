@@ -187,45 +187,35 @@ function Infotravel() {
           <Row className="mt-5">
             <Col md={6}>
               {authUserRole !== "creator_travel" ? (
-                <div className="d-flex justify-content-between">
-                  <div className="mb-2">
-                    <button disabled={disable} onClick={addGuest}>
+              
+                  <div className="mb-2 ">
+                    <Button variant="dark" className="me-2 d-flex align-items-center" onClick={goToChat} disabled={loadingChat}>
+                      {loadingChat ? (
+                        <Spinner animation="border" size="sm" />
+                      ) : (
+                        <>
+                          <BsFillPeopleFill /> Chat viaggio
+                        </>
+                      )}
+                    </Button>
+                    <Button variant="outline-success" disabled={disable} onClick={addGuest}>
                       Chiedi di partecipare
-                    </button>
+                    </Button>
+                
                     {disable && (
                       <p className="text-success">
                         Richiesta inviata! Attendi di essere accettato dall&apos;amministratore del viaggio
                       </p>
                     )}
                   </div>
-                  <div className="d-flex">
-                    <button className="btnT ms-auto shadow-0" onClick={goToChat} disabled={loadingChat}>
-                      {loadingChat ? (
-                        <Spinner animation="border" size="sm" />
-                      ) : (
-                        <>
-                          <BsFillPeopleFill /> Chat viaggio
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
+                  
+                  
+                 
               ) : (
                 <>
                   <div className="d-flex justify-content-between">
                     <div className="d-flex">
-                      <Button
-                        variant="outline-dark"
-                        className="me-2"
-                        onClick={() => navigate(`/updateTravel/${travel.id}`)}
-                      >
-                        Modifica <MdEdit />
-                      </Button>
-                      <Button variant="outline-danger" className="me-2" onClick={handleShow}>
-                        Elimina viaggio <FaTrash />
-                      </Button>
-                    </div>
-                    <button className="btnT ms-auto shadow-0" onClick={goToChat} disabled={loadingChat}>
+                    <Button variant="dark" className="me-2 d-flex align-items-center" onClick={goToChat} disabled={loadingChat}>
                       {loadingChat ? (
                         <Spinner animation="border" size="sm" />
                       ) : (
@@ -233,7 +223,20 @@ function Infotravel() {
                           <BsFillPeopleFill /> Chat viaggio
                         </>
                       )}
-                    </button>
+                    </Button>
+                      <Button
+                        variant="outline-dark"
+                        className="me-2 d-flex align-items-center"
+                        onClick={() => navigate(`/updateTravel/${travel.id}`)}
+                      >
+                        Modifica <MdEdit />
+                      </Button>
+                      <Button variant="outline-danger" className="me-2 d-flex align-items-center" onClick={handleShow}>
+                        Elimina viaggio <FaTrash />
+                      </Button>
+                      
+                    </div>
+                   
                   </div>
                   <hr />
                 </>

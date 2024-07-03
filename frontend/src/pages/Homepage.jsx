@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Row, Spinner } from "react-bootstrap";
 import SetTravel from "../components/maps/SetCityTravel";
 import Maps from "../components/maps/Maps";
 import SetTravelSettings from "../components/maps/SetTravelSettings";
@@ -18,6 +18,7 @@ import Sponsor from "../components/Sponsor";
 
 function Homepage() {
   const [show, setShow] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false); // New loading state for submit
   const dispatch = useDispatch();
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -34,7 +35,6 @@ function Homepage() {
     dispatch(setAllreduxTravel())
   }, [dispatch]);
 
-  //per settare i campi quando non ce una meta di partenza
   useEffect(() => {
     if (query === '') {
       dispatch(setAllreduxTravel())
@@ -52,7 +52,6 @@ function Homepage() {
           if (response.ok) {
             const data = await response.json();
             setWeatherData(data.list);
-            // console.log(data.list)
           } else {
             throw new Error("Problema nella chiamata API");
           }
@@ -91,6 +90,7 @@ function Homepage() {
       humidity={data.main.humidity}
     />
   );
+
   const getImageSource = (vehicleType) => {
     switch (vehicleType) {
       case "Race Bikes":
@@ -113,9 +113,10 @@ function Homepage() {
         return "/assets/moto/moto.png";
     }
   };
+
   const submit = async (ev) => {
     ev.preventDefault();
-
+    setLoadingSubmit(true); // Set loading to true
 
     try {
       const body = {
@@ -143,6 +144,8 @@ function Homepage() {
       navigate("/AllTravels/");
     } catch (error) {
       console.error("There was an error!", error);
+    } finally {
+      setLoadingSubmit(false); // Set loading to false
     }
   };
 
@@ -156,9 +159,6 @@ function Homepage() {
           <div className="mt-3">
             <RouteInstructions />
           </div>
-          {/* <div className="mt-3">
-            <Sponsor />
-          </div> */}
         </Col>
         <Col md={8} >
           <Maps />
@@ -196,89 +196,86 @@ function Homepage() {
           </div>
 
           <div className="travelmodal">
-            <Modal  show={show} onHide={handleClose} centered size="lg" className="createTravelmodal">
-           
-                  <Modal.Header closeButton>
-                    <Modal.Title>Riepilogo</Modal.Title>
-                  </Modal.Header>
-                  <div className="resumeTravel" style={{ backgroundImage: `url(${getImageSource(travel.type_moto)})` }}>
-                  <Modal.Body  className=' resumeTravel_body' >
-                    <p>
-                      Citta partenza:{" "}
-                      {travel.start_location.city ? (
-                        <span className="fw-bold">{travel.start_location.city}</span>
-                      ) : (
-                        <span className="text-danger">Non impostata</span>
-                      )}
-                    </p>
-                    <p>
-                      Data partenza:{" "}
-                      {travel.departure_date ? (
-                        <span className="fw-bold">{travel.departure_date.split("T")[0].split(":")}</span>
-                      ) : (
-                        <span className="text-danger">Inserisci una data</span>
-                      )}
-                    </p>
-                    <p>Mete:{metas.length > 0 ? (
-                      <DragDropContext onDragEnd={onDragEnd}>
-                        <Droppable droppableId="metas">
-                          {(provided) => (
-                            <ul className="list-group mt-1" {...provided.droppableProps} ref={provided.innerRef}>
-                              {metas.map((meta, index) => (
-                                <Draggable key={index} draggableId={`${index}`} index={index}>
-                                  {(provided) => (
-                                    <div
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      className="d-flex mt-1 align-items-center ps-0 gap-2"
-                                    >
-                                      <FaMapMarkerAlt className="text-danger" />
-                                      <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
-                                        {meta.city}
-                                        <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
-                                          <FaTrash />
-                                        </button>
-                                      </li>
-                                    </div>
-                                  )}
-                                </Draggable>
-                              ))}
-                              {provided.placeholder}
-                            </ul>
-                          )}
-                        </Droppable>
-                      </DragDropContext>
+            <Modal show={show} onHide={handleClose} centered size="lg" className="createTravelmodal">
+              <Modal.Header closeButton>
+                <Modal.Title>Riepilogo</Modal.Title>
+              </Modal.Header>
+              <div className="resumeTravel" style={{ backgroundImage: `url(${getImageSource(travel.type_moto)})` }}>
+                <Modal.Body className='resumeTravel_body'>
+                  <p>
+                    Citta partenza:{" "}
+                    {travel.start_location.city ? (
+                      <span className="fw-bold">{travel.start_location.city}</span>
                     ) : (
-                      <span className="text-danger"> Inserisci almeno una meta</span>
-                    )}</p>
+                      <span className="text-danger">Non impostata</span>
+                    )}
+                  </p>
+                  <p>
+                    Data partenza:{" "}
+                    {travel.departure_date ? (
+                      <span className="fw-bold">{travel.departure_date.split("T")[0]}</span>
+                    ) : (
+                      <span className="text-danger">Inserisci una data</span>
+                    )}
+                  </p>
+                  <p>Mete:{metas.length > 0 ? (
+                    <DragDropContext onDragEnd={onDragEnd}>
+                      <Droppable droppableId="metas">
+                        {(provided) => (
+                          <ul className="list-group mt-1" {...provided.droppableProps} ref={provided.innerRef}>
+                            {metas.map((meta, index) => (
+                              <Draggable key={index} draggableId={`${index}`} index={index}>
+                                {(provided) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className="d-flex mt-1 align-items-center ps-0 gap-2"
+                                  >
+                                    <FaMapMarkerAlt className="text-danger" />
+                                    <li className="list-group-item bg-dark p-2 text-white rounded w-100 overflow-hidden d-flex justify-content-between align-items-center">
+                                      {meta.city}
+                                      <button className="btn btn-dark text-danger btn-sm" onClick={() => handleRemoveMeta(index)}>
+                                        <FaTrash />
+                                      </button>
+                                    </li>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </ul>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
+                  ) : (
+                    <span className="text-danger"> Inserisci almeno una meta</span>
+                  )}</p>
 
-                    <p className="mt-2">
-                      Tipo moto:{" "}
-                      {travel.type_moto ? (
-                        <span className="fw-bold">{travel.type_moto}</span>
-                      ) : (
-                        <span className="text-danger">Moto non impostata</span>
-                      )}
-                    </p>
-                    <p>
-                      Cilindrata:{" "}
-                      {travel.cc_moto ? (
-                        <span className="fw-bold">{travel.cc_moto}</span>
-                      ) : (
-                        <span className="text-danger">Cilindrata non impostata</span>
-                      )}
-                    </p>
-                  </Modal.Body>
-
-                  </div>
-                  <hr />
-                  <div className="d-flex py-3">
-
-                    <button className="btnT  ms-auto me-2" onClick={submit}>
-                      Completa creazione
-                    </button>
-                  </div>
+                  <p className="mt-2">
+                    Tipo moto:{" "}
+                    {travel.type_moto ? (
+                      <span className="fw-bold">{travel.type_moto}</span>
+                    ) : (
+                      <span className="text-danger">Moto non impostata</span>
+                    )}
+                  </p>
+                  <p>
+                    Cilindrata:{" "}
+                    {travel.cc_moto ? (
+                      <span className="fw-bold">{travel.cc_moto}</span>
+                    ) : (
+                      <span className="text-danger">Cilindrata non impostata</span>
+                    )}
+                  </p>
+                </Modal.Body>
+              </div>
+              <hr />
+              <div className="d-flex py-3">
+                <button className="btnT ms-auto me-2" onClick={submit} disabled={loadingSubmit}>
+                  {loadingSubmit ? <Spinner animation="border" size="sm" /> : 'Completa creazione'}
+                </button>
+              </div>
             </Modal>
           </div>
         </Col>

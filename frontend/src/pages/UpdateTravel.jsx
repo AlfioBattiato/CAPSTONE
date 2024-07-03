@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Row, Spinner } from "react-bootstrap";
 import SetTravel from "../components/maps/SetCityTravel";
 import Maps from "../components/maps/Maps";
 import SetTravelSettings from "../components/maps/SetTravelSettings";
@@ -11,9 +11,7 @@ import All_interest_places from "../components/interest_places/All_interest_plac
 import Modal from "react-bootstrap/Modal";
 import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
 import { removeMeta, setCurrentTravel, setFormData, setMetas } from "../redux/actions";
-import { LOGIN } from "../redux/actions";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-
 
 function UpdateTravel() {
   const { id } = useParams();
@@ -24,16 +22,18 @@ function UpdateTravel() {
   const travel = useSelector((state) => state.infotravels.setTravel);
   const infotravels = useSelector((state) => state.infotravels);
   const metas = useSelector((state) => state.infotravels.metas);
-
+  const [loadingChat, setLoadingChat] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);  // New loading state for submit
 
   const navigate = useNavigate();
   const [authUserRole, setAuthUserRole] = useState(null);
 
   useEffect(() => {
+    setLoadingChat(true);
+
     axios
       .get(`/api/travel/${id}`)
       .then((response) => {
-        // console.log(response.data);
         const formDataUpdate = {
           query: response.data.start_location,
           metaQuery: ''
@@ -49,22 +49,21 @@ function UpdateTravel() {
           departure_date: response.data.departure_date,
           cc_moto: response.data.cc_moto,
           type_moto: response.data.type_moto,
-
         };
-        const updatedMetas = response.data.metas
-
+        const updatedMetas = response.data.metas;
 
         dispatch(setCurrentTravel(updatedTravel));
         dispatch(setMetas(updatedMetas));
         dispatch(setFormData(formDataUpdate));
         setAuthUserRole(response.data.auth_user_role);
-
       })
       .catch((error) => {
         console.error("Error fetching travel:", error);
+      })
+      .finally(() => {
+        setLoadingChat(false);
       });
   }, [id]);
-
 
   const handleRemoveMeta = (index) => {
     dispatch(removeMeta(index));
@@ -81,7 +80,8 @@ function UpdateTravel() {
   };
 
   const submit = async (ev) => {
-    ev.preventDefault()
+    ev.preventDefault();
+    setLoadingSubmit(true);  // Set loading to true
     try {
       const body = {
         start_location: infotravels.setTravel.start_location.city,
@@ -94,9 +94,9 @@ function UpdateTravel() {
         days: infotravels.details.days,
       };
 
-      const travelResponse = await axios.put(`/api/travel/${id}`, body);//fetch modfica viaggio effettivo
+      const travelResponse = await axios.put(`/api/travel/${id}`, body); // Update travel
       console.log("Travel update successfully:", travelResponse);
-      await axios.delete(`/api/travel/${id}/metas/`);//elimina tutte le mete che aveva salvato nel viaggio iniziale
+      await axios.delete(`/api/travel/${id}/metas/`); // Delete all previous metas
 
       for (const meta of infotravels.metas) {
         const metaBody = {
@@ -105,14 +105,17 @@ function UpdateTravel() {
           lat: meta.lat,
           lon: meta.lon,
         };
-        await axios.post("/api/meta", metaBody);//creazione nuova di tutte le mete
+        await axios.post("/api/meta", metaBody); // Create new metas
       }
 
       navigate(`/infoTravel/${travelResponse.data.id}`);
     } catch (error) {
       console.error("There was an error!", error);
+    } finally {
+      setLoadingSubmit(false);  // Set loading to false
     }
   };
+
   const getImageSource = (vehicleType) => {
     switch (vehicleType) {
       case "Race Bikes":
@@ -144,14 +147,9 @@ function UpdateTravel() {
           <RouteInstructions />
         </Col>
         <Col lg={5}>
-
           <Maps />
-
-
           <div className="mt-5 d-flex justify-content-end">
-
             <Modal show={show} onHide={handleClose} centered size="lg">
-
               <Modal.Header closeButton>
                 <Modal.Title>Riepilogo</Modal.Title>
               </Modal.Header>
@@ -174,7 +172,6 @@ function UpdateTravel() {
                     )}
                   </p>
                   <span>Mete:</span>
-
                   {metas.length > 0 ? (
                     <DragDropContext onDragEnd={onDragEnd}>
                       <Droppable droppableId="metas">
@@ -227,18 +224,14 @@ function UpdateTravel() {
                 </Modal.Body>
               </div>
               <Modal.Footer>
-
-                <button className="btnT " onClick={submit}>
-                  Conferma Modifica
+                <button className="btnT" onClick={submit} disabled={loadingSubmit}>
+                  {loadingSubmit ? <Spinner animation="border" size="sm" /> : 'Conferma Modifica'}
                 </button>
               </Modal.Footer>
-
             </Modal>
           </div>
         </Col>
-
         <Col lg={5} className="border-end" style={{ height: '39rem' }}>
-
           <SetTravel />
           <SetTravelSettings />
           <All_interest_places />

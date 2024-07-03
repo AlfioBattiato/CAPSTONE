@@ -32,7 +32,7 @@ function AllTravels() {
   }, [travels]);
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid pb-3">
       <Row className="flex-grow-1">
         <Col md={3} className="border-end">
           <h5 className="mt-2 ms-5">Filtri di ricerca</h5>

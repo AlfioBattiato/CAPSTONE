@@ -468,3 +468,11 @@ html::-webkit-scrollbar {
 .offcavnvas-background {
   background-color: #1a1d20 !important;
 }
+.formlogin{
+  width: 50%!important;
+}
+@media screen and (max-width: 790px) {
+  .formlogin{
+    width: 100%!important;
+  }
+}
