@@ -53,7 +53,7 @@ export default function TravelCard({ travel, showParticipants, nobutton }) {
 
 
             <div className="d-flex gap-2 align-items-center mb-3 ">
-              <SiGooglemaps className="text-danger" />
+              <SiGooglemaps className="text-danger fs-3" />
               <p className="fw-semibold mb-0 fs-5">{travel.start_location}</p>
             </div>
             <div className="d-flex flex-wrap gap-2">
