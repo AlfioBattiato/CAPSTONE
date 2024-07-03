@@ -14,6 +14,7 @@ function AllTravels() {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+    window.scroll(0, 0);
   };
 
   useEffect(() => {
@@ -29,7 +30,7 @@ function AllTravels() {
 
   return (
     <div className="container-fluid d-flex flex-column min-vh-100 pb-3">
-      <Row className="flex-grow-1">
+      <Row className="">
         <Col md={3} className="border-end">
           <h5 className="mt-2 ms-5">Filtri di ricerca</h5>
           <FilterTravel setTravels={setTravels} />
@@ -54,7 +55,7 @@ function AllTravels() {
               <p className="text-dark mb-0">
                 Pagina {currentPage} di {totalPages}
               </p>
-              <Pagination className="justify-content-center m-0 mt-4">
+              <Pagination className="justify-content-center m-0 mt-4 ">
                 <Pagination.First onClick={() => handlePageChange(1)} />
                 <Pagination.Prev onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : 1)} />
                 {Array.from({ length: totalPages }, (_, index) => (
