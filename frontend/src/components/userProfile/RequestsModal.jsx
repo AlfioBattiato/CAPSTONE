@@ -49,6 +49,10 @@ const RequestsModal = ({ show, onClose }) => {
     }
   };
 
+  const handleClose = () => {
+    onClose();
+  };
+
   return (
     <Modal show={show} onHide={onClose} centered size="lg">
       <Modal.Header className="bg-black text-white">
@@ -66,6 +70,7 @@ const RequestsModal = ({ show, onClose }) => {
                   style={{
                     textDecoration: "none",
                   }}
+                  onClick={handleClose}
                 >
                   <div className="d-flex align-items-center">
                     <Image
