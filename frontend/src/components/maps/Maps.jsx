@@ -37,7 +37,7 @@ export default function Maps() {
             setPopupInfo(null);
         }
         setKey(oldKey => oldKey + 1);
-    }, [travel, metas]);
+    }, [travel.start_location, metas]);
 
     const handleClickOnMap = (event) => {
         const { lat, lng } = event.latlng;

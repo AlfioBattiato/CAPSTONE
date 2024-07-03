@@ -27,7 +27,7 @@ export default function InfoPlace({ show, handleClose, place }) {
                 <Modal.Title >{place.name_location ? place.name_location : "Nome luogo sconosciuto"} </Modal.Title>
 
             </Modal.Header>
-            <Modal.Body className="bg-dark text-white text-center">
+            <Modal.Body className="bg-dark text-white ">
                 <div className="d-flex justify-content-end gap-2 align-items-center mb-3">
                     <p className="mb-0">Questo luogo ha ricevuto</p>
                     <p className="mb-0">{place.rating}</p>
@@ -40,7 +40,7 @@ export default function InfoPlace({ show, handleClose, place }) {
                 <div className="d-flex align-items-center justify-content-end gap-2 p-1 placelike" onClick={() => submit}>
 
                     <SlLike />
-                    <p className="mb-0"> Lascia un like</p>
+                    <p className="mb-0 cursor"> Lascia un like</p>
 
 
 
