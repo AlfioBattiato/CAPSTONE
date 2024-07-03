@@ -190,6 +190,15 @@ const Chat = ({ chat, globalChannel }) => {
     setGroupName(newName);
   };
 
+  const handleLeaveGroup = async () => {
+    try {
+      await axios.post(`/api/chats/${chat.id}/leave`);
+      // Puoi aggiungere ulteriori azioni dopo che l'utente ha lasciato il gruppo, come aggiornare la lista delle chat
+    } catch (error) {
+      console.error("Error leaving the group:", error);
+    }
+  };
+
   const otherUser = chat.users?.find((u) => u.id !== user.id);
 
   return (
@@ -243,6 +252,7 @@ const Chat = ({ chat, globalChannel }) => {
             <Dropdown.Menu className="search-results">
               <Dropdown.Item onClick={() => setShowMembersModal(true)}>Visualizza membri</Dropdown.Item>
               <Dropdown.Item onClick={() => setShowEditModal(true)}>Modifica gruppo</Dropdown.Item>
+              <Dropdown.Item onClick={handleLeaveGroup}>Esci dal gruppo</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         )}

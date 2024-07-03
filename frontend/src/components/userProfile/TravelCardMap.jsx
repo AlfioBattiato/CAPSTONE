@@ -61,11 +61,12 @@ export default function TravelCardMap({ travel, showParticipants, nobutton }) {
                   <SiGooglemaps className="text-danger icon-travelcardmap" />
                   <p className="fw-semibold mb-0 font-city">{travel.start_location}</p>
                 </div>
-                <div className="d-flex flex-wrap gap-2">
-                  <BsCalendarDate className="me-1" />
-                  <p className="fs-12 fw-bold me-2 mb-0">{formatDate(travel.departure_date)}</p>
-                </div>
-                <div className="d-flex flex-column mt-2 gap-1">
+                <div className="d-flex flex-sm-column align-travelcardmap mt-2 gap-1">
+                  <div className="d-flex flex-wrap gap-2">
+                    <BsCalendarDate className="me-1" />
+                    <p className="fs-12 fw-bold me-2 mb-0">{formatDate(travel.departure_date)}</p>
+                  </div>
+
                   <div>
                     <Badge bg="dark" text="white" className="badgecard">
                       {travel.type_moto}

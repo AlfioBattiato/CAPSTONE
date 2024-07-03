@@ -170,6 +170,10 @@ html::-webkit-scrollbar {
   max-width: 70%;
 }
 
+.bg-orange {
+  background: rgb(255, 113, 65);
+}
+
 .other-message {
   background-color: #000;
   position: relative;
@@ -474,6 +478,10 @@ html::-webkit-scrollbar {
   height: 40px;
 }
 
+.align-travelcardmap {
+  align-items: start;
+}
+
 @media screen and (max-width: 775px) {
   .icon-travelcardmap {
     width: 35px;
@@ -482,6 +490,12 @@ html::-webkit-scrollbar {
 
   .font-city {
     font-size: 2.5rem;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .align-travelcardmap {
+    align-items: center;
   }
 }
 

@@ -202,4 +202,17 @@ class ChatController extends Controller
 
         return response()->json(['message' => 'User removed from chat successfully'], 200);
     }
+
+    public function leaveGroup(Chat $chat)
+{
+    $user = Auth::user();
+    $chat->users()->detach($user->id);
+
+    if ($chat->users()->count() === 0) {
+        $chat->delete();
+    }
+
+    return response()->json(['message' => 'You have left the group successfully'], 200);
+}
+
 }

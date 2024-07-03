@@ -48,7 +48,9 @@ const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
           );
         })
       ) : (
-        <ListGroup.Item>No chats available</ListGroup.Item>
+        <ListGroup.Item className="bg-light border-0 py-2">
+          <h5>Nessuna chat disponibile</h5>
+        </ListGroup.Item>
       )}
     </ListGroup>
   );
