@@ -74,9 +74,9 @@ export default function CreateInterestPlace() {
                 } else if (err.response.data.message === "The location img field is required.") {
                     setError("Inserire un immagine");
                 } else {
-                    setError(error);
+                    setError(err.response.data.message);
                 }
-                console.error(error);
+                console.error(err);
             });
     };
     useEffect(() => { }, [error])
@@ -95,7 +95,7 @@ export default function CreateInterestPlace() {
                                 Aggiungi delle brevi note aggiuntive, ad esempio dettagli particolari sul percorso, come strade non
                                 accessibili a tutti, per aiutare gli altri motociclisti a comprendere meglio il luogo.
                             </li>
-                            <li>Devi necessariamente aggiungure un immagine.</li>
+                            <li>Devi necessariamente aggiungure un immagine ma non superiore a 2048 Kb.</li>
                         </ul>
 
                         <p className="text-success">Grazie per il tuo contributo</p>
