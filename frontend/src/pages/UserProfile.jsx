@@ -145,7 +145,11 @@ const UserProfile = () => {
   };
 
   if (loadingProfile || !profileUser) {
-    return <Spinner animation="border" />;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <Spinner animation="border" />
+      </div>
+    );
   }
 
   const isOwner = loggedInUser && profileUser.id === loggedInUser.id;
@@ -153,7 +157,7 @@ const UserProfile = () => {
   const activeTravels = travels.filter((travel) => travel.active && travel.expiration_date >= currentDate);
 
   return (
-    <Container className="pt-5 bg-light" style={{ height: "100vh" }}>
+    <Container className="pt-5 bg-light">
       <Row className="align-items-center">
         <Col md={3} className="text-center">
           <div
@@ -230,7 +234,7 @@ const UserProfile = () => {
 
       <Row className="mt-5">
         <Col>
-          <h3 className="ps-5">Parteze in programma</h3>
+          <h3 className="ps-5">Partenze in programma</h3>
           {activeTravels.length > 0 ? (
             activeTravels.map((travel) => (
               <div className="mx-2 cursor" key={travel.id} onClick={() => navigate(`/infoTravel/${travel.id}`)}>

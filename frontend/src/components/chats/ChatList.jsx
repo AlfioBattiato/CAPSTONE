@@ -2,15 +2,18 @@ import React from "react";
 import { ListGroup, Image } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
 
-const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts, chatListChannel }) => {
+const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts }) => {
   const generateUniqueKey = (chat) => {
     return `${chat.id}-${chat.type}-${chat.created_at}-${uuidv4()}`;
   };
 
+  // Ordina le chat in base al campo `last_message_time`
+  const sortedChats = [...chats].sort((a, b) => new Date(b.last_message_time) - new Date(a.last_message_time));
+
   return (
     <ListGroup className="custom-scrollbar chat-list bg-light rounded-0 border-0 flex-grow-1">
-      {Array.isArray(chats) && chats.length > 0 ? (
-        chats.map((chat) => {
+      {Array.isArray(sortedChats) && sortedChats.length > 0 ? (
+        sortedChats.map((chat) => {
           const otherUsers = chat.pivot ? chat.users.filter((user) => user.id !== chat.pivot.user_id) : chat.users;
           let chatName = chat.name || "Chat with no users";
           let chatImage = chat.image || "default-group-image-url";
@@ -26,7 +29,7 @@ const ChatList = ({ chats, selectedChat, onChatClick, unreadCounts, chatListChan
 
           return (
             <ListGroup.Item
-              key={generateUniqueKey(chat)} // Usa una chiave unica combinando l'id, il tipo, la data di creazione e un UUID
+              key={generateUniqueKey(chat)}
               onClick={() => onChatClick(chat)}
               className={`chat-item bg-light rounded-0 py-3 border-0 my-1 btn fs-4 text-start ${
                 selectedChat && selectedChat.id === chat.id ? "selected-chat" : "default-chat"
