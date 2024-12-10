@@ -25,7 +25,7 @@ class TravelSeeder extends Seeder
             Log::info('Creator associated with travel: ' . json_encode([$creatorUser->id]));
 
             // Aggiungi altri utenti al viaggio come partecipanti
-            $travelUsers = $users->where('id', '!=', $creatorUser->id)->random(rand(0, 2))->pluck('id')->toArray();
+            $travelUsers = $users->where('id', '!=', $creatorUser->id)->random(rand(0,2))->pluck('id')->toArray();
             $participants = array_fill_keys($travelUsers, ['role' => 'guest', 'active' => true]);
 
             // Associa gli altri utenti come partecipanti

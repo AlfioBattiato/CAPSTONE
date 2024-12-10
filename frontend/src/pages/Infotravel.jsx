@@ -260,7 +260,7 @@ function Infotravel() {
                 <FaMotorcycle /> Tipologia di Moto: <span className="fw-bold">{travel.type_moto}</span>
               </p>
               <p>
-                <FaSuperpowers /> Cavalli minimi per partecipare: <span className="fw-bold">{travel.cc_moto}</span>
+                <FaSuperpowers /> Cilindrata minima per partecipare: <span className="fw-bold">{travel.cc_moto}</span>
               </p>
               <p>
                 <FaPeopleRobbery /> Partecipanti attuali: <span className="fw-bold">{activeParticipants.length}</span>

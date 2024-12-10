@@ -148,6 +148,15 @@ function Homepage() {
 
   return (
     <div className="container-fluid">
+          <div className="newinterestplace mt-3 p-2">
+            <h1 className="display-5 text-center">Hai un luogo che vorresti condividere?</h1>
+            <p className="text-center">Aiuta la community a visitare luoghi inesplorati</p>
+            <Link to="/createInterestPlace" className="me-2">
+              <Button variant="outline-light" className="my-3">
+                Crea un nuovo punto di interesse
+              </Button>
+            </Link>
+          </div>
       <h5 className="mt-2 text-center">Organizza il percorso per il tuo viaggio</h5>
       <Row className="mt-3 gy-3">
         <Col md={4} className="border-end">
@@ -177,15 +186,7 @@ function Homepage() {
             </div>
           )}
 
-          <div className="newinterestplace mt-3 p-2">
-            <h1 className="display-5 text-center">Hai un luogo che vorresti condividere?</h1>
-            <p className="text-center">Aiuta la community a visitare luoghi inesplorati</p>
-            <Link to="/createInterestPlace" className="me-2">
-              <Button variant="outline-light" className="my-3">
-                Crea nuovo punto di interesse
-              </Button>
-            </Link>
-          </div>
+      
           <div className="d-flex pe-3">
             <button className="ms-auto my-5 btnT" onClick={handleShow}>
               Crea Viaggio
